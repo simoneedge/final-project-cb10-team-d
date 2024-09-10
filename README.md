@@ -36,6 +36,7 @@ SiciliPulse è una piattaforma innovativa che mette l’utente al centro, offren
 
 ## Struttura del Progetto
 
+<<<<<<< HEAD
 my-project/
 │
 ├── public/                      # Public assets (images, fonts, etc.)
@@ -110,3 +111,6 @@ my-project/
 
 4. **Avvia l'applicazione:**:
    npm run dev
+=======
+![Carbon](carbon.png)
+>>>>>>> 18b9b1822739754aa8ef6f1dadff04327aadd009
