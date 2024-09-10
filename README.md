@@ -35,7 +35,7 @@ SiciliPulse è una piattaforma digitale innovativa che cattura il "battito" cult
 SiciliPulse è una piattaforma innovativa che mette l’utente al centro, offrendo un’esperienza su misura grazie all’uso dell’intelligenza artificiale. Il progetto punta a diventare un riferimento per l’informazione accessibile, divertente e coinvolgente, con un focus su una community attiva e inclusiva.
 
 ## Struttura del Progetto
-![Struttura](struttura.png)
+![Albero](albero.png)
 
 ## Installazione
 
