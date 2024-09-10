@@ -95,3 +95,18 @@ my-project/
 ├── postcss.config.js            # PostCSS configuration for Tailwind CSS
 ├── tailwind.config.js           # Tailwind CSS configuration
 └── tsconfig.json                # TypeScript configuration
+
+
+## Installazione
+
+1. **Clona il repository**:
+   git clone https://github.com/simoneedge/final-project-cb10-team-d.git
+
+2. **Naviga nella cartella del progetto:**:
+   cd final-project-cb10-team-d
+
+3. **Installa le dipendenze:**:
+   npm install
+
+4. **Avvia l'applicazione:**:
+   npm run dev
