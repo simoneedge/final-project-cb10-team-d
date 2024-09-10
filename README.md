@@ -36,4 +36,4 @@ SiciliPulse è una piattaforma innovativa che mette l’utente al centro, offren
 
 ## Struttura del Progetto
 
-![Albero](albero.png)
+![Carbon](carbon.png)
