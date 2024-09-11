@@ -1,24 +1,23 @@
-
 import React from 'react';
-
-
-
 import ArrowButton from './ArrowButton';
 import BookmarkButton from './BookmarkButton';
 import HeartButton from './HeartButton';
 
 interface CardProps {
   backgroundColor: string;
+  title: string;
+  imageSrc: string;
+  onArrowClick?: () => void; 
 }
 
-const Card: React.FC<CardProps> = ({ backgroundColor }) => {
+const Card: React.FC<CardProps> = ({ backgroundColor, title, imageSrc, onArrowClick }) => {
   return (
     <div className="max-w-xs overflow-hidden shadow-lg relative">
       <div className="relative">
         <div className="clip-path-bottom">
           <img
-            src="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-            alt="Paste di mandorle"
+            src={imageSrc}
+            alt={title}
             className="object-cover w-full h-[200px]"
           />
         </div>
@@ -29,11 +28,11 @@ const Card: React.FC<CardProps> = ({ backgroundColor }) => {
       </div>
       <div
         className="diagonal-line-container p-3 text-white relative"
-        style={{ backgroundColor }} 
+        style={{ backgroundColor }}
       >
         <div className="diagonal-line-top"></div>
-        <h2 className="text-[16px] font-titolo mt-4">Paste di mandorle</h2>
-        <div className="absolute bottom-2 right-2">
+        <h2 className="text-[16px] font-titolo mt-4">{title}</h2>
+        <div className="absolute bottom-2 right-2 cursor-pointer" onClick={onArrowClick}>
           <ArrowButton />
         </div>
       </div>

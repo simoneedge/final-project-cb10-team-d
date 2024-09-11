@@ -1,19 +1,50 @@
 export const labels = {
-    perfumeTableName: "Name",
-    perfumeTableBrand: "Brand",
-    perfumeTableFragrances: "Fragrances",
-    perfumeTablePrice: "Price",
-    perfumeTableBtnDetail: "Details",
+    // Etichette per le pagine principali
+    home: "Home",
+    cultura: "Cultura",
+    food: "Food",
+    attivita: "Attività",
+    proponiEvento: "Proponi Evento",
 
-    perfumeList: "Perfume List",
-    filterPerfumeByName: "Filter Perfume by Name",
-    insertPerfumeName: "Insert perfume name",
+    // Etichette per i form e i pulsanti
+    filterBy: "Filtra per",
+    filterByName: "Filtra per Nome",
+    insertName: "Inserisci il nome",
+    submit: "Invia",
+    reset: "Reset",
+    applyFilters: "Applica Filtri",
+
+    // Etichette per i dettagli degli eventi o articoli
+    eventDetails: "Dettagli Evento",
+    articleDetails: "Dettagli Articolo",
+    viewDetails: "Visualizza Dettagli",
     
-    navHome: "Home",
-    isLoading: "Loading...",
-    errorHuHo: "Hu-oh!",
+    // Etichette per l'azione sui contenuti
+    edit: "Modifica",
+    delete: "Cancella",
+    save: "Salva",
+    cancel: "Annulla",
+    
+    // Etichette per la navigazione e i messaggi
+    goBackHome: "Torna alla Home",
+    loading: "Caricamento...",
+    errorOops: "Ops, qualcosa è andato storto!",
 
-    edit: "Edit",
-    delete: "Delete",
-    goBackHome: "Go back home",
+    // Etichette specifiche per la sezione Proponi Evento
+    contactUs: "Contattaci",
+    name: "Nome",
+    surname: "Cognome",
+    email: "Email",
+    sector: "Settore",
+    message: "Messaggio",
+
+    // Navbar
+    navHome: "Home",
+    navCultura: "Cultura",
+    navFood: "Food",
+    navAttivita: "Attività",
+    navProponiEvento: "Proponi Evento",
+    
+    // Footer
+    footerText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 };
