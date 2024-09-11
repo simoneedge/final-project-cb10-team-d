@@ -13,7 +13,7 @@ const links = [
   { name: 'Cultura', href: '/cultura' },
   { name: 'Food', href: '/food' },
   { name: 'Attività', href: '/attivita' },
-  { name: 'Proponi Evento', href: '/events/propose' },
+  { name: 'Proponi Evento', href: '/propose' },
 ];
 
 const HomePage = () => {
