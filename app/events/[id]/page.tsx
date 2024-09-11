@@ -15,18 +15,42 @@ interface Event {
   color: string;
 }
 
+const getData = async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api/events', { cache: 'no-cache' });
+
+    if (!res.ok) {
+      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message || 'Errore sconosciuto durante il fetch dei dati');
+  }
+};
+
 const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [event, setEvent] = useState<Event | null>(null);
 
   useEffect(() => {
-    const fetchedEvent = {
-      _id: params.id,
-      title: 'Event Title',
-      description: 'Detailed description of the event.',
-      image: 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
-      color: '#4E614E',
+    const fetchEvent = async () => {
+      try {
+        const result = await getData();
+
+        
+        const events = Array.isArray(result) ? result : [result];
+
+        
+        const foundEvent = events.find((ev) => ev._id === params.id);
+
+        setEvent(foundEvent || null);
+      } catch (error) {
+        console.error('Errore nel caricamento dei dati:', error);
+      }
     };
-    setEvent(fetchedEvent);
+
+    fetchEvent();
   }, [params.id]);
 
   if (!event) {
@@ -41,6 +65,12 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         imageSrc={event.image}
       />
       <p className="mt-4">{event.description}</p>
+      <div className="mt-2">
+        <p><strong>Tag:</strong> {event.tag?.join(', ')}</p>
+        <p><strong>Data:</strong> {event.date}</p>
+        <p><strong>Prezzo:</strong> {event.price}</p>
+        <p><strong>Luogo:</strong> {event.location}</p>
+      </div>
     </div>
   );
 };
