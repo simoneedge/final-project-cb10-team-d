@@ -1,12 +1,11 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Button from '@/src/components/Button';
 import Card from '@/src/components/Card';
 import ScrollToTopButton from '@/src/components/ScrollToTopButton';
 import NavBar from '@/src/components/NavBar';
-import { useAuth } from '@/context/AuthContext';
 
 const getData = async () => {
   try {
@@ -47,6 +46,8 @@ const HomePage = () => {
               backgroundColor={event.color || '#4E614E'}
               title={event.title || 'Pasta di mandorle'}
               imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
+              size={index === 2 ? 'large' : 'small'} 
+              onArrowClick={() => console.log(`Navigating to event ${event._id || index}`)}
             />
           ))
         ) : (

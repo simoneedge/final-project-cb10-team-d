@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import ArrowButton from './ArrowButton';
 import BookmarkButton from './BookmarkButton';
@@ -7,18 +9,21 @@ interface CardProps {
   backgroundColor: string;
   title: string;
   imageSrc: string;
-  onArrowClick?: () => void; 
+  onArrowClick?: () => void;
+  size?: 'small' | 'large'; 
 }
 
-const Card: React.FC<CardProps> = ({ backgroundColor, title, imageSrc, onArrowClick }) => {
+const Card: React.FC<CardProps> = ({ backgroundColor, title, imageSrc, onArrowClick, size = 'small' }) => {
+  const sizeClasses = size === 'large' ? 'max-w-md h-[300px]' : 'max-w-xs h-[200px]';
+
   return (
-    <div className="max-w-xs overflow-hidden shadow-lg relative">
+    <div className={`overflow-hidden shadow-lg relative ${size === 'large' ? 'max-w-md' : 'max-w-xs'}`}>
       <div className="relative">
         <div className="clip-path-bottom">
           <img
             src={imageSrc}
             alt={title}
-            className="object-cover w-full h-[200px]"
+            className={`object-cover w-full ${sizeClasses}`} 
           />
         </div>
         <div className="absolute top-2 right-2 flex space-x-2">
