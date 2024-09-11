@@ -1,5 +1,5 @@
 
-import Button from '@/src/components/Button';
+// import Button from '@/src/components/Button';
 import Card from '@/src/components/Card';
 import ScrollToTopButton from '@/src/components/ScrollToTopButton';
 import React from 'react';
@@ -14,7 +14,6 @@ const HomePage = () => {
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
       <main className="flex flex-col items-center justify-center flex-grow space-y-4">
-        <Button/>
         <Card backgroundColor="#4E614E" title='Pasta di mandorle' imageSrc='https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'/>
 
         <Card backgroundColor="#F2B85A" title='Pasta di mandorle' imageSrc='https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg' />

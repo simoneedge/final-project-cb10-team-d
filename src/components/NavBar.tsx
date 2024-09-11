@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import LoginButton from './Login';
+import Search from './Search';
 
 
 interface NavLink {
@@ -41,6 +43,8 @@ const NavBar = ({ links = [] }: NavBarProps) => {
             {link.name}
           </Link>
         ))}
+        <LoginButton/>
+        <Search/>
       </div>
 
 
@@ -74,6 +78,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
 
       {/* Menu mobile */}
       {isOpen && (
+        
         <div className="absolute top-full left-0 w-full mt-0 bg-bianco rounded-none z-50">
           <div className="flex flex-col items-center space-y-1 p-4 text-center">
             {links.map((link) => (
@@ -88,8 +93,12 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                 {link.name}
               </Link>
             ))}
+            <LoginButton/>
+            
           </div>
         </div>
+        
+        
       )}
     </header>
   );
