@@ -1,18 +1,6 @@
 import { NextResponse } from "next/server";
-import Event from '../../(models)/Event'
+import Event, { IEvent } from '../../(models)/Event'
 
-export interface IEvent {
-    _id: string;
-    title?: string;
-    longTitle?: string;
-    image?: string;
-    tag?: string[];
-    description?: string;
-    date?: string;
-    price?: string;
-    location?: string;
-
-}
 
 export async function GET() {
     try {

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export interface IEvent {
+export interface ICulture {
     _id: string;
     title?: string;
     longTitle?: string;
@@ -16,7 +16,7 @@ export interface IEvent {
 mongoose.connect(process.env.MONGODB_URI!);
 mongoose.Promise = global.Promise;
 
-const eventSchema = new Schema({
+const cultureSchema = new Schema({
     _id: { type: String, required: true },
     title: { type: String, required: true },
     longTitle: { type: String, required: true },
@@ -28,6 +28,6 @@ const eventSchema = new Schema({
     location: { type: String, required: false },
 });
 
-const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);
+const Culture = mongoose.models.Culture || mongoose.model("Culture", cultureSchema);
 
-export default Event;
+export default Culture;
