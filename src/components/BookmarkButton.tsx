@@ -1,11 +1,18 @@
 import React from 'react';
 
-function Button() {
+interface BookmarkButtonProps {
+  color: string;
+}
+
+const BookmarkButton: React.FC<BookmarkButtonProps> = ({ color }) => {
   return (
-    <button className="flex items-center justify-between gap-3 px-3 py-2 border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold">
-      <span>Salva</span>
+    <button
+      className="p-1"
+      style={{ backgroundColor: color }}
+      title="Bookmark Button"
+    >
       <svg
-        className="w-5 h-5 text-rosso hover:text-bianco" 
+        className="w-4 h-4 text-white" 
         fill="currentColor"
         viewBox="0 0 20 20"
         xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +21,6 @@ function Button() {
       </svg>
     </button>
   );
-}
+};
 
-export default Button;
+export default BookmarkButton;
