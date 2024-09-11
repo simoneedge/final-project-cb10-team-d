@@ -4,10 +4,14 @@ import { useEffect, useState } from 'react';
 import Card from '@/src/components/Card';
 
 interface Event {
-  id: string;
-  title: string;
-  description: string;
-  imageSrc: string;
+  _id: string;
+  title?: string;
+  image?: string;
+  tag?: string[];
+  description?: string;
+  date?: string;
+  price?: string;
+  location?: string;
   color: string;
 }
 
@@ -16,17 +20,17 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const fetchedEvent = {
-      id: params.id,
+      _id: params.id,
       title: 'Event Title',
       description: 'Detailed description of the event.',
-      imageSrc: 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
+      image: 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
       color: '#4E614E',
     };
     setEvent(fetchedEvent);
   }, [params.id]);
 
   if (!event) {
-    return <div>Loading...</div>;
+    return <div>Caricamento...</div>;
   }
 
   return (
@@ -34,7 +38,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       <Card
         backgroundColor={event.color}
         title={event.title}
-        imageSrc={event.imageSrc}
+        imageSrc={event.image}
       />
       <p className="mt-4">{event.description}</p>
     </div>

@@ -11,7 +11,7 @@ export default function FoodPage() {
 
   
   const handleArrowClick = (id: string) => {
-    router.push(`/articles/${id}`);
+    router.push(`/events/${id}`);
   };
 
   return (
