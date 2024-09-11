@@ -37,7 +37,7 @@ const HomePage = () => {
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
       {/* <NavBar /> */}
       <main className="flex flex-col items-center justify-center flex-grow space-y-4">
-        <Button label="prova"/>
+        <Button/>
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {events.length > 0 ? (
           events.map((event, index) => (
