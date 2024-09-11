@@ -1,4 +1,4 @@
-// import { labels } from "@/data/labels"
+import { labels } from "@/data/labels"
 
 interface ErrorComponentsProps {
     children?: React.ReactNode;
@@ -17,7 +17,7 @@ const ErrorComponents = ({ children, message }: ErrorComponentsProps) => {
                 </svg>
 
                 <h1 className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                    {/* {labels.errorHuHo} */}
+                    {labels.errorHuHo}
                 </h1>
 
                 <p className="mt-4 text-gray-500">{message}</p>
