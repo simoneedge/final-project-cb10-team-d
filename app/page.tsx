@@ -7,14 +7,8 @@ import NavBar from '@/src/components/NavBar';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { links } from "@/data/nav_link";
 
-const links = [
-  { name: 'Home', href: '/' },
-  { name: 'Cultura', href: '/cultura' },
-  { name: 'Food', href: '/food' },
-  { name: 'Attività', href: '/attivita' },
-  { name: 'Proponi Evento', href: '/propose' },
-];
 
 const HomePage = () => {
   return (
