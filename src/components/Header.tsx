@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import NavBar from './NavBar';
+import { links } from '@/data/nav_link';
 
 
 const Header = () => {
@@ -14,7 +15,7 @@ const Header = () => {
             height={50} 
           />
         </div>
-        <NavBar />
+        <NavBar links={links} />
       </div>
     </header>
   );

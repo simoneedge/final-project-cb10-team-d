@@ -7,13 +7,12 @@ import NavBar from '@/src/components/NavBar';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { links } from "@/data/nav_link";
+
 
 
 const HomePage = () => {
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
-      <NavBar links={links} />
       <main className="flex flex-col items-center justify-center flex-grow space-y-4">
         <Button/>
         <Card backgroundColor="#4E614E" title='Pasta di mandorle' imageSrc='https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'/>
