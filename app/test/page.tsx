@@ -2,7 +2,7 @@ import { IFood } from "../(models)/Foods";
 
 const getData = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/foods', { cache: "no-cache" });
+    const res = await fetch('http://localhost:3000/api/activities', { cache: "no-cache" });
     const data = await res.json();
     return data;
   } catch (error: any) {
@@ -12,14 +12,14 @@ const getData = async () => {
 }
 
 export default async function Home() {
-  let { foods } = await getData();
-  console.log("Cultures in frontend:", foods);  // Log per debug
+  let { activities } = await getData();
+  console.log("Cultures in frontend:", activities);  // Log per debug
   let errorMessage: string | null = null;
 
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      {foods.map((e: IFood) => (
+      {activities.map((e: IFood) => (
         <div key={e._id} className="p-4 bg-white shadow-md rounded-lg">
           <h2>{e.title || 'No title available'}</h2>
           <h3>{e.longTitle || 'No long title available'}</h3>
