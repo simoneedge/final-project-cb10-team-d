@@ -15,7 +15,7 @@ const Footer = () => {
       
       <div className="w-full border-b-4 border-rosso"></div>
       <div className="bg-giallo flex justify-between items-center w-full py-4 px-4">
-        <p className="text-xs text-gray-700 scale-80 ">
+        <p className="text-xs text-gray-700 scale-80">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </p>
         <div className="flex space-x-3">
@@ -25,7 +25,7 @@ const Footer = () => {
             width={20}
             height={20}
             className="cursor-pointer"
-            style={{ filter: 'invert(20%) sepia(60%) saturate(2000%) hue-rotate(0deg) brightness(90%) contrast(110%)' }}
+            style={{ filter: 'invert(20%) sepia(70%) saturate(3000%) hue-rotate(-10deg) brightness(90%) contrast(120%)' }}
           />
           <Image
             src="/fb.svg" 
@@ -33,7 +33,7 @@ const Footer = () => {
             width={20}
             height={20}
             className="cursor-pointer"
-            style={{ filter: 'invert(20%) sepia(60%) saturate(2000%) hue-rotate(0deg) brightness(90%) contrast(110%)' }} 
+            style={{ filter: 'invert(20%) sepia(70%) saturate(3000%) hue-rotate(-10deg) brightness(90%) contrast(120%)' }} 
           />
           <Image
             src="/youtube.svg" 
@@ -41,7 +41,7 @@ const Footer = () => {
             width={20}
             height={20}
             className="cursor-pointer"
-            style={{ filter: 'invert(20%) sepia(60%) saturate(2000%) hue-rotate(0deg) brightness(90%) contrast(110%)' }} 
+            style={{ filter: 'invert(20%) sepia(70%) saturate(3000%) hue-rotate(-10deg) brightness(90%) contrast(120%)' }} 
           />
         </div>
       </div>
