@@ -36,6 +36,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
   const event = await getData(id);
 
   return (
+    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
     <div className="p-4">
       <Card
         backgroundColor={event?.color}
@@ -58,6 +59,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
         </p>
       </div>
     </div>
+  </div>
   );
 
 };

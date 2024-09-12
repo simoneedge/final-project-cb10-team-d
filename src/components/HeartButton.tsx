@@ -8,7 +8,9 @@ const HeartButton: React.FC<HeartButtonProps> = ({ color }) => {
   return (
     <button
       className="p-1"
-      style={{ backgroundColor: color }} 
+      style={{ backgroundColor: color,
+        marginTop: -10
+       }} 
       title="Heart Button"
     >
       <svg

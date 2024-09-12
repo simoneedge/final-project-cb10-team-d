@@ -44,6 +44,8 @@ body {
   position: relative;
   background-color: #822225;
   padding-top: 10px;
+  padding-right: 40px;
+  padding-bottom: 20px;
 }
 
 .diagonal-line-top {
