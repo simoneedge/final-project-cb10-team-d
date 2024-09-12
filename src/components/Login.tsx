@@ -56,7 +56,7 @@ function LoginButton() {
             <div className="mt-4 w-full m-0 p-0">
               <p className="text-gray-400">
                 Non sei ancora registrato?{' '}
-                <a href="/register" className="text-verde font-bold hover:underline">
+                <a href="/signup" className="text-verde font-bold hover:underline">
                   Registrati
                 </a>
               </p>
