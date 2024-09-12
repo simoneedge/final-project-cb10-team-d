@@ -12,7 +12,6 @@ interface CardProps {
   imageSrc: string | undefined;
   size?: "small" | "large";
   link?: React.ReactNode; // Link come prop opzionale
-
 }
 
 const Card: React.FC<CardProps> = ({
