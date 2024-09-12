@@ -3,8 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IEvent {
     color: string;
     _id: number;
-/*     _id: string;
- */    title?: string;
+    title?: string;
     longTitle?: string;
     image?: string;
     tag?: string[];
@@ -12,15 +11,14 @@ export interface IEvent {
     date?: string;
     price?: string;
     location?: string;
-
 }
 
 mongoose.connect(process.env.MONGODB_URI!);
 mongoose.Promise = global.Promise;
 
 const eventSchema = new Schema({
-/*     _id: { type: String, required: true },
- */    title: { type: String, required: true },
+    /*     _id: { type: String, required: true }, */
+    title: { type: String, required: true },
     longTitle: { type: String },
     image: { type: String },
     tag: { type: [String] },  // Modifica qui per essere un array di stringhe
