@@ -1,8 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IEvent {
-    _id: string;
-    title?: string;
+/*     _id: string;
+ */    title?: string;
     longTitle?: string;
     image?: string;
     tag?: string[];
@@ -17,8 +17,8 @@ mongoose.connect(process.env.MONGODB_URI!);
 mongoose.Promise = global.Promise;
 
 const eventSchema = new Schema({
-    _id: { type: String, required: true },
-    title: { type: String, required: true },
+/*     _id: { type: String, required: true },
+ */    title: { type: String, required: true },
     longTitle: { type: String, required: true },
     image: { type: String, required: true },
     tag: { type: [String], required: true },  // Modifica qui per essere un array di stringhe
