@@ -1,6 +1,4 @@
-'use client';  // Assicurati di aggiungere questa direttiva
 
-import { useEffect, useState } from 'react';
 import Card from '@/src/components/Card';
 
 interface Event {
@@ -30,39 +28,13 @@ const getData = async (id: string) => {
   }
 };
 
-const EventDetailPage = ({ params }: { params: { id: string } }) => {
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const EventDetailPage = async ({ params }: { params: { id: string } }) => {
+
 
   const { id } = params;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedEvent = await getData(id);
-        setEvent(fetchedEvent);
-        setLoading(false);
-      } catch (error: any) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
+  const event = await getData(id);
 
-    fetchData();
-  }, [id]);
-
-  if (loading) {
-    return <div>Caricamento...</div>;
-  }
-
-  if (error) {
-    return <div>Errore: {error}</div>;
-  }
-
-  if (!event) {
-    return <div>Evento non trovato</div>;
-  }
 
   return (
     <div className="p-4">
