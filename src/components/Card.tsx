@@ -4,30 +4,31 @@ import React from "react";
 import ArrowButton from "./ArrowButton";
 import BookmarkButton from "./BookmarkButton";
 import HeartButton from "./HeartButton";
+import Link from "next/link";
 
 interface CardProps {
   backgroundColor: string;
   title: string | undefined;
   imageSrc: string | undefined;
-  onArrowClick?: () => void;
   size?: "small" | "large";
+  link?: React.ReactNode; // Link come prop opzionale
+
 }
 
 const Card: React.FC<CardProps> = ({
   backgroundColor,
   title,
   imageSrc,
-  onArrowClick,
   size = "small",
+  link
 }) => {
   const sizeClasses =
     size === "large" ? "max-w-md h-[300px]" : "max-w-xs h-[200px]";
 
   return (
     <div
-      className={`overflow-hidden shadow-lg relative ${
-        size === "large" ? "max-w-md" : "max-w-xs"
-      }`}
+      className={`overflow-hidden shadow-lg relative ${size === "large" ? "max-w-md" : "max-w-xs"
+        }`}
     >
       <div className="relative">
         <div className="clip-path-bottom">
@@ -50,9 +51,14 @@ const Card: React.FC<CardProps> = ({
         <h2 className="text-[16px] font-titolo mt-4">{title}</h2>
         <div
           className="absolute bottom-2 right-2 cursor-pointer"
-          onClick={onArrowClick}
         >
-          <ArrowButton />
+          {link ? (
+            link // Se il Link è passato come prop, renderizzalo
+          ) : (
+            <div>
+              <ArrowButton />
+            </div>
+          )}
         </div>
       </div>
     </div>
