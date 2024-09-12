@@ -1,5 +1,26 @@
-"use client";
+'use client'
 import { useState } from 'react';
+
+const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
+    const accessKey = 'xrl-d5mGda3B79duvjalC99m_jQ00I3MzfOzrkO5ksM'; // Usa la tua Access Key
+    const query = keywords.join('+')
+    const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=1&client_id=${accessKey}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Prendi il primo risultato dall'array
+        if (data.results && data.results.length > 0) {
+            return data.results[0].urls.regular; // URL dell'immagine
+        } else {
+            return ''; // Nessuna immagine trovata
+        }
+    } catch (error) {
+        console.error('Errore nella fetch di Unsplash', error);
+        return '';
+    }
+};
 
 export default function TestPage() {
     const [formData, setFormData] = useState({
@@ -7,7 +28,7 @@ export default function TestPage() {
  */        title: '',
         longTitle: '',
         image: '',
-        tag: [],
+        tag: [] as string[], // Array di stringhe per i tag
         description: '',
         date: '',
         price: '',
@@ -24,13 +45,27 @@ export default function TestPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const keywords = [
+            formData.title,
+            formData.location,
+        ]
+
+        const imageUrl = await fetchUnsplashImage(keywords);
+
+        const updatedFormData = {
+            ...formData,
+            image: imageUrl || formData.image, // Usa l'URL dell'immagine di Unsplash se disponibile, altrimenti lascia il valore attuale
+        };
+        console.log('Request size:', JSON.stringify(updatedFormData).length);
+
         try {
             const response = await fetch('/api/events', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(updatedFormData),
             });
 
             if (response.ok) {

@@ -21,6 +21,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ event: newEvent }, { status: 201 });
 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({ error: 'Failed to create event', details: error }, { status: 500 });
     }
 }
