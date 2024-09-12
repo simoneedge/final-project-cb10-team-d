@@ -46,7 +46,7 @@ const HomePage = () => {
               backgroundColor={event.color || '#4E614E'}
               title={event.title || 'Pasta di mandorle'}
               imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
-              size={index === 2 ? 'large' : 'small'} 
+              size={index === 4 ? 'large' : 'small'} 
               onArrowClick={() => console.log(`Navigating to event ${event._id || index}`)}
             />
           ))
