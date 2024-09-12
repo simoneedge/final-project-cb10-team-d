@@ -1,7 +1,5 @@
-"use client";
 
-import { useEffect, useState } from "react";
-import Card from "@/src/components/Card";
+import Card from '@/src/components/Card';
 
 interface Event {
   _id: string;
@@ -15,51 +13,27 @@ interface Event {
   color: string;
 }
 
-const getData = async () => {
+const getData = async (id: string) => {
   try {
-    const res = await fetch("http://localhost:3000/api/events", {
-      cache: "no-cache",
-    });
+    const res = await fetch(`http://localhost:3000/api/events/${id}`, { cache: 'no-cache' });
 
     if (!res.ok) {
-      throw new Error(
-        `Errore nella richiesta: ${res.status} ${res.statusText}`
-      );
+      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
     }
 
     const data = await res.json();
-    return data;
+    return data.event;  // Assicurati di accedere all'evento specifico
   } catch (error: any) {
-    throw new Error(
-      error.message || "Errore sconosciuto durante il fetch dei dati"
-    );
+    throw new Error(error.message || 'Errore sconosciuto durante il fetch dei dati');
   }
 };
 
-const EventDetailPage = ({ params }: { params: { id: string } }) => {
-  const [event, setEvent] = useState<Event | null>(null);
+const EventDetailPage = async ({ params }: { params: { id: string } }) => {
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const result = await getData();
 
-        const events = Array.isArray(result) ? result : [result];
+  const { id } = params;
 
-        const foundEvent = events.find((ev) => ev._id === params.id);
-
-        setEvent(foundEvent || null);
-      } catch (error) {
-        console.error("Errore nel caricamento dei dati:", error);
-      }
-    };
-
-    fetchEvent();
-  }, [params.id]);
-
-  if (!event) {
-    return <div>Caricamento...</div>;
-  }
+  const event = await getData(id);
 
   return (
     <div className="p-4">
@@ -85,6 +59,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       </div>
     </div>
   );
+
 };
 
 export default EventDetailPage;

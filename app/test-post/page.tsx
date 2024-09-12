@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 export default function TestPage() {
     const [formData, setFormData] = useState({
-        _id: self.crypto.randomUUID(),
-        title: '',
+/*         _id: self.crypto.randomUUID(),
+ */        title: '',
         longTitle: '',
         image: '',
         tag: [],
