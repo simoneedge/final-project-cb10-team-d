@@ -1,20 +1,22 @@
-// src/components/Login.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/firebaseConfig'; // Importa l'istanza auth inizializzata
-import Button from './Button'; // Supponendo che ci sia un componente button riutilizzabile
+import { auth } from '@/firebaseConfig';
+import Button from './Button'; 
+import { toast } from 'react-toastify'; // Importa il toast (adatta se usi un'altra libreria)
 
 const LoginButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -32,14 +34,20 @@ const LoginButton = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsModalOpen(false);
+      toast.success('Login effettuato con successo!'); // Notifica di login avvenuto
     } catch (error) {
-      alert('Errore di accesso, riprova.');
+      toast.error('Errore di accesso, riprova.'); // Notifica di errore
     }
   };
 
   const handleLogout = () => {
     signOut(auth);
+    toast.info('Logout effettuato con successo!'); // Notifica di logout avvenuto
   };
+
+  if (loading) {
+    return null; 
+  }
 
   return (
     <>
