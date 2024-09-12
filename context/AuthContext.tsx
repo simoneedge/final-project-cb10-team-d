@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { getAuth, onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from "@/utils/helpers";
+import { firebaseConfig } from "@/firebaseconfig";
 
 initializeApp(firebaseConfig);
 

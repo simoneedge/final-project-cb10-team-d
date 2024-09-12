@@ -1,15 +1,42 @@
-// app/food/page.tsx
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Card from '@/src/components/Card';
-import Button from '@/src/components/Button';
-import React from 'react';
+import { useRouter } from "next/navigation";
+import Card from "@/src/components/Card";
+import Button from "@/src/components/Button";
+import React, { useEffect, useState } from "react";
+import { IFood } from "../(models)/Foods"; 
+
+const fetchData = async () => {
+  try {
+    const res = await fetch("http://localhost:3000/api/foods", {
+      cache: "no-cache",
+    });
+    const data = await res.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error fetching data:", error.message);
+    throw Error(error.message);
+  }
+};
 
 export default function FoodPage() {
+  const [foods, setFoods] = useState<IFood[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchData();
+        setFoods(data.foods); 
+      } catch (error: any) {
+        setErrorMessage("Failed to load data.");
+      }
+    };
+
+    loadData();
+  }, []);
+
   const handleArrowClick = (id: string) => {
     router.push(`/events/${id}`);
   };
@@ -21,30 +48,16 @@ export default function FoodPage() {
         <Button label="Filtri" />
       </div>
       <div className="space-y-4">
-        <Card
-          backgroundColor="#822225"
-          title="Paste di mandorle"
-          imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('1')}
-        />
-        <Card
-          backgroundColor="#822225"
-          title="Paste di mandorle"
-          imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('2')}
-        />
-        <Card
-          backgroundColor="#822225"
-          title="Paste di mandorle"
-          imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('3')}
-        />
-        <Card
-          backgroundColor="#822225"
-          title="Paste di mandorle"
-          imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('4')}
-        />
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        {foods.map((food) => (
+          <Card
+            key={food._id}
+            backgroundColor="#822225"
+            title={food.title || "No title available"}
+            imageSrc={food.image || "default-image-url"} 
+            onArrowClick={() => handleArrowClick(food._id)}
+          />
+        ))}
       </div>
     </div>
   );
