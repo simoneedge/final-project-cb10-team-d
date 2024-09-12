@@ -30,20 +30,20 @@ const EventForm = ({ onSubmit }: EventFormProps) => {
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold mb-2 text-verde">Contattaci</h2>
+      <h2 className="text-2xl font-titolo mb-2 text-rosso">Contattaci</h2>
       <div className="grid grid-cols-2 gap-4">
         <input
           type="text"
           name="nome"
           placeholder="Nome"
-          className="border p-2 rounded w-full"
+          className="border p-2 w-full"
           required
         />
         <input
           type="text"
           name="cognome"
           placeholder="Cognome"
-          className="border p-2 rounded w-full"
+          className="border p-2 w-full"
           required
         />
       </div>
@@ -51,25 +51,25 @@ const EventForm = ({ onSubmit }: EventFormProps) => {
         type="email"
         name="email"
         placeholder="Email"
-        className="w-full border p-2 rounded"
+        className="w-full border p-2"
         required
       />
       <input
         type="text"
         name="settore"
         placeholder="Settore"
-        className="w-full border p-2 rounded"
+        className="w-full border p-2"
         required
       />
       <textarea
         name="messaggio"
         placeholder="Messaggio"
-        className="w-full border p-2 rounded"
+        className="w-full border p-2"
         required
       ></textarea>
       <button
         type="submit"
-        className="px-4 py-2 bg-rosso text-white rounded hover:bg-rosso-scuro"
+        className="border border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white"
       >
         Invia
       </button>

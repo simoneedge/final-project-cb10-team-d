@@ -8,7 +8,8 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({ color }) => {
   return (
     <button
       className="p-1"
-      style={{ backgroundColor: color }}
+      style={{ backgroundColor: color,
+        marginTop: -10 }}
       title="Bookmark Button"
     >
       <svg

@@ -41,9 +41,10 @@ export default function AttivitaPage() {
   };
 
   return (
+    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold text-giallo">Attività</h1>
+        <h1 className="text-4xl font-titolo text-giallo">Attività</h1>
         <Button label="Filtri" />
       </div>
       <div className="space-y-4">
@@ -59,5 +60,6 @@ export default function AttivitaPage() {
         ))}
       </div>
     </div>
+  </div>
   );
 }

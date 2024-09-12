@@ -21,7 +21,7 @@ function LoginButton() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative rounded-none">
-            <h2 className="text-xl text-rosso font-semibold mb-4">Fai il login</h2>
+            <h2 className="text-2xl text-rosso font-titolo mb-4">Fai il login</h2>
             <p className="mb-4">Inserisci le tue credenziali per accedere.</p>
 
            
@@ -46,7 +46,7 @@ function LoginButton() {
               />
               <button
                 type="submit"
-                className="bg-verde text-white p-2  hover:bg-indigo-700"
+                className="border border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white"
               >
                 Login
               </button>
@@ -56,7 +56,7 @@ function LoginButton() {
             <div className="mt-4 w-full m-0 p-0">
               <p className="text-gray-400">
                 Non sei ancora registrato?{' '}
-                <a href="/register" className="text-verde font-bold hover:underline">
+                <a href="/register" className="text- font-bold hover:underline">
                   Registrati
                 </a>
               </p>
