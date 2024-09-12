@@ -1,16 +1,15 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Card from '@/src/components/Card';
-import Button from '@/src/components/Button';
-import React from 'react';
+import { useRouter } from "next/navigation";
+import Card from "@/src/components/Card";
+import Button from "@/src/components/Button";
+import React from "react";
 
 export default function CulturaPage() {
   const router = useRouter();
 
-
   const handleArrowClick = (id: string) => {
-    router.push(`/events/${id}`); 
+    router.push(`/events/${id}`);
   };
 
   return (
@@ -24,25 +23,25 @@ export default function CulturaPage() {
           backgroundColor="#4E614E"
           title="Paste di mandorle"
           imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('1')}
+          onArrowClick={() => handleArrowClick("1")}
         />
         <Card
           backgroundColor="#4E614E"
           title="Paste di mandorle"
           imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('2')}
+          onArrowClick={() => handleArrowClick("2")}
         />
         <Card
           backgroundColor="#4E614E"
           title="Paste di mandorle"
           imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('3')}
+          onArrowClick={() => handleArrowClick("3")}
         />
         <Card
           backgroundColor="#4E614E"
           title="Paste di mandorle"
           imageSrc="https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-          onArrowClick={() => handleArrowClick('4')}
+          onArrowClick={() => handleArrowClick("4")}
         />
       </div>
     </div>
