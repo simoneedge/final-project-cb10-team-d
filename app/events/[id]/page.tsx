@@ -35,23 +35,31 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
 
   const event = await getData(id);
 
-
   return (
     <div className="p-4">
       <Card
-        backgroundColor={event.color}
-        title={event.title}
-        imageSrc={event.image}
+        backgroundColor={event?.color}
+        title={event?.title}
+        imageSrc={event?.image}
       />
       <p className="mt-4">{event.description}</p>
       <div className="mt-2">
-        <p><strong>Tag:</strong> {event.tag?.join(', ')}</p>
-        <p><strong>Data:</strong> {event.date}</p>
-        <p><strong>Prezzo:</strong> {event.price}</p>
-        <p><strong>Luogo:</strong> {event.location}</p>
+        <p>
+          <strong>Tag:</strong> {event.tag?.join(", ")}
+        </p>
+        <p>
+          <strong>Data:</strong> {event.date}
+        </p>
+        <p>
+          <strong>Prezzo:</strong> {event.price}
+        </p>
+        <p>
+          <strong>Luogo:</strong> {event.location}
+        </p>
       </div>
     </div>
   );
+
 };
 
 export default EventDetailPage;
