@@ -1,29 +1,40 @@
-'use client';
+"use client";
 
-import React from 'react';
-import ArrowButton from './ArrowButton';
-import BookmarkButton from './BookmarkButton';
-import HeartButton from './HeartButton';
+import React from "react";
+import ArrowButton from "./ArrowButton";
+import BookmarkButton from "./BookmarkButton";
+import HeartButton from "./HeartButton";
 
 interface CardProps {
   backgroundColor: string;
-  title: string;
-  imageSrc: string;
+  title: string | undefined;
+  imageSrc: string | undefined;
   onArrowClick?: () => void;
-  size?: 'small' | 'large'; 
+  size?: "small" | "large";
 }
 
-const Card: React.FC<CardProps> = ({ backgroundColor, title, imageSrc, onArrowClick, size = 'small' }) => {
-  const sizeClasses = size === 'large' ? 'max-w-md h-[300px]' : 'max-w-xs h-[200px]';
+const Card: React.FC<CardProps> = ({
+  backgroundColor,
+  title,
+  imageSrc,
+  onArrowClick,
+  size = "small",
+}) => {
+  const sizeClasses =
+    size === "large" ? "max-w-md h-[300px]" : "max-w-xs h-[200px]";
 
   return (
-    <div className={`overflow-hidden shadow-lg relative ${size === 'large' ? 'max-w-md' : 'max-w-xs'}`}>
+    <div
+      className={`overflow-hidden shadow-lg relative ${
+        size === "large" ? "max-w-md" : "max-w-xs"
+      }`}
+    >
       <div className="relative">
         <div className="clip-path-bottom">
           <img
             src={imageSrc}
             alt={title}
-            className={`object-cover w-full ${sizeClasses}`} 
+            className={`object-cover w-full ${sizeClasses}`}
           />
         </div>
         <div className="absolute top-2 right-2 flex space-x-2">
@@ -37,7 +48,10 @@ const Card: React.FC<CardProps> = ({ backgroundColor, title, imageSrc, onArrowCl
       >
         <div className="diagonal-line-top"></div>
         <h2 className="text-[16px] font-titolo mt-4">{title}</h2>
-        <div className="absolute bottom-2 right-2 cursor-pointer" onClick={onArrowClick}>
+        <div
+          className="absolute bottom-2 right-2 cursor-pointer"
+          onClick={onArrowClick}
+        >
           <ArrowButton />
         </div>
       </div>

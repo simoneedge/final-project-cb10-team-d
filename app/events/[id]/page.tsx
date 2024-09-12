@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Card from '@/src/components/Card';
+import { useEffect, useState } from "react";
+import Card from "@/src/components/Card";
 
 interface Event {
   _id: string;
@@ -17,16 +17,22 @@ interface Event {
 
 const getData = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/events', { cache: 'no-cache' });
+    const res = await fetch("http://localhost:3000/api/events", {
+      cache: "no-cache",
+    });
 
     if (!res.ok) {
-      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
+      throw new Error(
+        `Errore nella richiesta: ${res.status} ${res.statusText}`
+      );
     }
 
     const data = await res.json();
     return data;
   } catch (error: any) {
-    throw new Error(error.message || 'Errore sconosciuto durante il fetch dei dati');
+    throw new Error(
+      error.message || "Errore sconosciuto durante il fetch dei dati"
+    );
   }
 };
 
@@ -38,15 +44,13 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       try {
         const result = await getData();
 
-        
         const events = Array.isArray(result) ? result : [result];
 
-        
         const foundEvent = events.find((ev) => ev._id === params.id);
 
         setEvent(foundEvent || null);
       } catch (error) {
-        console.error('Errore nel caricamento dei dati:', error);
+        console.error("Errore nel caricamento dei dati:", error);
       }
     };
 
@@ -60,16 +64,24 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   return (
     <div className="p-4">
       <Card
-        backgroundColor={event.color}
-        title={event.title}
-        imageSrc={event.image}
+        backgroundColor={event?.color}
+        title={event?.title}
+        imageSrc={event?.image}
       />
       <p className="mt-4">{event.description}</p>
       <div className="mt-2">
-        <p><strong>Tag:</strong> {event.tag?.join(', ')}</p>
-        <p><strong>Data:</strong> {event.date}</p>
-        <p><strong>Prezzo:</strong> {event.price}</p>
-        <p><strong>Luogo:</strong> {event.location}</p>
+        <p>
+          <strong>Tag:</strong> {event.tag?.join(", ")}
+        </p>
+        <p>
+          <strong>Data:</strong> {event.date}
+        </p>
+        <p>
+          <strong>Prezzo:</strong> {event.price}
+        </p>
+        <p>
+          <strong>Luogo:</strong> {event.location}
+        </p>
       </div>
     </div>
   );
