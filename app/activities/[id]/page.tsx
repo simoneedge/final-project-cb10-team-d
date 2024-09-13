@@ -42,37 +42,44 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
   const event = await getData(id);
 
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
-      <div className="p-4">
-        <Card
-          key={event?._id}
-          backgroundColor={event?.color}
-          title={event?.title}
-          imageSrc={event?.image}
-        />
-        <p className="mt-4">{event.description}</p>
-        <div className="mt-2">
-          <p>
-            <strong>Tag:</strong> {event.tag?.join(", ")}
-          </p>
-          <p>
-            <strong>Data inizio:</strong> {event.dateStart}
-          </p>
-          <p>
-            <strong>Data fine:</strong> {event.dateEnd}
-          </p>
-          {event.price === "0" ? (
+    <div className="p-5 min-h-screen bg-gray-100">
+      <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto text-black">
+        <div className="flex justify-center items-center">
+          <Card
+            backgroundColor={event?.color}
+            title={event?.title}
+            imageSrc={event?.image}
+          />
+        </div>
+
+        <div className="flex flex-col items-start text-left">
+          <p className="mt-6">{event.description}</p>
+          <div className="mt-8">
             <p>
-              <strong>Prezzo:</strong> Gratuito
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Tag:{" "}
+              </strong>{" "}
+              {event.tag?.join(", ")}
             </p>
-          ) : (
             <p>
-              <strong>Prezzo:</strong> {event.price}€
+              <strong>Data inizio:</strong> {event.dateStart}
             </p>
-          )}
-          <p>
-            <strong>Luogo:</strong> {event.location}
-          </p>
+            <p>
+              <strong>Data fine:</strong> {event.dateEnd}
+            </p>
+            <p>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Prezzo:{" "}
+              </strong>
+              {event.price === "0" ? "Ingresso gratuito" : `â‚¬ ${event.price}`}
+            </p>
+            <p>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Luogo:{" "}
+              </strong>{" "}
+              {event.location}
+            </p>
+          </div>
         </div>
       </div>
     </div>
