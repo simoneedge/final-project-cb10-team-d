@@ -126,11 +126,13 @@ const NavBar = ({ links = [] }: NavBarProps) => {
               </Link>
             ))}
             {userEmail ? (
-              <>
-                <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full">
-                  {userEmail.charAt(0).toUpperCase()}
-                </div>
-                <button onClick={handleLogout} className="text-verde">
+  <>
+    <Link href="/profile">
+      <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+        {userEmail.charAt(0).toUpperCase()}
+      </div>
+    </Link>
+    <button onClick={handleLogout} className="text-verde ml-2">
                   LOGOUT
                 </button>
               </>
