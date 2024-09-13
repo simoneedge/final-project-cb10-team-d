@@ -77,7 +77,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Prezzo:{" "}
               </strong>
-              {event.price === "0" ? "Ingresso gratuito" : `â‚¬ ${event.price}`}
+              {event.price === "0" ? "Ingresso gratuito" : ` ${event.price}`}
             </p>
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
