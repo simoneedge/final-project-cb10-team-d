@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { auth } from '@/firebaseConfig'; 
+import { useRouter } from 'next/navigation'; // Import useRouter
+import { auth } from '@/firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LoginButton from './Login';
 import Search from './Search';
@@ -20,6 +21,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -45,6 +47,8 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const handleLogout = () => {
     signOut(auth).then(() => {
       setUserEmail(null);
+      setActiveItem(null); // Reset the active item when logging out
+      router.push('/'); // Redirect to Home after logout
     });
   };
 
@@ -64,19 +68,19 @@ const NavBar = ({ links = [] }: NavBarProps) => {
           </Link>
         ))}
         {userEmail ? (
-  <>
-    <Link href="/profile">
-      <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
-        {userEmail.charAt(0).toUpperCase()}
-      </div>
-    </Link>
-    <button onClick={handleLogout} className="text-verde ml-2">
-      LOGOUT
-    </button>
-  </>
-) : (
-  <LoginButton />
-)}
+          <>
+            <Link href="/profile">
+              <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+                {userEmail.charAt(0).toUpperCase()}
+              </div>
+            </Link>
+            <button onClick={handleLogout} className="text-verde ml-2">
+              LOGOUT
+            </button>
+          </>
+        ) : (
+          <LoginButton />
+        )}
         <Search />
       </div>
 
@@ -126,13 +130,13 @@ const NavBar = ({ links = [] }: NavBarProps) => {
               </Link>
             ))}
             {userEmail ? (
-  <>
-    <Link href="/profile">
-      <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
-        {userEmail.charAt(0).toUpperCase()}
-      </div>
-    </Link>
-    <button onClick={handleLogout} className="text-verde ml-2">
+              <>
+                <Link href="/profile">
+                  <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+                    {userEmail.charAt(0).toUpperCase()}
+                  </div>
+                </Link>
+                <button onClick={handleLogout} className="text-verde ml-2">
                   LOGOUT
                 </button>
               </>

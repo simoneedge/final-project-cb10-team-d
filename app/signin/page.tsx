@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignIn() {
     const auth = getAuth();
@@ -11,6 +13,7 @@ export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const emailValidation = !email.trim();
     const passwordValidation = !password.trim();
@@ -19,10 +22,21 @@ export default function SignIn() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError(null);
+        setLoading(true);
+
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            router.push("/");
+
+            toast.success('Login effettuato con successo!');
+
+            // Reindirizza alla home dopo 2 secondi
+            setTimeout(() => {
+                router.push('/');
+            }, 2000);
+
         } catch (error) {
+            setLoading(false);
             if (error instanceof Error) {
                 setError(error.message);
             } else {
@@ -57,14 +71,15 @@ export default function SignIn() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <button
-                        className={`bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg transition-colors duration-300 ${formValidation ? "opacity-50 cursor-not-allowed" : ""}`}
-                        disabled={formValidation}
+                        className={`bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg transition-colors duration-300 ${formValidation || loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={formValidation || loading}
                         type="submit"
                     >
-                        Sign In
+                        {loading ? "Signing In..." : "Sign In"}
                     </button>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     );
 }
