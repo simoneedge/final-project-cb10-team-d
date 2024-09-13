@@ -126,7 +126,7 @@ const HomePage = () => {
   }, [events, searchQuery, isFree]);
 
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
+    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <Search onSearch={handleSearch} /> {/* Passa la funzione handleSearch */}
       <SwitchBox
         label={'Gratis'}
@@ -137,7 +137,7 @@ const HomePage = () => {
         label={'oggi'}
         onClick={handleClick}
       />
-      <main className="flex flex-col items-center justify-center flex-grow space-y-4">
+      <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
       <Button />
   {errorMessage && <p className="text-red-500">{errorMessage}</p>}
   {filteredEvents.length > 0 ? (

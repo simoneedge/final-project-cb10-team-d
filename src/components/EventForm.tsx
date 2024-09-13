@@ -65,7 +65,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 text-verde">
       <form className="bg-white p-6 shadow-lg w-full max-w-xl space-y-8" onSubmit={handleSubmit}>
         <select
           name="category"
