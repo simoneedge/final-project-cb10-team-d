@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Import useRouter
-import { auth } from '@/firebaseConfig';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import LoginButton from './Login';
-import Search from './Search';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import useRouter
+import { auth } from "@/firebaseConfig";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import LoginButton from "./Login";
+import Search from "./Search";
 
 interface NavLink {
   name: string;
@@ -48,25 +48,50 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     signOut(auth).then(() => {
       setUserEmail(null);
       setActiveItem(null); // Reset the active item when logging out
-      router.push('/'); // Redirect to Home after logout
+      router.push("/"); // Redirect to Home after logout
     });
   };
 
   return (
     <header className="relative bg-bianco p-4">
       <div className="hidden md:flex space-x-6 items-center">
-        {links.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            onClick={() => handleClick(link.name)}
-            className={`text-verde hover:text-verde hover:font-bold ${
-              activeItem === link.name ? 'font-bold' : ''
-            }`}
-          >
-            {link.name}
-          </Link>
-        ))}
+        {links.map((link) => {
+          if (link.name === "Proponi Evento") {
+            // Se l'utente è autenticato, mostra il link normalmente
+            if (userEmail) {
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => handleClick(link.name)}
+                  className={`text-verde hover:text-verde hover:font-bold ${
+                    activeItem === link.name ? "font-bold" : ""
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              );
+            } else {
+              // Se l'utente non è autenticato, mostra il componente LoginButton
+              return <LoginButton key={`login-${link.name}`} buttonLabel="Proponi evento" redirectTo="/propose" buttonClassName="text-verde hover:text-verde hover:font-bold"/>;
+            }
+          }
+
+          // Rendi normalmente gli altri link
+          return (
+            <Link
+              key={link.name}
+              href={link.href}
+              onClick={() => handleClick(link.name)}
+              className={`text-verde hover:text-verde hover:font-bold ${
+                activeItem === link.name ? "font-bold" : ""
+              }`}
+            >
+              {link.name}
+            </Link>
+          );
+        })}
+
         {userEmail ? (
           <>
             <Link href="/profile">
@@ -123,7 +148,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                 href={link.href}
                 onClick={() => handleClick(link.name)}
                 className={`block text-verde hover:text-verde hover:font-bold ${
-                  activeItem === link.name ? 'font-bold' : 'font-normal'
+                  activeItem === link.name ? "font-bold" : "font-normal"
                 } py-2`}
               >
                 {link.name}

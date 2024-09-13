@@ -44,7 +44,7 @@ export default function CulturaPage() {
     }; */
 
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
+    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-4xl font-titolo text-verde">Cultura</h1>
