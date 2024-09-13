@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { auth } from '@/firebaseConfig'; 
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LoginButton from './Login';
 import Search from './Search';
-
 
 interface NavLink {
   name: string;
@@ -12,12 +13,25 @@ interface NavLink {
 }
 
 interface NavBarProps {
-  links?: NavLink[]; 
+  links?: NavLink[];
 }
 
-const NavBar = ({ links = [] }: NavBarProps) => { 
+const NavBar = ({ links = [] }: NavBarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserEmail(user.email);
+      } else {
+        setUserEmail(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -25,12 +39,18 @@ const NavBar = ({ links = [] }: NavBarProps) => {
 
   const handleClick = (item: string) => {
     setActiveItem(item);
-    setIsOpen(false); 
+    setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    signOut(auth).then(() => {
+      setUserEmail(null);
+    });
   };
 
   return (
     <header className="relative bg-bianco p-4">
-      <div className="hidden md:flex space-x-6">
+      <div className="hidden md:flex space-x-6 items-center">
         {links.map((link) => (
           <Link
             key={link.name}
@@ -43,11 +63,24 @@ const NavBar = ({ links = [] }: NavBarProps) => {
             {link.name}
           </Link>
         ))}
-        <LoginButton/>
-        <Search/>
+        {userEmail ? (
+  <>
+    <Link href="/profile">
+      <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+        {userEmail.charAt(0).toUpperCase()}
+      </div>
+    </Link>
+    <button onClick={handleLogout} className="text-verde ml-2">
+      LOGOUT
+    </button>
+  </>
+) : (
+  <LoginButton />
+)}
+        <Search />
       </div>
 
-
+      {/* Mobile Menu Toggle */}
       <div className="md:hidden flex items-center">
         <button onClick={toggleMenu} className="text-verde focus:outline-none">
           <svg
@@ -76,9 +109,8 @@ const NavBar = ({ links = [] }: NavBarProps) => {
         </button>
       </div>
 
-      {/* Menu mobile */}
+      {/* Mobile Menu */}
       {isOpen && (
-        
         <div className="absolute top-full left-0 w-full mt-0 bg-bianco rounded-none z-50">
           <div className="flex flex-col items-center space-y-1 p-4 text-center">
             {links.map((link) => (
@@ -93,12 +125,20 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                 {link.name}
               </Link>
             ))}
-            <LoginButton/>
-            
+            {userEmail ? (
+              <>
+                <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full">
+                  {userEmail.charAt(0).toUpperCase()}
+                </div>
+                <button onClick={handleLogout} className="text-verde">
+                  LOGOUT
+                </button>
+              </>
+            ) : (
+              <LoginButton />
+            )}
           </div>
         </div>
-        
-        
       )}
     </header>
   );
