@@ -1,5 +1,5 @@
-
-import Card from '@/src/components/Card';
+import Card from "../../../src/components/Card";
+import React from "react";
 
 interface Event {
   _id: string;
@@ -7,7 +7,8 @@ interface Event {
   image?: string;
   tag?: string[];
   description?: string;
-  date?: string;
+  dateStart?: string;
+  dateEnd?: string;
   price?: string;
   location?: string;
   color: string;
@@ -15,23 +16,27 @@ interface Event {
 
 const getData = async (id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/events/${id}`, { cache: 'no-cache' });
+    const res = await fetch(`http://localhost:3000/api/events/${id}`, {
+      cache: "no-cache",
+    });
 
     if (!res.ok) {
-      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
+      throw new Error(
+        `Errore nella richiesta: ${res.status} ${res.statusText}`
+      );
     }
 
     const data = await res.json();
     console.log(data);
-    return data.event;  // Assicurati di accedere all'evento specifico
+    return data.event; // Assicurati di accedere all'evento specifico
   } catch (error: any) {
-    throw new Error(error.message || 'Errore sconosciuto durante il fetch dei dati');
+    throw new Error(
+      error.message || "Errore sconosciuto durante il fetch dei dati"
+    );
   }
 };
 
 const EventDetailPage = async ({ params }: { params: { id: string } }) => {
-
-
   const { id } = params;
 
   const event = await getData(id);
@@ -50,11 +55,20 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
             <strong>Tag:</strong> {event.tag?.join(", ")}
           </p>
           <p>
-            <strong>Data:</strong> {event.date}
+            <strong>Data inizio:</strong> {event.dateStart}
           </p>
           <p>
-            <strong>Prezzo:</strong> {event.price}
+            <strong>Data fine:</strong> {event.dateEnd}
           </p>
+          {event.price === "0" ? (
+            <p>
+              <strong>Prezzo:</strong> Gratuito
+            </p>
+          ) : (
+            <p>
+              <strong>Prezzo:</strong> {event.price}€
+            </p>
+          )}
           <p>
             <strong>Luogo:</strong> {event.location}
           </p>
@@ -62,7 +76,6 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
       </div>
     </div>
   );
-
 };
 
 export default EventDetailPage;
