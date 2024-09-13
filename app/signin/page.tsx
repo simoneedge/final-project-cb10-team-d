@@ -30,7 +30,7 @@ export default function SignIn() {
 
             toast.success('Login effettuato con successo!');
 
-            // Reindirizza alla home dopo 2 secondi
+            // Reindirizza alla home 
             setTimeout(() => {
                 router.push('/');
             }, 2000);
