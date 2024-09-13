@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-function Search() {
+interface SearchProps {
+  onSearch: (query: string) => void; // Aggiungi la prop per la funzione di ricerca
+}
+
+function Search({ onSearch }: SearchProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState(''); // Stato locale per l'input
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    onSearch(e.target.value); // Esegui la ricerca quando l'input cambia
+  };
 
   return (
     <div className="relative">
@@ -11,6 +21,8 @@ function Search() {
         <input
           type="text"
           placeholder="Cerca..."
+          value={query}
+          onChange={handleChange}
           className="flex-1 border-none outline-none p-1 text-sm h-4"
         />
         <button className="bg-transparent border-none cursor-pointer p-1">
@@ -30,6 +42,8 @@ function Search() {
           <input
             type="text"
             placeholder="Cerca..."
+            value={query}
+            onChange={handleChange}
             className="absolute left-0 w-full border-none outline-none p-1 text-sm"
             style={{ paddingLeft: '2rem' }}
           />
