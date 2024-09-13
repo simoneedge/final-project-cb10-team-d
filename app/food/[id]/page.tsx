@@ -62,10 +62,16 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
               {event.tag?.join(", ")}
             </p>
             <p>
-              <strong>Data inizio:</strong> {event.dateStart}
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Data inizio:
+              </strong>{" "}
+              {event.dateStart}
             </p>
             <p>
-              <strong>Data fine:</strong> {event.dateEnd}
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Data fine:
+              </strong>{" "}
+              {event.dateEnd}
             </p>
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
