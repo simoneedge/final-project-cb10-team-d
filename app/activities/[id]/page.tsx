@@ -1,82 +1,64 @@
-import Card from "../../../src/components/Card";
-import React from "react";
+"use client";
 
-interface Event {
-  _id: string;
-  title?: string;
-  image?: string;
-  tag?: string[];
-  description?: string;
-  dateStart?: string;
-  dateEnd?: string;
-  price?: string;
-  location?: string;
-  color: string;
-}
+import Card from "@/src/components/Card";
+import Button from "@/src/components/Button";
+import React, { useEffect, useState } from "react";
+import { IActivity } from "../(models)/Activities";
+import Link from "next/link";
+import ArrowButton from "@/src/components/ArrowButton";
 
-const getData = async (id: string) => {
+const fetchData = async (): Promise<{ activities: IActivity[] }> => {
   try {
-    const res = await fetch(`http://localhost:3000/api/activities/${id}`, {
+    const res = await fetch("http://localhost:3000/api/activities", {
       cache: "no-cache",
     });
-
-    if (!res.ok) {
-      throw new Error(
-        `Errore nella richiesta: ${res.status} ${res.statusText}`
-      );
-    }
-
     const data = await res.json();
-    console.log(data);
-    return data.event; // Assicurati di accedere all'evento specifico
+    return data;
   } catch (error: any) {
-    throw new Error(
-      error.message || "Errore sconosciuto durante il fetch dei dati"
-    );
+    console.error("Error fetching data:", error.message);
+    throw Error(error.message);
   }
 };
 
-const EventDetailPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+export default function AttivitaPage() {
+  const [activities, setActivities] = useState<IActivity[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const event = await getData(id);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchData();
+        setActivities(data.activities);
+      } catch (error: any) {
+        setErrorMessage("Failed to load data.");
+      }
+    };
+
+    loadData();
+  }, []);
+
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
       <div className="p-4">
-        <Card
-          key={event?._id}
-          backgroundColor={event?.color}
-          title={event?.title}
-          imageSrc={event?.image}
-        />
-        <p className="mt-4">{event.description}</p>
-        <div className="mt-2">
-          <p>
-            <strong>Tag:</strong> {event.tag?.join(", ")}
-          </p>
-          <p>
-            <strong>Data inizio:</strong> {event.dateStart}
-          </p>
-          <p>
-            <strong>Data fine:</strong> {event.dateEnd}
-          </p>
-          {event.price === "0" ? (
-            <p>
-              <strong>Prezzo:</strong> Gratuito
-            </p>
-          ) : (
-            <p>
-              <strong>Prezzo:</strong> {event.price}€
-            </p>
-          )}
-          <p>
-            <strong>Luogo:</strong> {event.location}
-          </p>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-4xl font-titolo text-giallo">Attività</h1>
+          <Button label="Filtri" />
+        </div>
+        <div className="space-y-4">
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          {activities.map((activity) => (
+            <Card
+              key={activity._id}
+              backgroundColor="#F2B85A"
+              title={activity.title || "No title available"}
+              imageSrc={activity.image || "default-image-url"}
+              link={<Link href={`/activities/${activity._id}`}><ArrowButton /></Link>}
+
+            />
+          ))}
         </div>
       </div>
     </div>
   );
-};
-
-export default EventDetailPage;
+}

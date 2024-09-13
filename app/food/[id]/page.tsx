@@ -80,3 +80,4 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
 };
 
 export default EventDetailPage;
+

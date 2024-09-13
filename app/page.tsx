@@ -138,23 +138,23 @@ const HomePage = () => {
         onClick={handleClick}
       />
       <main className="flex flex-col items-center justify-center flex-grow space-y-4">
-        <Button />
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event, index) => (
-            <Card
-              key={event._id || index}
-              backgroundColor={event.color || '#4E614E'}
-              title={event.title || 'Pasta di mandorle'}
-              imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
-              size={index === 4 ? 'large' : 'small'}
-              link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
-            />
-          ))
-        ) : (
-          <p>No events found...</p> // Messaggio se non ci sono eventi corrispondenti
-        )}
-      </main>
+      <Button />
+  {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+  {filteredEvents.length > 0 ? (
+    filteredEvents.map((event, index) => (
+      <Card
+        key={event._id || index}
+        backgroundColor={event.color || '#4E614E'}
+        title={event.title || 'Pasta di mandorle'}
+        imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
+        size={(index + 1) % 5 === 0 ? 'large' : 'small'} // Ogni quinta card diventa large
+        link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
+      />
+    ))
+  ) : (
+    <p>No events found...</p> // Messaggio se non ci sono eventi corrispondenti
+  )}
+</main>
       <ScrollToTopButton />
     </div>
   );
