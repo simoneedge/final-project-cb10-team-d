@@ -8,7 +8,8 @@ export interface IEvent {
     image?: string;
     tag?: string[];
     description?: string;
-    date?: string;
+    dateStart?: string;
+    dateEnd?: string;
     price?: string;
     location?: string;
 }
@@ -23,7 +24,8 @@ const eventSchema = new Schema({
     image: { type: String },
     tag: { type: [String] },  // Modifica qui per essere un array di stringhe
     description: { type: String },
-    date: { type: String },
+    dateStart: { type: String },
+    dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
 });
