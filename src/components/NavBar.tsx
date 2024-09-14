@@ -19,7 +19,7 @@ interface NavBarProps {
 
 const NavBar = ({ links = [] }: NavBarProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [activeItem, setActiveItem] = useState<string | null>(links[0]?.name);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter(); // Initialize useRouter
 
@@ -27,8 +27,10 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
+        setActiveItem(links[0]?.name);
       } else {
         setUserEmail(null);
+        setActiveItem(links[0]?.name);
       }
     });
 
@@ -47,7 +49,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const handleLogout = () => {
     signOut(auth).then(() => {
       setUserEmail(null);
-      setActiveItem(null); // Reset the active item when logging out
+      setActiveItem(links[0]?.name); // Reset the active item to "Home" after logging out
       router.push("/"); // Redirect to Home after logout
     });
   };
