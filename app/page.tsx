@@ -147,7 +147,7 @@ const HomePage = () => {
         backgroundColor={event.color || '#4E614E'}
         title={event.title || 'Pasta di mandorle'}
         imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
-        size={(index + 1) % 5 === 0 ? 'large' : 'small'} // Ogni quinta card diventa large
+        size={(index + 1) % 4 === 0 ? 'large' : 'small'} // Ogni quinta card diventa large
         link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
       />
     ))
