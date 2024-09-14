@@ -1,17 +1,23 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Importa useRouter per gestire il redirect
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebaseConfig';
 import Button from './Button'; 
-import { toast } from 'react-toastify'; // Importa il toast (adatta se usi un'altra libreria)
+import { toast } from 'react-toastify'; 
 
-const LoginButton = () => {
+const LoginButton = ({ 
+  buttonLabel = "ACCEDI", 
+  buttonClassName = "text-rosso hover:font-bold",
+  redirectTo = '/' // Valore di default per il redirect dopo il login
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter(); // Inizializza useRouter per gestire la navigazione
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -34,15 +40,16 @@ const LoginButton = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsModalOpen(false);
-      toast.success('Login effettuato con successo!'); // Notifica di login avvenuto
+      toast.success('Login effettuato con successo!');
+      router.push(redirectTo); // Effettua il redirect alla pagina specificata
     } catch (error) {
-      toast.error('Errore di accesso, riprova.'); // Notifica di errore
+      toast.error('Errore di accesso, riprova.');
     }
   };
 
   const handleLogout = () => {
     signOut(auth);
-    toast.info('Logout effettuato con successo!'); // Notifica di logout avvenuto
+    toast.info('Logout effettuato con successo!');
   };
 
   if (loading) {
@@ -51,11 +58,11 @@ const LoginButton = () => {
 
   return (
     <>
-      {isLoggedIn ? (
-        <Button label="LOGOUT" onClick={handleLogout} className="text-rosso hover:font-bold" />
-      ) : (
-        <Button label="ACCEDI" onClick={openModal} className="text-rosso hover:font-bold" />
-      )}
+      <Button 
+        label={isLoggedIn ? "LOGOUT" : buttonLabel} 
+        onClick={isLoggedIn ? handleLogout : openModal} 
+        className={isLoggedIn ? "text-rosso hover:font-bold" : buttonClassName} 
+      />
       
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">

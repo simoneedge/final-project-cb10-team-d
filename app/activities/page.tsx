@@ -3,9 +3,9 @@
 import Card from "@/src/components/Card";
 import Button from "@/src/components/Button";
 import React, { useEffect, useState } from "react";
-import { IActivity } from "../(models)/Activities";
+import { IActivity } from "@/app/(models)/Activities";
 import Link from "next/link";
-import ArrowButton from "@/src/components/ArrowButton";
+import ArrowButton from "@../../../src/components/ArrowButton";
 
 const fetchData = async (): Promise<{ activities: IActivity[] }> => {
   try {
@@ -37,9 +37,8 @@ export default function AttivitaPage() {
     loadData();
   }, []);
 
-
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
+    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-4xl font-titolo text-giallo">Attività</h1>
@@ -50,11 +49,14 @@ export default function AttivitaPage() {
           {activities.map((activity) => (
             <Card
               key={activity._id}
-              backgroundColor="#F2B85A"
+              backgroundColor={activity.color}
               title={activity.title || "No title available"}
               imageSrc={activity.image || "default-image-url"}
-              link={<Link href={`/activities/${activity._id}`}><ArrowButton /></Link>}
-
+              link={
+                <Link href={`/activities/${activity._id}`}>
+                  <ArrowButton />
+                </Link>
+              }
             />
           ))}
         </div>

@@ -126,7 +126,7 @@ const HomePage = () => {
   }, [events, searchQuery, isFree]);
 
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
+    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <Search onSearch={handleSearch} /> {/* Passa la funzione handleSearch */}
       <SwitchBox
         label={'Gratis'}
@@ -137,24 +137,24 @@ const HomePage = () => {
         label={'oggi'}
         onClick={handleClick}
       />
-      <main className="flex flex-col items-center justify-center flex-grow space-y-4">
-        <Button />
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event, index) => (
-            <Card
-              key={event._id || index}
-              backgroundColor={event.color || '#4E614E'}
-              title={event.title || 'Pasta di mandorle'}
-              imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
-              size={index === 4 ? 'large' : 'small'}
-              link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
-            />
-          ))
-        ) : (
-          <p>No events found...</p> // Messaggio se non ci sono eventi corrispondenti
-        )}
-      </main>
+      <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
+      <Button />
+  {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+  {filteredEvents.length > 0 ? (
+    filteredEvents.map((event, index) => (
+      <Card
+        key={event._id || index}
+        backgroundColor={event.color || '#4E614E'}
+        title={event.title || 'Pasta di mandorle'}
+        imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
+        size={(index + 1) % 4 === 0 ? 'large' : 'small'} // Ogni quinta card diventa large
+        link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
+      />
+    ))
+  ) : (
+    <p>No events found...</p> // Messaggio se non ci sono eventi corrispondenti
+  )}
+</main>
       <ScrollToTopButton />
     </div>
   );
