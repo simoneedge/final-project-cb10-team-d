@@ -146,7 +146,11 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       {isOpen && (
         <div className="absolute top-full left-0 w-full mt-0 bg-bianco rounded-none z-50">
           <div className="flex flex-col items-center space-y-1 p-4 text-center">
-            {links.map((link) => (
+            {links.map((link) => {
+               if (link.name === "Proponi Evento") {
+                // Se l'utente è autenticato, mostra il link normalmente
+                if (userEmail) {
+                  return (
               <Link
                 key={link.name}
                 href={link.href}
@@ -157,7 +161,27 @@ const NavBar = ({ links = [] }: NavBarProps) => {
               >
                 {link.name}
               </Link>
-            ))}
+            );
+          } else {
+            // Se l'utente non è autenticato, mostra il componente LoginButton
+            return <LoginButton key={`login-${link.name}`} buttonLabel="Proponi evento" redirectTo="/propose" buttonClassName="text-verde hover:text-verde hover:font-bold"/>;
+          }
+        }
+
+        // Rendi normalmente gli altri link
+        return (
+          <Link
+            key={link.name}
+            href={link.href}
+            onClick={() => handleClick(link.name)}
+            className={`text-verde hover:text-verde hover:font-bold ${
+              activeItem === link.name ? "font-bold" : ""
+            }`}
+          >
+            {link.name}
+          </Link>
+        );
+      })}
             {userEmail ? (
               <>
                 <Link href="/profile">
