@@ -7,6 +7,7 @@ import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import LoginButton from "./Login";
 import Search from "./Search";
+import { toast } from 'react-toastify'; 
 
 interface NavLink {
   name: string;
@@ -50,7 +51,8 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     signOut(auth).then(() => {
       setUserEmail(null);
       setActiveItem(links[0]?.name); // Reset the active item to "Home" after logging out
-      router.push("/"); // Redirect to Home after logout
+      router.push("/");// Redirect to Home after logout
+      toast.info('Logout effettuato con successo!'); 
     });
   };
 
