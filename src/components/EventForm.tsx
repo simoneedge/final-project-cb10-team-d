@@ -12,7 +12,7 @@ interface EventFormProps {
     dateEnd: string;
     price: string;
     location: string;
-    category: string; 
+    category: string;
   };
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   onTagChange: (tags: string[]) => void;
@@ -55,12 +55,12 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
     // Converte le date prima di inviarle
     const formattedData = {
       ...formData,
-      dateStart: formatDate(formData.dateStart), 
-      dateEnd: formatDate(formData.dateEnd),     
+      dateStart: formatDate(formData.dateStart),
+      dateEnd: formatDate(formData.dateEnd),
     };
 
     // Invia il form con le date formattate
-    onSubmit(e); 
+    onSubmit(e);
     console.log('Dati inviati:', formattedData); //debug
   };
 
@@ -111,7 +111,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
         <fieldset className="border p-4 rounded">
           <legend className="font-bold">Seleziona uno o più tag:</legend>
           <div className="flex flex-wrap gap-4">
-            {["concerti", "festival", "arte", "moda", "mostra", "workshop", "teatro", "spettacolo", "ristorante", "fiera", "sagra", "tradizione"].map((tag) => (
+            {["concerti", "festival", "arte", "moda", "mostra", "workshop", "teatro", "spettacolo", "ristorante", "fiera", "sagra", "tradizione", 'famiglie', 'ragazzi'].map((tag) => (
               <label key={tag} className="inline-flex items-center w-1/2 md:w-1/5">
                 <input
                   type="checkbox"
