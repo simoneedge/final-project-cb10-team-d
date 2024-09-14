@@ -16,8 +16,8 @@ export async function POST(req: Request) {
     try {
         const body: IEvent = await req.json();
         const newEvent = new Event(body);
-        await newEvent.save();
 
+        await newEvent.save();
         return NextResponse.json({ event: newEvent }, { status: 201 });
 
     } catch (error) {

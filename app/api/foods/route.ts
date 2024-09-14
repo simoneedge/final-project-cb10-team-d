@@ -12,3 +12,17 @@ export async function GET() {
         return NextResponse.json({ error }, { status: 500 })
     }
 }
+
+export async function POST(req: Request) {
+    try {
+        const body: IFood = await req.json();
+        const newEvent = new Food(body);
+
+        await newEvent.save();
+        return NextResponse.json({ event: newEvent }, { status: 201 });
+
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({ error: 'Failed to create event', details: error }, { status: 500 });
+    }
+}

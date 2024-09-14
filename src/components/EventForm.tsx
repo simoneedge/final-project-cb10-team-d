@@ -75,9 +75,9 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
           required
         >
           <option value="">Seleziona Categoria</option>
-          <option value="cultura">Cultura</option>
-          <option value="food">Food</option>
-          <option value="attività">Attività</option>
+          <option value="cultures">Cultura</option>
+          <option value="foods">Foods</option>
+          <option value="activities">Attività</option>
         </select>
         <div className="grid grid-cols-2 gap-4">
           <input

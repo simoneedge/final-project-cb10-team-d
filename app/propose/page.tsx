@@ -27,7 +27,7 @@ const formatDate = (date: string) => {
   return `${day}-${month}-${year}`;
 };
 
-export default function TestPage() {
+export default function ProposePage() {
   const [formData, setFormData] = useState({
     title: '',
     image: '',
@@ -37,7 +37,7 @@ export default function TestPage() {
     dateEnd: '',
     price: '',
     location: '',
-    category: '', 
+    category: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -57,44 +57,61 @@ export default function TestPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    
+
+
     const formattedData = {
       ...formData,
       dateStart: formatDate(formData.dateStart),
       dateEnd: formatDate(formData.dateEnd),
     };
-  
+
     // Debug: Controllo delle date formattate dd-mm-yyyy
-    console.log('Formatted Date Start:', formattedData.dateStart); 
+    console.log('Formatted Date Start:', formattedData.dateStart);
     console.log('Formatted Date End:', formattedData.dateEnd);
-  
+
+    // Costruisce dinamicamente l'URL dell'API in base alla categoria
+    const apiEndpointCategory = `/api/${formData.category}`;
+    console.log('API Endpoint:', apiEndpointCategory);
+    const apiEndpointEvents = '/api/events';
+
     const keywords = [formData.title, formData.location];
     const imageUrl = await fetchUnsplashImage(keywords);
-  
+
     const finalFormData = {
       ...formattedData,
       image: imageUrl || formData.image,
     };
-  
-    // Debug: Verifica dei dati finali inviati
-    console.log('Final Form Data:', finalFormData);
-    console.log('Request size:', JSON.stringify(finalFormData).length);
-  
+
     try {
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(finalFormData),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Event created:', data);
+      // Eseguiamo entrambe le richieste POST contemporaneamente
+      const [responseCategory, responseEvents] = await Promise.all([
+        fetch(apiEndpointCategory, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(finalFormData),
+        }),
+
+        fetch(apiEndpointEvents, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(finalFormData),
+        }),
+      ]);
+
+
+
+      // Gestione delle risposte
+      if (responseCategory.ok && responseEvents.ok) {
+        const dataCategory = await responseCategory.json();
+        const dataEvents = await responseEvents.json();
+        console.log('Event created in category:', dataCategory);
+        console.log('Event created in events:', dataEvents);
       } else {
-        console.error('Failed to create event');
+        console.error('Failed to create event in one or both APIs');
       }
     } catch (error) {
       console.error('Error creating event', error);
