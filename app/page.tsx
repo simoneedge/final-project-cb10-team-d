@@ -9,6 +9,8 @@ import Link from 'next/link';
 import ArrowButton from '@/src/components/ArrowButton';
 import Filter from '@/src/components/Filter';
 import { formattedDate } from '@/data/formattDate';
+import { useRouter } from 'next/router';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const getData = async (): Promise<{ events: IEvent[] }> => {
   try {
@@ -30,7 +32,24 @@ const HomePage = () => {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
 
+  const [user, setUser] = useState<any>(null); // Stato per memorizzare l'utente Firebase
+
   useEffect(() => {
+    // Firebase: Controlla se l'utente è autenticato
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser); // Imposta l'utente loggato
+      } else {
+        setUser(null); // Nessun utente loggato
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup al termine
+  }, []);
+
+  useEffect(() => {
+
     const fetchData = async () => {
       try {
         const data = await getData();
@@ -135,6 +154,7 @@ const HomePage = () => {
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event, index) => (
             <Card
+              eventId={event._id}
               key={event._id || index}
               backgroundColor={event.color || '#4E614E'}
               title={event.title || 'Pasta di mandorle'}

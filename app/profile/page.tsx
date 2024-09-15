@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; 
-import { auth } from '@/firebaseConfig'; 
+import { useRouter } from 'next/navigation';
+import { auth } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Link from 'next/link';
+import HeartButton from '@/src/components/HeartButton';
+import BookmarkButton from '@/src/components/BookmarkButton';
+import ArrowButton from '@/src/components/ArrowButton';
 
 interface Card {
   id: number;
@@ -15,7 +18,7 @@ interface Card {
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
-  const [showAccordion, setShowAccordion] = useState(false); 
+  const [showAccordion, setShowAccordion] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,16 +26,17 @@ const ProfilePage = () => {
       if (user) {
         setUserEmail(user.email);
       } else {
-       
+
         router.push('/');
       }
     });
 
-   
+
     const fetchCards = async () => {
       try {
-        const response = await fetch('/api/cards'); 
+        const response = await fetch('/api/profiles');
         const data = await response.json();
+        console.log(data);
         setCards(data);
       } catch (error) {
         console.error('Errore nel recupero delle card:', error);
@@ -44,7 +48,7 @@ const ProfilePage = () => {
     return () => unsubscribe();
   }, [router]);
 
- 
+
   const toggleAccordion = () => {
     setShowAccordion(!showAccordion);
   };
@@ -114,7 +118,7 @@ const ProfilePage = () => {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4">
-        {cards.map((card) => (
+        {/*     {cards.map((card) => (
           <div key={card.id} className="overflow-hidden shadow-lg relative max-w-xs bg-bianco">
             <div className="relative">
               <div className="clip-path-bottom">
@@ -137,7 +141,7 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
