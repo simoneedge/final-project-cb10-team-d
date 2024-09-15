@@ -10,7 +10,7 @@ import BookmarkButton from '@/src/components/BookmarkButton';
 import ArrowButton from '@/src/components/ArrowButton';
 
 interface Card {
-  id: number;
+  id: string;
   title: string;
   image: string;
 }
@@ -19,7 +19,19 @@ const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [showAccordion, setShowAccordion] = useState(false);
+  const [fetchTriggers, setFetchTriggers] = useState(false);
   const router = useRouter();
+
+  const fetchCards = async () => {
+    try {
+      const response = await fetch('/api/profiles');
+      const data = await response.json();
+      console.log(data.profiles[0].events);
+      setCards(data.profiles[0].events);
+    } catch (error) {
+      console.error('Errore nel recupero delle card:', error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -32,21 +44,16 @@ const ProfilePage = () => {
     });
 
 
-    const fetchCards = async () => {
-      try {
-        const response = await fetch('/api/profiles');
-        const data = await response.json();
-        console.log(data);
-        setCards(data);
-      } catch (error) {
-        console.error('Errore nel recupero delle card:', error);
-      }
-    };
+
 
     fetchCards();
 
     return () => unsubscribe();
   }, [router]);
+
+  useEffect(() => {
+    fetchCards();
+  }, [fetchTriggers])
 
 
   const toggleAccordion = () => {
@@ -118,7 +125,7 @@ const ProfilePage = () => {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4">
-        {/*     {cards.map((card) => (
+        {cards.map((card) => (
           <div key={card.id} className="overflow-hidden shadow-lg relative max-w-xs bg-bianco">
             <div className="relative">
               <div className="clip-path-bottom">
@@ -129,7 +136,12 @@ const ProfilePage = () => {
                 />
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
-                <HeartButton color="#822225" />
+                <HeartButton
+                  onUpdate={() => setFetchTrigger(prev => !prev)}
+                  title={card.title}
+                  image={card.image}
+                  eventId={card.id}
+                  color="#822225" />
                 <BookmarkButton color="#822225" />
               </div>
             </div>
@@ -141,7 +153,7 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-        ))} */}
+        ))}
       </div>
     </div>
   );
