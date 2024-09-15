@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
                 profile.events = []; // Inizializza `events` se non esiste
             }
 
-            const newEvent = events[0]; // Supponiamo che stai inviando un solo evento
+            const newEvent = events[0];
             const eventExists = profile.events.some((e: any) => e.id === newEvent.id);
 
             if (!eventExists) {
