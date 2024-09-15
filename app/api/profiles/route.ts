@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import Profile, { IProfile } from "../../(models)/Profile";
+import { IEvent } from "@/app/(models)/Event";
 
 export async function GET() {
     try {
@@ -13,41 +14,45 @@ export async function GET() {
     }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     try {
         const body: IProfile = await req.json();
-        const { mail, eventId } = body;
+        const { mail, events } = body;
 
-        if (!mail || !eventId) {
-            throw new Error("Missing userEmail or eventId in request body");
+        if (!mail || !events || events.length === 0) {
+            throw new Error("Missing userEmail or event in request body");
         }
 
         // Trova il documento esistente per l'email dell'utente
         let profile = await Profile.findOne({ mail });
-        console.log(profile)
-
 
         if (profile) {
-            // Aggiungi il nuovo eventId se non è già presente
-            if (!profile.eventId.includes(eventId)) {
-                profile.eventId.push(eventId);
+            if (!profile.events) {
+                profile.events = []; // Inizializza `events` se non esiste
+            }
+
+            const newEvent = events[0]; // Supponiamo che stai inviando un solo evento
+            const eventExists = profile.events.some((e: any) => e.id === newEvent.id);
+
+            if (!eventExists) {
+                // Aggiungi il nuovo evento se non è già presente
+                profile.events.push(newEvent);
                 await profile.save();
                 return NextResponse.json({ profile }, { status: 200 });
             } else {
                 return NextResponse.json({ message: "Event already added" }, { status: 200 });
             }
         } else {
-            // Crea un nuovo documento se non esiste
-            profile = new Profile({ mail, eventId: [eventId] });
+            // Se il profilo non esiste, creane uno nuovo con l'array `events`
+            profile = new Profile({ mail, events: events }); // Aggiungi direttamente l'array di eventi
             await profile.save();
             return NextResponse.json({ profile }, { status: 201 });
         }
     } catch (error) {
-        console.log("Error:", error);
-        return NextResponse.json({ error: 'Failed to create or update profile', details: error }, { status: 500 });
+        console.error("Error:", error);
+        return NextResponse.json({ error: "Failed to create or update profile" }, { status: 500 });
     }
 }
-
 
 
 

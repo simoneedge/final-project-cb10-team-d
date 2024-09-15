@@ -41,6 +41,8 @@ const Card: React.FC<CardProps> = ({
         </div>
         <div className="absolute top-2 right-2 flex space-x-2">
           <HeartButton
+            title={title}
+            image={imageSrc}
             eventId={eventId}  // Passa l'ID dell'evento a HeartButton
             color={backgroundColor}
           />

@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 
 interface HeartButtonProps {
   eventId?: string;
+  title: string | undefined;
+  image: string | undefined;
   color: string;
 }
 
-const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color }) => {
+const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, }) => {
   const [isLiked, setIsLiked] = useState(false);
 
   const handleFavoriteClick = async () => {
@@ -17,6 +19,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color }) => {
       return;
     }
     const userEmail = user.email; // Ottieni l'email dell'utente
+    console.log(userEmail);
 
     try {
       const res = await fetch('/api/profiles', {
@@ -26,7 +29,11 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color }) => {
         },
         body: JSON.stringify({
           mail: userEmail,
-          eventId: eventId
+          events: [{
+            id: eventId,
+            title: title,
+            image: image
+          }]
         }),
       });
 
