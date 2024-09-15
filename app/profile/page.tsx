@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; 
-import { auth } from '@/firebaseConfig'; 
+import { useRouter } from 'next/navigation';
+import { auth } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Link from 'next/link';
+import HeartButton from '@/src/components/HeartButton';
+import BookmarkButton from '@/src/components/BookmarkButton';
+import ArrowButton from '@/src/components/ArrowButton';
 
 interface Card {
-  id: number;
+  id: string;
   title: string;
   image: string;
 }
@@ -15,36 +18,44 @@ interface Card {
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
-  const [showAccordion, setShowAccordion] = useState(false); 
+  const [showAccordion, setShowAccordion] = useState(false);
+  const [fetchTriggers, setFetchTriggers] = useState(false);
   const router = useRouter();
+
+  const fetchCards = async () => {
+    try {
+      const response = await fetch('/api/profiles');
+      const data = await response.json();
+      console.log(data.profiles[0].events);
+      setCards(data.profiles[0].events);
+    } catch (error) {
+      console.error('Errore nel recupero delle card:', error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
       } else {
-       
+
         router.push('/');
       }
     });
 
-   
-    const fetchCards = async () => {
-      try {
-        const response = await fetch('/api/cards'); 
-        const data = await response.json();
-        setCards(data);
-      } catch (error) {
-        console.error('Errore nel recupero delle card:', error);
-      }
-    };
+
+
 
     fetchCards();
 
     return () => unsubscribe();
   }, [router]);
 
- 
+  useEffect(() => {
+    fetchCards();
+  }, [fetchTriggers])
+
+
   const toggleAccordion = () => {
     setShowAccordion(!showAccordion);
   };
@@ -125,7 +136,12 @@ const ProfilePage = () => {
                 />
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
-                <HeartButton color="#822225" />
+                <HeartButton
+                  onUpdate={() => setFetchTrigger(prev => !prev)}
+                  title={card.title}
+                  image={card.image}
+                  eventId={card.id}
+                  color="#822225" />
                 <BookmarkButton color="#822225" />
               </div>
             </div>
