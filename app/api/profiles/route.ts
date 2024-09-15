@@ -31,16 +31,19 @@ export async function POST(req: NextRequest) {
                 profile.events = []; // Inizializza `events` se non esiste
             }
 
-            const newEvent = events[0];
-            const eventExists = profile.events.some((e: any) => e.id === newEvent.id);
+            const newEvent = events[0]; // Supponiamo che stai inviando un solo evento
+            const eventIndex = profile.events.findIndex((e: any) => e.id === newEvent.id);
 
-            if (!eventExists) {
+            if (eventIndex !== -1) {
+                // Se l'evento esiste, rimuovilo dall'array
+                profile.events.splice(eventIndex, 1);
+                await profile.save();
+                return NextResponse.json({ message: "Event removed from favorites", profile }, { status: 200 });
+            } else {
                 // Aggiungi il nuovo evento se non è già presente
                 profile.events.push(newEvent);
                 await profile.save();
-                return NextResponse.json({ profile }, { status: 200 });
-            } else {
-                return NextResponse.json({ message: "Event already added" }, { status: 200 });
+                return NextResponse.json({ message: "Event added to favorites", profile }, { status: 200 });
             }
         } else {
             // Se il profilo non esiste, creane uno nuovo con l'array `events`
@@ -53,7 +56,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Failed to create or update profile" }, { status: 500 });
     }
 }
-
 
 
 
