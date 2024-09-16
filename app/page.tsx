@@ -153,36 +153,36 @@ const HomePage: React.FC = () => {
         {loading ? (
           <Loading /> // Mostra l'animazione di caricamento
         ) : (
-          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event, index) => (
-                <div
-                  key={event._id || index}
-                  className={`${
-                    (index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
-                  } w-full md:w-auto`}
-                >
-                  <Card
-                    eventId={event._id}
-                    backgroundColor={event.color || '#4E614E'}
-                    title={event.title || 'Pasta di mandorle'}
-                    imageSrc={
-                      event.image ||
-                      'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
-                    }
-                    size={(index + 1) % 4 === 0 ? 'large' : 'small'}
-                    link={
-                      <Link href={`/events/${event._id}`}>
-                        <ArrowButton />
-                      </Link>
-                    }
-                  />
-                </div>
-              ))
-            ) : (
-              <p className="justify-items-center">No events found...</p>
-            )}
-          </div>
+          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 items-start w-full">
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event, index) => (
+              <div
+                key={event._id || index}
+                className={`${
+                  (index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
+                } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+              >
+                <Card
+                  eventId={event._id}
+                  backgroundColor={event.color || '#4E614E'}
+                  title={event.title || 'Pasta di mandorle'}
+                  imageSrc={
+                    event.image ||
+                    'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
+                  }
+                  size={(index + 1) % 4 === 0 ? 'large' : 'small'}
+                  link={
+                    <Link href={`/events/${event._id}`}>
+                      <ArrowButton />
+                    </Link>
+                  }
+                />
+              </div>
+            ))
+          ) : (
+            <p className="justify-items-center">No events found...</p>
+          )}
+        </div>
         )}
       </main>
       <ScrollToTopButton />
