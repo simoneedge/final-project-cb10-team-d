@@ -41,6 +41,11 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     setIsOpen(!isOpen);
   };
 
+  const handleLoginSuccess = (item: string) => {
+    setActiveItem(item);
+    setIsOpen(false);
+  };
+
   const handleClick = (item: string) => {
     setActiveItem(item);
     setIsOpen(false);
@@ -76,7 +81,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
               );
             } else {
               // Se l'utente non è autenticato, mostra il componente LoginButton
-              return <LoginButton key={`login-${link.name}`} buttonLabel="Proponi evento" redirectTo="/propose" buttonClassName="text-verde hover:text-verde hover:font-bold"/>;
+              return <LoginButton key={`login-${link.name}`}buttonLabel="Proponi evento" redirectTo="/propose"   onLoginSuccess={() => handleLoginSuccess(links[4]?.name)} buttonClassName="text-verde hover:text-verde hover:font-bold"/>;
             }
           }
 
@@ -186,6 +191,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                 key={`login-${link.name}`}
                 buttonLabel="Proponi evento"
                 redirectTo="/propose"
+                onLoginSuccess={() => handleLoginSuccess(links[4]?.name)} 
                 buttonClassName="text-verde hover:text-verde hover:font-bold"
               />
             );
