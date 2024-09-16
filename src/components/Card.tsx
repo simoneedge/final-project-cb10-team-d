@@ -12,7 +12,7 @@ interface CardProps {
   size?: "small" | "large";
   link?: React.ReactNode;
   eventId: string; // Passa l'ID dell'evento come prop
-
+  onHeartClick?: () => void;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -21,7 +21,8 @@ const Card: React.FC<CardProps> = ({
   imageSrc,
   size = "small",
   link,
-  eventId
+  eventId,
+  onHeartClick
 }) => {
 
   const sizeClasses =
@@ -42,6 +43,7 @@ const Card: React.FC<CardProps> = ({
         </div>
         <div className="absolute top-2 right-2 flex space-x-2">
           <HeartButton
+            onClick={onHeartClick}
             title={title}
             image={imageSrc}
             eventId={eventId}  // Passa l'ID dell'evento a HeartButton
