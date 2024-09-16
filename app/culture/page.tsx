@@ -129,7 +129,7 @@ export default function CulturaPage() {
       <CategoryBanner label="Cultura" backgroundColor={"bg-verde"} />
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-4xl font-titolo text-verde">Cultura</h1>
+          
 
           <Filter
             onSearch={handleSearch}
@@ -155,7 +155,7 @@ export default function CulturaPage() {
               />
             ))
           ) : (
-            <p>No events found...</p>
+            <p className="justify-items-center">No events found...</p>
           )}
         </div>
       </div>

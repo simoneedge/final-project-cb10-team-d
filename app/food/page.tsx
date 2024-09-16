@@ -129,7 +129,6 @@ export default function FoodPage() {
       <CategoryBanner label="Food" backgroundColor={"bg-rosso"} />
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-4xl font-titolo text-rosso">Food</h1>
           <Filter
             onSearch={handleSearch}
             isFree={isFree}
