@@ -9,6 +9,7 @@ import { getDayOfYear } from "@/data/getDayOfYear";
 import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
 import Loading from "@/src/components/Loading"; // Importa il componente di loading
+import CategoryBanner from "@/src/components/CategoryBanner";
 
 const fetchData = async (): Promise<{ foods: IFood[] }> => {
   try {
@@ -125,6 +126,7 @@ export default function FoodPage() {
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
+      <CategoryBanner label="Food" backgroundColor={"bg-rosso"} />
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-4xl font-titolo text-rosso">Food</h1>
