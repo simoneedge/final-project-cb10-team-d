@@ -120,8 +120,8 @@ const ProfilePage = () => {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4">
-        {cards.map((card) => (
-          <div key={card.id} className="overflow-hidden shadow-lg relative max-w-xs bg-bianco">
+        {cards.map((card, index) => (
+          <div key={index} className="overflow-hidden shadow-lg relative max-w-xs bg-bianco">
             <div className="relative">
               <div className="clip-path-bottom">
                 <img
