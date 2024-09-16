@@ -2,8 +2,8 @@
 
 import React from "react";
 import ArrowButton from "./ArrowButton";
-import BookmarkButton from "./BookmarkButton";
 import HeartButton from "./HeartButton";
+import { truncateText } from "@/data/troncateText";
 
 interface CardProps {
   backgroundColor: string;
@@ -12,6 +12,7 @@ interface CardProps {
   size?: "small" | "large";
   link?: React.ReactNode;
   eventId: string; // Passa l'ID dell'evento come prop
+
 }
 
 const Card: React.FC<CardProps> = ({
@@ -53,7 +54,7 @@ const Card: React.FC<CardProps> = ({
         style={{ backgroundColor }}
       >
         <div className="diagonal-line-top"></div>
-        <h2 className="text-[16px] font-titolo mt-4">{title}</h2>
+        <h2 className="h-[50px] text-[16px] font-titolo mt-4"> {title ? truncateText(title, 10) : "No title"}</h2>
         <div className="absolute bottom-2 right-2 cursor-pointer">
           {link ? (
             link // Se il Link è passato come prop, renderizzalo
