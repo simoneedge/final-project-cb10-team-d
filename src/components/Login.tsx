@@ -7,7 +7,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "@/firebaseConfig";
+import { auth } from "@/firebaseconfig";
 import Button from "./Button";
 import { toast } from "react-toastify";
 
