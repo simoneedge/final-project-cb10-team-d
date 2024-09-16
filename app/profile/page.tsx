@@ -6,7 +6,6 @@ import { auth } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import Link from 'next/link';
 import HeartButton from '@/src/components/HeartButton';
-import BookmarkButton from '@/src/components/BookmarkButton';
 import ArrowButton from '@/src/components/ArrowButton';
 
 interface Card {
