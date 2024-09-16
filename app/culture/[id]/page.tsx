@@ -1,8 +1,4 @@
-'use client';
-
-import Card from "../../../src/components/Card";
-import React, { useEffect, useState } from "react";
-import Loading from "../../../src/components/Loading"; // Importa il componente di loading
+import React from "react";
 
 interface Event {
   _id: string;
@@ -30,7 +26,7 @@ const getData = async (id: string) => {
     }
 
     const data = await res.json();
-    return data.event; // Assicurati di accedere all'evento specifico
+    return data.event;
   } catch (error: any) {
     throw new Error(
       error.message || "Errore sconosciuto durante il fetch dei dati"
@@ -38,83 +34,81 @@ const getData = async (id: string) => {
   }
 };
 
-const EventDetailPage = ({ params }: { params: { id: string } }) => {
+const EventDetailPage = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true); // Stato di caricamento
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      setLoading(true); // Inizia il caricamento
-      try {
-        const fetchedEvent = await getData(id);
-        setEvent(fetchedEvent);
-      } catch (error: any) {
-        setErrorMessage(error.message);
-      } finally {
-        setLoading(false); // Termina il caricamento
-      }
-    };
-
-    fetchEvent();
-  }, [id]);
-
-  if (loading) {
-    return <Loading />; // Mostra l'animazione di caricamento durante il fetching
-  }
-
-  if (errorMessage) {
-    return <p className="text-red-500">{errorMessage}</p>; // Mostra l'errore se presente
-  }
+  const event = await getData(id);
 
   return (
-    <div className="p-5 min-h-screen bg-gray-100">
-      <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto text-black">
-        <div className="flex justify-center items-center">
-          <Card
-            backgroundColor={event?.color}
-            title={event?.title}
-            imageSrc={event?.image}
-          />
-        </div>
+    <div className="min-h-screen bg-gray-100">
+      {/* Immagine dell'evento */}
+      {event?.image && (
+        <img
+          src={event.image}
+          alt={event.title}
+          className="w-full h-[60vh] object-cover"
+        />
+      )}
 
-        <div className="flex flex-col items-start text-left">
-          <div className="mt-8">
+      {/* Rettangolo rosso con titolo */}
+      <div className="bg-verde w-full py-4 mb-4">
+        <div className="max-w-5xl mx-auto px-5 p-3">
+          <h1 className="text-white text-4xl font-titolo font-bold text-left">
+            {event?.title}
+          </h1>
+        </div>
+      </div>
+
+      {/* Dettagli dell'evento */}
+      <div className="p-5 max-w-5xl mx-auto text-black">
+        {/* Altri dettagli */}
+        <div className="mt">
+          {event.tag && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-verde">
+              <strong className="text-xl font-titolo mb-4 text-rosso">
                 Tag:{" "}
-              </strong>{" "}
-              {event?.tag?.join(", ")}
+              </strong>
+              {event.tag.join(", ")}
             </p>
+          )}
+          {event.dateStart && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-verde">
+              <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data inizio:
-              </strong>{" "}
-              {event?.dateStart}
+              </strong>
+              {event.dateStart}
             </p>
+          )}
+          {event.dateEnd && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-verde">
+              <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data fine:
-              </strong>{" "}
-              {event?.dateEnd}
+              </strong>
+              {event.dateEnd}
             </p>
+          )}
+          {event.price && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-verde">
+              <strong className="text-xl font-titolo mb-4 text-rosso">
                 Prezzo:{" "}
               </strong>
-              {event?.price === "0" ? "Ingresso gratuito" : ` ${event?.price}€`}
+              {event.price === "0"
+                ? "Ingresso gratuito"
+                : ` ${event.price}€`}
             </p>
+          )}
+          {event.location && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-verde">
+              <strong className="text-xl font-titolo mb-4 text-rosso">
                 Luogo:{" "}
-              </strong>{" "}
-              {event?.location}
+              </strong>
+              {event.location}
             </p>
-          </div>
-
-          <p className="mt-6">{event?.description}</p>
+          )}
         </div>
+
+        {/* Descrizione dell'evento */}
+        <p className="mt-6">{event.description}</p>
       </div>
     </div>
   );
