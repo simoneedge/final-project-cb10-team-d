@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/firebaseconfig';
+import { auth, db } from '@/firebaseconfig'; // Assicurati che Firestore sia correttamente importato
+import { doc, setDoc } from 'firebase/firestore'; // Importa Firestore per gestire i documenti
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -26,27 +27,40 @@ export default function SignUp() {
     password !== confirmPass;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); // Previene la richiesta GET predefinita del form
+    setError(null); // Resetta l'errore all'inizio del submit
+
     if (formValidation) {
       setError('Please fill out all fields correctly.');
+      toast.error('Please fill out all fields correctly.');
       return;
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      // Crea l'utente con email e password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-      
+      // Aggiungi nome, cognome ed email a Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        firstName,
+        lastName,
+        email,
+      });
+
       toast.success('Registrazione effettuata con successo!');
 
-      // Reinderizza nella home "/" dopo 2 secondi
+      // Reindirizza alla home "/" dopo 2 secondi
       setTimeout(() => {
-        router.push('/'); 
+        router.push('/');
       }, 2000);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
+        toast.error(error.message); // Mostra l'errore tramite toast
       } else {
-        setError('Error.');
+        setError('An unknown error occurred.');
+        toast.error('An unknown error occurred.');
       }
     }
   };
@@ -54,7 +68,7 @@ export default function SignUp() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Registration form</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Registration Form</h1>
         {error && (
           <div className="mb-4 p-4 border-l-4 border-red-500 bg-red-50 text-red-700 rounded">
             <strong className="font-semibold">Error:</strong>

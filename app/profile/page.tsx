@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/firebaseConfig';
+import { auth, db } from '@/firebaseconfig'; // Assicurati di importare db
 import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore'; // Importa getDoc da Firestore
 import Link from 'next/link';
 import HeartButton from '@/src/components/HeartButton';
 import ArrowButton from '@/src/components/ArrowButton';
@@ -16,11 +17,13 @@ interface Card {
 
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null); // Stato per nome utente
+  const [userLastName, setUserLastName] = useState<string | null>(null); // Stato per cognome utente
   const [cards, setCards] = useState<Card[]>([]);
   const [showAccordion, setShowAccordion] = useState(false);
-  const [fetchTriggers, setFetchTriggers] = useState(false);
   const router = useRouter();
 
+  // Funzione per recuperare le card
   const fetchCards = async () => {
     try {
       const response = await fetch('/api/profiles');
@@ -32,12 +35,29 @@ const ProfilePage = () => {
     }
   };
 
+  // Funzione per recuperare i dati dell'utente da Firestore
+  const fetchUserData = async (uid: string) => {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setUserName(userData.firstName); // Imposta il nome
+        setUserLastName(userData.lastName); // Imposta il cognome
+      } else {
+        console.log('No user data found!');
+      }
+    } catch (error) {
+      console.error('Errore nel recupero dei dati utente:', error);
+    }
+  };
+
+  // Effetto per gestire l'autenticazione e il caricamento dei dati utente
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
+        fetchUserData(user.uid); // Richiama la funzione per recuperare nome e cognome
       } else {
-
         router.push('/');
       }
     });
@@ -46,11 +66,12 @@ const ProfilePage = () => {
     return () => unsubscribe();
   }, [router]);
 
+  // Funzione per aggiornare le card
   const handleUpdate = async () => {
     await fetchCards(); // Fetch cards after updating favorites
   };
 
-
+  // Funzione per mostrare o nascondere l'accordion
   const toggleAccordion = () => {
     setShowAccordion(!showAccordion);
   };
@@ -59,7 +80,7 @@ const ProfilePage = () => {
     <div className="p-4 bg-bianco min-h-screen">
       <div className="mt-4 text-center flex justify-center items-center">
         <h2 className="text-xl font-titolo text-foreground">
-          Ciao {userEmail}
+          Ciao {userName} {userLastName}
         </h2>
         <button onClick={toggleAccordion} className="ml-2">
           <svg
@@ -91,19 +112,14 @@ const ProfilePage = () => {
           <div className="mb-4">
             <h4 className="text-md font-titolo text-rosso">Dati Personali</h4>
             <p className="font-testo mt-2">
-              <strong>Nome:</strong> Mario
+              <strong>Nome:</strong> {userName}
             </p>
             <p className="font-testo">
-              <strong>Cognome:</strong> Rossi
+              <strong>Cognome:</strong> {userLastName}
             </p>
             <p className="font-testo">
-              <strong>Email:</strong> mariorossi@gmail.com
+              <strong>Email:</strong> {userEmail}
             </p>
-          </div>
-          <div className="mb-4">
-            <h4 className="text-md font-titolo text-rosso">Gestione Account</h4>
-            <p className="font-testo cursor-pointer hover:underline">Modifica account</p>
-            <p className="font-testo cursor-pointer hover:underline">Cancella account</p>
           </div>
         </div>
       )}
