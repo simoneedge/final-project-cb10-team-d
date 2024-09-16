@@ -137,7 +137,6 @@ const ProfilePage = () => {
                   image={card.image}
                   eventId={card.id}
                   color="#822225" />
-                <BookmarkButton color="#822225" />
               </div>
             </div>
             <div className="diagonal-line-container p-3 text-white relative" style={{ backgroundColor: '#822225' }}>
