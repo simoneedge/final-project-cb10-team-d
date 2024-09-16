@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
             }
 
             const newEvent = events[0]; // Supponiamo che stai inviando un solo evento
-            const eventIndex = profile.events.findIndex((e: any) => e.id === newEvent.id);
+            const eventIndex = profile.events.findIndex((e: any) => e.title === newEvent.title);
 
             if (eventIndex !== -1) {
                 // Se l'evento esiste, rimuovilo dall'array
