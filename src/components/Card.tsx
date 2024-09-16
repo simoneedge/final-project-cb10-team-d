@@ -46,7 +46,6 @@ const Card: React.FC<CardProps> = ({
             eventId={eventId}  // Passa l'ID dell'evento a HeartButton
             color={backgroundColor}
           />
-          <BookmarkButton color={backgroundColor} />
         </div>
       </div>
       <div

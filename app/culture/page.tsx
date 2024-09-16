@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Card from "@/src/components/Card";
 import React, { useEffect, useState } from "react";
@@ -8,8 +8,9 @@ import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
 import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
+import Loading from "@/src/components/Loading"; // Importa il componente di loading
 
-const fetchData = async (): Promise<{ cultures: ICulture[] }> => { // Cambia 'events' in 'cultures'
+const fetchData = async (): Promise<{ cultures: ICulture[] }> => {
   try {
     const res = await fetch("http://localhost:3000/api/cultures", {
       cache: "no-cache",
@@ -26,20 +27,24 @@ export default function CulturaPage() {
   const [cultures, setCultures] = useState<ICulture[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<ICulture[]>([]);
-  const [searchQuery, setSearchQuery] = useState(''); // Stato per l'input di ricerca
-  const [isFree, setIsFree] = useState(false); // Cambiato da stringa a booleano
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [isFree, setIsFree] = useState(false); 
   const [today, setToday] = useState<number>(0);
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
+  const [loading, setLoading] = useState(true); // Stato di caricamento
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true); // Imposta lo stato di caricamento a true
       try {
         const data = await fetchData();
         setCultures(data.cultures);
         setFilteredEvents(data.cultures);
       } catch (error: any) {
         setErrorMessage("Failed to load data.");
+      } finally {
+        setLoading(false); // Imposta lo stato di caricamento a false dopo il fetch
       }
     };
 
@@ -68,35 +73,32 @@ export default function CulturaPage() {
   const handleNextWeekClick = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    const daysUntilNextMonday = (8 - dayOfWeek) % 7; // Calcola i giorni mancanti fino al prossimo Lunedì
+    const daysUntilNextMonday = (8 - dayOfWeek) % 7;
     const nextMonday = getDayOfYear(formattedDate()) + daysUntilNextMonday;
-    const nextSunday = nextMonday + 6
+    const nextSunday = nextMonday + 6;
     setStartNextWeek(nextMonday);
     setEndNextWeek(nextSunday);
 
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
 
-
   const applyFilters = (query: string, isFree: boolean, dayOfYear: number, startNextWeek?: number, endNextWeek?: number) => {
     let filtered = cultures;
 
-    // Filtro per la ricerca
     if (query !== '') {
       filtered = filtered.filter(event =>
-        event.title?.toLowerCase().includes(query.toLowerCase()) || // Filtro per titolo
-        event.location?.toLowerCase().includes(query.toLowerCase()) || // Filtro per location
-        event.tag?.some(tag => tag.toLowerCase().includes(query.toLowerCase())) // Filtro per tag
+        event.title?.toLowerCase().includes(query.toLowerCase()) || 
+        event.location?.toLowerCase().includes(query.toLowerCase()) || 
+        event.tag?.some(tag => tag.toLowerCase().includes(query.toLowerCase())) 
       );
     }
 
-    // Filtro per eventi gratuiti/a pagamento
     if (isFree) {
-      filtered = filtered.filter(event => event.price === '0'); // Solo eventi gratuiti
+      filtered = filtered.filter(event => event.price === '0');
     } else if (!isFree) {
-      filtered = filtered.filter(event => event.price !== '0'); // Solo eventi a pagamento
+      filtered = filtered.filter(event => event.price !== '0');
     }
-    // Filtro per eventi del giorno specifico
+
     if (dayOfYear) {
       filtered = filtered.filter(event => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
@@ -106,7 +108,6 @@ export default function CulturaPage() {
       });
     }
 
-    // Filtro per la settimana prossima
     if (startNextWeek !== undefined && endNextWeek !== undefined) {
       filtered = filtered.filter(event => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
@@ -119,8 +120,8 @@ export default function CulturaPage() {
   };
 
   useEffect(() => {
-    applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek); // Applica i filtri ogni volta che cambia isFree o searchQuery
-  }, [cultures, searchQuery, isFree, startNextWeek, endNextWeek]);
+    applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
+  }, [cultures, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
@@ -137,9 +138,11 @@ export default function CulturaPage() {
             onNextWeekClick={handleNextWeekClick}
           />
         </div>
-        <div className="space-y-4">
+        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          {filteredEvents.length > 0 ? (
+          {loading ? (
+            <Loading /> // Mostra il caricamento con i cerchietti
+          ) : filteredEvents.length > 0 ? (
             filteredEvents.map((culture, index) => (
               <Card
                 key={culture._id}

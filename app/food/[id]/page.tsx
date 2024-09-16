@@ -1,5 +1,8 @@
+'use client';
+
 import Card from "../../../src/components/Card";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Loading from "../../../src/components/Loading"; // Importa il componente di loading
 
 interface Event {
   _id: string;
@@ -27,7 +30,6 @@ const getData = async (id: string) => {
     }
 
     const data = await res.json();
-    console.log(data);
     return data.event; // Assicurati di accedere all'evento specifico
   } catch (error: any) {
     throw new Error(
@@ -36,10 +38,35 @@ const getData = async (id: string) => {
   }
 };
 
-const EventDetailPage = async ({ params }: { params: { id: string } }) => {
+const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true); // Stato per il caricamento
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const event = await getData(id);
+  useEffect(() => {
+    const fetchEvent = async () => {
+      setLoading(true); // Inizia il caricamento
+      try {
+        const fetchedEvent = await getData(id);
+        setEvent(fetchedEvent);
+      } catch (error: any) {
+        setErrorMessage(error.message);
+      } finally {
+        setLoading(false); // Termina il caricamento
+      }
+    };
+
+    fetchEvent();
+  }, [id]);
+
+  if (loading) {
+    return <Loading />; // Mostra l'animazione di caricamento durante il fetching
+  }
+
+  if (errorMessage) {
+    return <p className="text-red-500">{errorMessage}</p>; // Mostra l'errore se presente
+  }
 
   return (
     <div className="p-5 min-h-screen bg-gray-100">
@@ -53,37 +80,37 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
         </div>
 
         <div className="flex flex-col items-start text-left">
-          <p className="mt-6">{event.description}</p>
+          <p className="mt-6">{event?.description}</p>
           <div className="mt-8">
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Tag:{" "}
               </strong>{" "}
-              {event.tag?.join(", ")}
+              {event?.tag?.join(", ")}
             </p>
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data inizio:
               </strong>{" "}
-              {event.dateStart}
+              {event?.dateStart}
             </p>
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data fine:
               </strong>{" "}
-              {event.dateEnd}
+              {event?.dateEnd}
             </p>
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Prezzo:{" "}
               </strong>
-              {event.price === "0" ? "Ingresso gratuito" : ` ${event.price}€`}
+              {event?.price === "0" ? "Ingresso gratuito" : ` ${event?.price}€`}
             </p>
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Luogo:{" "}
               </strong>{" "}
-              {event.location}
+              {event?.location}
             </p>
           </div>
         </div>
