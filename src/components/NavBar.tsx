@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"; // Import useRouter
 import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import LoginButton from "./Login";
-import Search from "./Search";
 import { toast } from 'react-toastify'; 
 
 interface NavLink {
@@ -110,7 +109,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
         ) : (
           <LoginButton />
         )}
-        <Search />
+
       </div>
 
       {/* Mobile Menu Toggle */}

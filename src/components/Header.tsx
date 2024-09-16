@@ -24,7 +24,6 @@ const Header = () => {
             />
           </Link>
         </div>
-        {isMobile && <Search />} {/* componente Search solo su mobile */}
         <NavBar links={links} />
       </div>
     </header>
