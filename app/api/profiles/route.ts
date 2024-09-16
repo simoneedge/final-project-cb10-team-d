@@ -3,14 +3,30 @@ import { NextRequest, NextResponse } from "next/server";
 import Profile, { IProfile } from "../../(models)/Profile";
 import { IEvent } from "@/app/(models)/Event";
 
-export async function GET() {
-    try {
-        const profiles: IProfile[] = await Profile.find();
 
-        return NextResponse.json({ profiles }, { status: 200 }); // Restituisce un oggetto con l'array di eventi
+
+export async function GET(req: NextRequest) {
+    try {
+        // Estrai l'email dai parametri della query
+        const { searchParams } = new URL(req.url);
+        const email = searchParams.get("email");
+
+        if (!email) {
+            return NextResponse.json({ error: "Missing email parameter" }, { status: 400 });
+        }
+
+        // Cerca il profilo basato sull'email
+        const profile = await Profile.findOne({ mail: email });
+
+        if (!profile) {
+            return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+        }
+        // Restituisci il profilo trovato
+        return NextResponse.json({ profile }, { status: 200 });
 
     } catch (error) {
-        return NextResponse.json({ error }, { status: 500 })
+        console.error("Error fetching profile:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
 
@@ -56,15 +72,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Failed to create or update profile" }, { status: 500 });
     }
 }
-
-
-
-
-
-
-
-
-
 
 
 

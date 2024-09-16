@@ -24,12 +24,21 @@ const ProfilePage = () => {
   const router = useRouter();
 
   // Funzione per recuperare le card
-  const fetchCards = async () => {
+  const fetchCards = async (email: string | null) => {
     try {
-      const response = await fetch('/api/profiles');
-      const data = await response.json();
-      console.log(data.profiles[0].events);
-      setCards(data.profiles[0].events);
+      if (email) {
+        const response = await fetch(`/api/profiles?email=${email}`);
+
+        // Verifica che la risposta abbia avuto successo
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setCards(data.profile.events);
+      } else {
+        console.error('Email utente non trovata');
+      }
     } catch (error) {
       console.error('Errore nel recupero delle card:', error);
     }
@@ -57,18 +66,22 @@ const ProfilePage = () => {
       if (user) {
         setUserEmail(user.email);
         fetchUserData(user.uid); // Richiama la funzione per recuperare nome e cognome
+        fetchCards(user.email);
       } else {
         router.push('/');
       }
     });
-    fetchCards();
 
     return () => unsubscribe();
   }, [router]);
 
   // Funzione per aggiornare le card
   const handleUpdate = async () => {
-    await fetchCards(); // Fetch cards after updating favorites
+    try {
+      await fetchCards(userEmail); // Fetch cards after updating favorites
+    } catch (error) {
+      console.error('Errore nell\'aggiornamento delle card:', error);
+    }
   };
 
   // Funzione per mostrare o nascondere l'accordion
@@ -148,7 +161,7 @@ const ProfilePage = () => {
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
                 <HeartButton
-                  onUpdate={handleUpdate}
+                  onClick={handleUpdate} // Passa la funzione di aggiornamento
                   title={card.title}
                   image={card.image}
                   eventId={card.id}
