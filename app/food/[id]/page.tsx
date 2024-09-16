@@ -69,54 +69,75 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="p-5 min-h-screen bg-gray-100">
-      <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto text-black">
-        <div className="flex justify-center items-center">
-          <Card
-            backgroundColor={event?.color}
-            title={event?.title}
-            imageSrc={event?.image}
-          />
-        </div>
+    <div className="min-h-screen bg-gray-100">
+    {/* Immagine dell'evento */}
+    {event?.image && (
+      <img
+        src={event.image}
+        alt={event.title}
+        className="w-full h-[60vh] object-cover"
+      />
+    )}
 
-        <div className="flex flex-col items-start text-left">
-        <div className="mt-8">
+    {/* Rettangolo rosso con titolo */}
+      <div className="bg-rosso w-full py-4 mb-4">
+        <div className="max-w-5xl mx-auto px-5">
+          <h1 className="text-white text-4xl font-titolo font-bold text-left">
+            {event?.title}
+          </h1>
+        </div>
+      </div> 
+
+  {/* Dettagli dell'evento */}
+  <div className="p-5 max-w-5xl mx-auto text-black">
+        {/* Altri dettagli */}
+        <div className="mt-4">
+          {event?.tag && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Tag:{" "}
-              </strong>{" "}
+              </strong>
               {event?.tag?.join(", ")}
             </p>
+          )}
+          {event?.dateStart && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data inizio:
-              </strong>{" "}
+              </strong>
               {event?.dateStart}
             </p>
+          )}
+          {event?.dateEnd && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data fine:
-              </strong>{" "}
+              </strong>
               {event?.dateEnd}
             </p>
+          )}
+          {event?.price && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Prezzo:{" "}
               </strong>
-              {event?.price === "0" ? "Ingresso gratuito" : ` ${event?.price}€`}
+              {event?.price === "0" ? "Ingresso gratuito" : ` ${event.price}€`}
             </p>
+          )}
+          {event?.location && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Luogo:{" "}
-              </strong>{" "}
+              </strong>
               {event?.location}
             </p>
-          </div>
-
-          <p className="mt-6">{event?.description}</p>
+          )}
         </div>
+
+         {/* Descrizione dell'evento */}
+         <p className="mt-6">{event?.description}</p>
       </div>
-    </div>
+  </div>
   );
 };
 

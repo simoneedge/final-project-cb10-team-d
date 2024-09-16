@@ -1,6 +1,5 @@
 'use client';
 
-import Card from "../../../src/components/Card";
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
 
@@ -69,53 +68,73 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <div className="p-5 min-h-screen bg-gray-100">
-      <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto text-black">
-        <div className="flex justify-center items-center">
-          <Card
-            backgroundColor={event?.color}
-            title={event?.title}
-            imageSrc={event?.image}
-          />
+    <div className="min-h-screen bg-gray-100">
+      {/* Immagine dell'evento */}
+      {event?.image && (
+        <img
+          src={event.image}
+          alt={event.title}
+          className="w-full h-[60vh] object-cover"
+        />
+      )}
+
+        {/* Rettangolo rosso con titolo */}
+        <div className="bg-giallo w-full py-4 mb-4">
+        <div className="max-w-5xl mx-auto px-5">
+          <h1 className="text-white text-4xl font-titolo font-bold text-left">
+            {event?.title}
+          </h1>
         </div>
+      </div>
 
-     <div className="flex flex-col items-start text-left">
-          <div className="mt-8">
+      {/* Dettagli dell'evento */}
+      <div className="p-5 max-w-5xl mx-auto text-black">
+        {/* Altri dettagli */}
+        <div className="mt-4">
+          {event?.tag && ( 
             <p>
-              <strong className="text-xl font-titolo mb-4 text-giallo">
-                Tag:{" "}
-              </strong>{" "}
-              {event?.tag?.join(", ")}
-            </p>
-            <p>
-              <strong className="text-xl font-titolo mb-4 text-giallo">
-                Data inizio:
-              </strong>{" "}
-              {event?.dateStart}
-            </p>
-            <p>
-              <strong className="text-xl font-titolo mb-4 text-giallo">
-                Data fine:
-              </strong>{" "}
-              {event?.dateEnd}
-            </p>
-            <p>
-              <strong className="text-xl font-titolo mb-4 text-giallo">
-                Prezzo:{" "}
-              </strong>
-              {event?.price === "0" ? "Ingresso gratuito" : ` ${event?.price}€`}
-            </p>
-            <p>
-              <strong className="text-xl font-titolo mb-4 text-giallo">
-                Luogo:{" "}
-              </strong>{" "}
-              {event?.location}
-            </p>
-          </div>
+            <strong className="text-xl font-titolo mb-4 text-rosso">
+              Tag:{" "}
+            </strong>
+            {event?.tag.join(", ")}
+          </p>
+        )}
+        {event?.dateStart && (
+          <p>
+            <strong className="text-xl font-titolo mb-4 text-rosso">
+              Data inizio:
+            </strong>
+            {event?.dateStart}
+          </p>
+        )}
+        {event?.dateEnd && (
+          <p>
+            <strong className="text-xl font-titolo mb-4 text-rosso">
+              Data fine:
+            </strong>
+            {event?.dateEnd}
+          </p>
+        )}
+        {event?.price && (
+          <p>
+            <strong className="text-xl font-titolo mb-4 text-rosso">
+              Prezzo:{" "}
+            </strong>
+            {event?.price === "0" ? "Ingresso gratuito" : ` ${event.price}€`}
+          </p>
+        )}
+        {event?.location && (
+          <p>
+            <strong className="text-xl font-titolo mb-4 text-rosso">
+              Luogo:{" "}
+            </strong>
+            {event?.location}
+          </p>
+        )}
+      </div>
 
-          <p className="mt-6">{event?.description}</p>
-
-        </div>
+          {/* Descrizione dell'evento */}
+        <p className="mt-6">{event?.description}</p>
       </div>
     </div>
   );
