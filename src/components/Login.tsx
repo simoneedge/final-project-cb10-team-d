@@ -1,22 +1,34 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Importa useRouter per gestire il redirect
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/firebaseConfig';
-import Button from './Button'; 
-import { toast } from 'react-toastify'; 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Importa useRouter per gestire il redirect
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "@/firebaseConfig";
+import Button from "./Button";
+import { toast } from "react-toastify";
 
-const LoginButton = ({ 
-  buttonLabel = "ACCEDI", 
+interface LoginButtonProps {
+  buttonLabel?: string;
+  buttonClassName?: string;
+  redirectTo?: string;
+  onLoginSuccess?: () => void; // Aggiungi il tipo esplicito
+}
+
+const LoginButton: React.FC<LoginButtonProps> = ({
+  buttonLabel = "ACCEDI",
   buttonClassName = "text-rosso hover:font-bold",
-  redirectTo = '/' // Valore di default per il redirect dopo il login
+  redirectTo = "/", // Valore di default per il redirect dopo il login
+  onLoginSuccess, // Aggiungi questa nuova props
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter(); // Inizializza useRouter per gestire la navigazione
 
   useEffect(() => {
@@ -40,34 +52,37 @@ const LoginButton = ({
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsModalOpen(false);
-      toast.success('Login effettuato con successo!');
+      toast.success("Login effettuato con successo!");
+      if (onLoginSuccess) onLoginSuccess(); // Chiama la funzione solo se è definita      router.push(redirectTo); // Effettua il redirect alla pagina specificata
       router.push(redirectTo); // Effettua il redirect alla pagina specificata
     } catch (error) {
-      toast.error('Errore di accesso, riprova.');
+      toast.error("Errore di accesso, riprova.");
     }
   };
 
   const handleLogout = () => {
     signOut(auth);
-    toast.info('Logout effettuato con successo!');
+    toast.info("Logout effettuato con successo!");
   };
 
   if (loading) {
-    return null; 
+    return null;
   }
 
   return (
     <>
-      <Button 
-        label={isLoggedIn ? "LOGOUT" : buttonLabel} 
-        onClick={isLoggedIn ? handleLogout : openModal} 
-        className={isLoggedIn ? "text-rosso hover:font-bold" : buttonClassName} 
+      <Button
+        label={isLoggedIn ? "LOGOUT" : buttonLabel}
+        onClick={isLoggedIn ? handleLogout : openModal}
+        className={isLoggedIn ? "text-rosso hover:font-bold" : buttonClassName}
       />
-      
+
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative rounded-none">
-            <h2 className="text-xl text-rosso font-semibold mb-4">Fai il login</h2>
+            <h2 className="text-xl text-rosso font-semibold mb-4">
+              Fai il login
+            </h2>
             <p className="mb-4">Inserisci le tue credenziali per accedere.</p>
 
             <button
@@ -102,8 +117,11 @@ const LoginButton = ({
 
             <div className="mt-4 w-full m-0 p-0">
               <p className="text-gray-400">
-                Non sei ancora registrato?{' '}
-                <a href="/signup" className="text-verde font-bold hover:underline">
+                Non sei ancora registrato?{" "}
+                <a
+                  href="/signup"
+                  className="text-verde font-bold hover:underline"
+                >
                   Registrati
                 </a>
               </p>
