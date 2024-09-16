@@ -69,7 +69,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
       <form className="bg-white p-6 shadow-lg w-full max-w-xl space-y-8" onSubmit={handleSubmit}>
         <select
           name="category"
-          className="w-full border p-2 rounded"
+          className="border p-2"
           value={formData.category}
           onChange={onChange}
           required
@@ -84,7 +84,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
             type="text"
             name="title"
             placeholder="Titolo"
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full"
             value={formData.title}
             onChange={onChange}
             required
@@ -93,7 +93,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
             type="text"
             name="location"
             placeholder="Luogo"
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full"
             value={formData.location}
             onChange={onChange}
             required
@@ -102,14 +102,14 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
         <textarea
           name="description"
           placeholder="Descrizione"
-          className="w-full border p-2 rounded"
+          className="w-full border p-2"
           value={formData.description}
           onChange={onChange}
           required
         ></textarea>
 
-        <fieldset className="border p-4 rounded">
-          <legend className="font-bold">Seleziona uno o più tag:</legend>
+        <fieldset className="border p-4">
+          <legend className="text-xl font-titolo mb-4 text-rosso">Seleziona uno o più tag:</legend>
           <div className="flex flex-wrap gap-4">
             {["concerti", "festival", "arte", "moda", "mostra", "workshop", "teatro", "spettacolo", "ristorante", "fiera", "sagra", "tradizione", 'famiglie', 'ragazzi'].map((tag) => (
               <label key={tag} className="inline-flex items-center w-1/2 md:w-1/5">
@@ -131,7 +131,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
             type="date"
             name="dateStart"
             placeholder="Data inizio"
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full"
             value={formData.dateStart}
             onChange={onChange}
             min={todayDate} // Imposta la data minima
@@ -141,7 +141,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
             type="date"
             name="dateEnd"
             placeholder="Data fine"
-            className="border p-2 w-full rounded"
+            className="border p-2 w-full"
             value={formData.dateEnd}
             onChange={onChange}
             min={todayDate} // Imposta la data minima
@@ -152,14 +152,14 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
           type="text"
           name="price"
           placeholder="Prezzo"
-          className="w-full border p-2 rounded"
+          className="w-full border p-2"
           value={formData.price}
           onChange={onChange}
           required
         />
         <button
           type="submit"
-          className="border border-rosso bg-white text-rosso p-2 rounded hover:bg-rosso hover:text-white"
+          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white"
         >
           Crea Evento
         </button>
