@@ -6,7 +6,7 @@ interface HeartButtonProps {
   title: string | undefined;
   image: string | undefined;
   color: string;
-  onUpdate: () => void;
+  onUpdate?: () => void;
 }
 
 const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, onUpdate }) => {
