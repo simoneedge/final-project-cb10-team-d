@@ -137,7 +137,7 @@ export default function FoodPage() {
             onNextWeekClick={handleNextWeekClick}
           />
         </div>
-        <div className="space-y-4">
+        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {loading ? (
             <Loading /> // Mostra il caricamento con i cerchietti
