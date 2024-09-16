@@ -11,8 +11,8 @@ const SwitchBox = (props: SwitchBoxProps) => {
     const { label, value, setValue } = props;
 
     return (
-        <div className="flex flex-col">
-            <h3 className="mb-1 text-gray-800">{label}</h3>
+        <div className="flex items-center gap-2">
+            <h3 className="text-gray-800">{label}</h3>
             <Switch active={value} setActive={setValue} />
         </div>
     );

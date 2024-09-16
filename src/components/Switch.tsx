@@ -1,29 +1,27 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 interface SwitchProps {
-    active: boolean;
-    setActive: Dispatch<SetStateAction<boolean>>;
+  active: boolean;
+  setActive: Dispatch<SetStateAction<boolean>>;
 }
 
-const Switch = (props: SwitchProps) => {
-    const { active, setActive } = props;
-
-    return (
-        <div
-            className={`relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300 ${active ? "bg-green-500" : "bg-gray-300"
-                }`}
-            onClick={() => setActive(!active)}
-        >
-            <div
-                className={`absolute inset-0 rounded-full transition-all duration-300 ${active ? "bg-green-400" : "bg-gray-400"
-                    }`}
-            />
-            <div
-                className={`absolute top-[4px] left-1 w-4 h-4 bg-white rounded-full shadow transform transition-transform duration-300 ${active ? "translate-x-6" : ""
-                    }`}
-            />
-        </div>
-    );
+const Switch: React.FC<SwitchProps> = ({ active, setActive }) => {
+  return (
+    <div
+      className={`relative w-16 h-8 rounded-full cursor-pointer transition-colors duration-300 ${active ? "bg-rosso" : "bg-gray-300"}`}
+      onClick={() => setActive(!active)}
+    >
+      {/* Background */}
+      <div
+        className={`absolute inset-0 rounded-full transition-all duration-300 ${active ? "bg-rosso" : "bg-gray-300"}`}
+      />
+      
+      {/* Circle */}
+      <div
+        className={`absolute top-[2px] left-1 w-7 h-7 rounded-full shadow transition-transform duration-300 ${active ? "bg-white translate-x-8" : "bg-rosso"}`}
+      />
+    </div>
+  );
 };
 
 export default Switch;

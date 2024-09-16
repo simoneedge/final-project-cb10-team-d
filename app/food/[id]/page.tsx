@@ -80,8 +80,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         </div>
 
         <div className="flex flex-col items-start text-left">
-          <p className="mt-6">{event?.description}</p>
-          <div className="mt-8">
+        <div className="mt-8">
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Tag:{" "}
@@ -113,6 +112,8 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
               {event?.location}
             </p>
           </div>
+
+          <p className="mt-6">{event?.description}</p>
         </div>
       </div>
     </div>

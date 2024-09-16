@@ -80,39 +80,40 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         </div>
 
         <div className="flex flex-col items-start text-left">
-          <p className="mt-6">{event?.description}</p>
           <div className="mt-8">
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-verde">
                 Tag:{" "}
               </strong>{" "}
               {event?.tag?.join(", ")}
             </p>
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-verde">
                 Data inizio:
               </strong>{" "}
               {event?.dateStart}
             </p>
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-verde">
                 Data fine:
               </strong>{" "}
               {event?.dateEnd}
             </p>
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-verde">
                 Prezzo:{" "}
               </strong>
               {event?.price === "0" ? "Ingresso gratuito" : ` ${event?.price}€`}
             </p>
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-verde">
                 Luogo:{" "}
               </strong>{" "}
               {event?.location}
             </p>
           </div>
+
+          <p className="mt-6">{event?.description}</p>
         </div>
       </div>
     </div>

@@ -119,9 +119,9 @@ export default function ProposePage() {
   };
 
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
-      <div className="p-4">
-        <h1 className="text-4xl font-titolo mb-4 text-rosso">Proponi Evento</h1>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 relative">
+      <div className="p-8">
+        <h1 className="text-4xl font-titolo mb-4 ml-4 text-rosso">Proponi Evento</h1>
         <EventForm
           formData={formData}
           onChange={handleChange}
