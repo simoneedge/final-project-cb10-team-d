@@ -42,18 +42,14 @@ const ProfilePage = () => {
         router.push('/');
       }
     });
-
-
-
-
     fetchCards();
 
     return () => unsubscribe();
   }, [router]);
 
-  useEffect(() => {
-    fetchCards();
-  }, [fetchTriggers])
+  const handleUpdate = async () => {
+    await fetchCards(); // Fetch cards after updating favorites
+  };
 
 
   const toggleAccordion = () => {
@@ -137,7 +133,7 @@ const ProfilePage = () => {
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
                 <HeartButton
-                  onUpdate={() => setFetchTrigger(prev => !prev)}
+                  onUpdate={handleUpdate}
                   title={card.title}
                   image={card.image}
                   eventId={card.id}

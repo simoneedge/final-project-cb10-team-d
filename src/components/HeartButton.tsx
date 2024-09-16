@@ -6,9 +6,7 @@ interface HeartButtonProps {
   title: string | undefined;
   image: string | undefined;
   color: string;
-  onUpdate: Dispatch<SetStateAction<boolean>>;
-
-
+  onUpdate: () => void;
 }
 
 const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, onUpdate }) => {
@@ -44,6 +42,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
         const data = await res.json();
         console.log(data.message); // Messaggio di successo ("Event added" o "Event removed")
         setIsLiked(!isLiked); // Alterna lo stato del cuoricino
+        onUpdate();
       } else {
         alert("Errore nell'aggiungere ai preferiti.");
       }
