@@ -149,24 +149,39 @@ const HomePage = () => {
 
       />
       <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
-        <Button />
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event, index) => (
-            <Card
-              eventId={event._id}
-              key={event._id || index}
-              backgroundColor={event.color || '#4E614E'}
-              title={event.title || 'Pasta di mandorle'}
-              imageSrc={event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'}
-              size={(index + 1) % 4 === 0 ? 'large' : 'small'} // Ogni quinta card diventa large
+      <Button />
+{errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
-              link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
-            />
-          ))
-        ) : (
-          <p>No events found...</p> // Messaggio se non ci sono eventi corrispondenti
-        )}
+<div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
+  {filteredEvents.length > 0 ? (
+    filteredEvents.map((event, index) => (
+      <div
+        key={event._id || index}
+        className={`${
+          (index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
+        } w-full md:w-auto`}
+      >
+        <Card
+          eventId={event._id}
+          backgroundColor={event.color || '#4E614E'}
+          title={event.title || 'Pasta di mandorle'}
+          imageSrc={
+            event.image ||
+            'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
+          }
+          size={(index + 1) % 4 === 0 ? 'large' : 'small'} // Ogni quarta card diventa large
+          link={
+            <Link href={`/events/${event._id}`}>
+              <ArrowButton />
+            </Link>
+          }
+        />
+      </div>
+    ))
+  ) : (
+    <p>No events found...</p> // Messaggio se non ci sono eventi corrispondenti
+  )}
+</div>
       </main>
       <ScrollToTopButton />
     </div>
