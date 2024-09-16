@@ -10,7 +10,8 @@ import ArrowButton from '@/src/components/ArrowButton';
 import Filter from '@/src/components/Filter';
 import { formattedDate } from '@/data/formattDate';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Loading from '@/src/components/Loading'; // Importa il componente di loading
+import Loading from '@/src/components/Loading'; 
+import Slideshow from '@/src/components/Slideshow';
 
 const getData = async (): Promise<{ events: IEvent[] }> => {
   try {
@@ -20,6 +21,11 @@ const getData = async (): Promise<{ events: IEvent[] }> => {
   } catch (error: any) {
     throw Error(error.message);
   }
+};
+
+const getRandomSlides = (items: IEvent[], count: number): IEvent[] => {
+  const shuffled = [...items].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 };
 
 const HomePage: React.FC = () => {
@@ -32,7 +38,6 @@ const HomePage: React.FC = () => {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(true);
-
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -136,8 +141,15 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
+  const randomSlides = getRandomSlides(events, 5);
+  const slideshowImages = randomSlides.map(event => ({
+    src: event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
+    title: event.title || 'Default Title',
+  }));
+
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
+      <Slideshow images={slideshowImages} /> 
       <Filter
         onSearch={handleSearch}
         isFree={isFree}
@@ -154,35 +166,35 @@ const HomePage: React.FC = () => {
           <Loading /> // Mostra l'animazione di caricamento
         ) : (
           <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 items-start w-full">
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event, index) => (
-              <div
-                key={event._id || index}
-                className={`${
-                  (index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
-                } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
-              >
-                <Card
-                  eventId={event._id}
-                  backgroundColor={event.color || '#4E614E'}
-                  title={event.title || 'Pasta di mandorle'}
-                  imageSrc={
-                    event.image ||
-                    'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
-                  }
-                  size={(index + 1) % 4 === 0 ? 'large' : 'small'}
-                  link={
-                    <Link href={`/events/${event._id}`}>
-                      <ArrowButton />
-                    </Link>
-                  }
-                />
-              </div>
-            ))
-          ) : (
-            <p className="justify-items-center">No events found...</p>
-          )}
-        </div>
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event, index) => (
+                <div
+                  key={event._id || index}
+                  className={`${
+                    (index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
+                  } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+                >
+                  <Card
+                    eventId={event._id}
+                    backgroundColor={event.color || '#4E614E'}
+                    title={event.title || 'Pasta di mandorle'}
+                    imageSrc={
+                      event.image ||
+                      'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
+                    }
+                    size={(index + 1) % 4 === 0 ? 'large' : 'small'}
+                    link={
+                      <Link href={`/events/${event._id}`}>
+                        <ArrowButton />
+                      </Link>
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="justify-items-center">No events found...</p>
+            )}
+          </div>
         )}
       </main>
       <ScrollToTopButton />
