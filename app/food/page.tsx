@@ -8,18 +8,23 @@ import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
 import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
-import Loading from "@/src/components/Loading"; // Importa il componente di loading
+import Loading from "@/src/components/Loading"; 
 import CategoryBanner from "@/src/components/CategoryBanner";
 
+// Funzione per recuperare i dati dei cibi
 const fetchData = async (): Promise<{ foods: IFood[] }> => {
   try {
     const res = await fetch("http://localhost:3000/api/foods", {
       cache: "no-cache",
     });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
+    console.log("Fetched foods:", data.foods); // Log di debug
     return data;
   } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+    console.error("Error fetching data:", error.message); // Log di errore
     throw Error(error.message);
   }
 };
@@ -28,35 +33,40 @@ export default function FoodPage() {
   const [foods, setFoods] = useState<IFood[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IFood[]>([]);
-  const [searchQuery, setSearchQuery] = useState(''); 
-  const [isFree, setIsFree] = useState(false); 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isFree, setIsFree] = useState(false);
   const [today, setToday] = useState<number>(0);
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
-  const [loading, setLoading] = useState(true); // Stato di caricamento
+  const [loading, setLoading] = useState(true);
 
+  // Effetto per caricare i dati iniziali
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true); // Imposta lo stato di caricamento a true
+      setLoading(true); 
       try {
         const data = await fetchData();
         setFoods(data.foods);
         setFilteredEvents(data.foods);
       } catch (error: any) {
+        console.error("Failed to load data:", error); // Log di errore
         setErrorMessage("Failed to load data.");
       } finally {
-        setLoading(false); // Imposta lo stato di caricamento a false dopo il fetch
+        setLoading(false); 
       }
     };
 
     loadData();
   }, []);
 
+  // Funzione per gestire la ricerca
   const handleSearch = (query: string) => {
+    console.log("Search query:", query); // Log di debug
     setSearchQuery(query);
     applyFilters(query, isFree, today);
   };
 
+  // Filtra eventi di oggi
   const handleTodayClick = () => {
     const date = formattedDate();
     const dayOfYear = getDayOfYear(date);
@@ -64,6 +74,7 @@ export default function FoodPage() {
     applyFilters(searchQuery, isFree, dayOfYear);
   };
 
+  // Filtra eventi di domani
   const handleTomorrowClick = () => {
     const date = formattedDate(1);
     const dayOfYear = getDayOfYear(date);
@@ -71,6 +82,7 @@ export default function FoodPage() {
     applyFilters(searchQuery, isFree, dayOfYear);
   };
 
+  // Filtra eventi della prossima settimana
   const handleNextWeekClick = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -79,13 +91,14 @@ export default function FoodPage() {
     const nextSunday = nextMonday + 6;
     setStartNextWeek(nextMonday);
     setEndNextWeek(nextSunday);
-
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
 
+  // Funzione per applicare i filtri agli eventi
   const applyFilters = (query: string, isFree: boolean, dayOfYear: number, startNextWeek?: number, endNextWeek?: number) => {
     let filtered = foods;
 
+    // Filtro per la query di ricerca
     if (query !== '') {
       filtered = filtered.filter(event =>
         event.title?.toLowerCase().includes(query.toLowerCase()) || 
@@ -94,21 +107,23 @@ export default function FoodPage() {
       );
     }
 
+    // Filtro per eventi gratuiti
     if (isFree) {
       filtered = filtered.filter(event => event.price === '0'); 
-    } else if (!isFree) {
+    } else {
       filtered = filtered.filter(event => event.price !== '0');
     }
 
+    // Filtro per il giorno specifico
     if (dayOfYear) {
       filtered = filtered.filter(event => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
         const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-
         return dayOfYear >= startEvent && dayOfYear <= endEvent;
       });
     }
 
+    // Filtro per la prossima settimana
     if (startNextWeek !== undefined && endNextWeek !== undefined) {
       filtered = filtered.filter(event => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
@@ -117,9 +132,11 @@ export default function FoodPage() {
       });
     }
 
+    console.log("Filtered events:", filtered); // Log di debug per verificare i risultati dei filtri
     setFilteredEvents(filtered);
   };
 
+  // Applica i filtri quando gli stati cambiano
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [foods, searchQuery, isFree, today, startNextWeek, endNextWeek]);
@@ -141,11 +158,11 @@ export default function FoodPage() {
         <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {loading ? (
-            <Loading /> // Mostra il caricamento con i cerchietti
+            <Loading /> 
           ) : filteredEvents.length > 0 ? (
-            filteredEvents.map((food) => (
+            filteredEvents.map((food, index) => (
               <Card
-                key={food._id}
+                key={food._id || index}
                 backgroundColor="#822225"
                 title={food.title || "No title available"}
                 imageSrc={food.image || "default-image-url"}
