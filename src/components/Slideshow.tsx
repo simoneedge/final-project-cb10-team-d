@@ -32,9 +32,7 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
     );
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
+  
 
   return (
     <div className="relative w-full h-[600px] mb-10">
@@ -73,18 +71,7 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
         &#10095;
       </button>
 
-      {/* Dots */}
-      {/* <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {images.map((_, index) => (
-          <span
-            key={index}
-            className={`h-4 w-4 rounded-full inline-block cursor-pointer ${
-              index === currentSlide ? 'bg-gray-700' : 'bg-gray-400'
-            }`}
-            onClick={() => goToSlide(index)}
-          ></span>
-        ))}
-      </div> */}
+      
     </div>
   );
 };
