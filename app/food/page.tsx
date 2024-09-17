@@ -10,6 +10,7 @@ import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
 import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
+import { getAuth } from "firebase/auth";
 
 // Funzione per recuperare i dati dei cibi
 const fetchData = async (page: number, limit: number): Promise<{ foods: IFood[], totalPages: number }> => {
@@ -43,6 +44,23 @@ export default function FoodPage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
+
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = async (email: string) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteIds = data.profile.events.map((event: { id: number }) => event.id);
+      setFavoriteEventIds(favoriteIds);
+    } catch (error) {
+      console.error('Errore nel recupero dei preferiti:', error);
+    }
+  };
+
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
@@ -58,6 +76,16 @@ export default function FoodPage() {
         setFoods(data.foods);
         setFilteredEvents(data.foods);
         setTotalPages(data.totalPages);
+
+        // Recupera i preferiti se l'utente è autenticato
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          const userEmail = user.email;
+          await fetchFavorites(userEmail);
+        }
+
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -191,6 +219,8 @@ export default function FoodPage() {
                 title={food.title || "No title available"}
                 imageSrc={food.image || "default-image-url"}
                 link={<Link href={`/food/${food._id}`}><ArrowButton /></Link>}
+                isLiked={favoriteEventIds.includes(String(food._id))}
+                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
               />
             ))
           ) : (

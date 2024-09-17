@@ -1,16 +1,21 @@
 import { getAuth } from 'firebase/auth';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface HeartButtonProps {
-  eventId?: string;
+  eventId?: number;
   title: string | undefined;
   image: string | undefined;
   color: string;
+  isLiked?: boolean;
   onClick?: () => void; // Callback per aggiornare le card nella pagina principale
 }
 
-const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, onClick }) => {
-  const [isLiked, setIsLiked] = useState<boolean>(false); // Stato per la gestione del cuoricino
+const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, isLiked, onClick }) => {
+  const [liked, setLiked] = useState<boolean>(isLiked); // Stato per la gestione del cuoricino
+
+  useEffect(() => {
+    setLiked(isLiked);
+  }, [isLiked]);
 
   // Gestione del click sul cuoricino
   const handleFavoriteClick = async () => {
@@ -42,7 +47,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
       if (res.ok) {
         const data = await res.json();
-        setIsLiked(!isLiked);
+        setLiked(!liked);
 
         // Notifica ProfilePage per aggiornare le card
         if (onClick) {
@@ -59,7 +64,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
   return (
     <button
       onClick={onClick}
-      className={`p-1 transition-transform duration-200 ${isLiked ? 'scale-125' : 'scale-100'}`} // Aggiunge l'animazione di scaling
+      className={`p-1 transition-transform duration-200 ${liked ? 'scale-125' : 'scale-100'}`} // Aggiunge l'animazione di scaling
       style={{
         backgroundColor: color,
         marginTop: -10,
@@ -68,7 +73,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
     >
       <svg
         onClick={handleFavoriteClick}
-        className={`w-6 h-6 transition-colors duration-300 ${isLiked ? 'text-[#8D3639]' : 'text-gray-400'}`} // Cambia il colore tra rosso e grigio
+        className={`w-6 h-6 transition-colors duration-300 ${liked ? 'text-[#8D3639]' : 'text-gray-400'}`} // Cambia il colore tra rosso e grigio
         fill="currentColor"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"

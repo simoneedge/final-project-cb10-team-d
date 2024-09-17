@@ -46,11 +46,28 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
   const [slideshowImages, setSlideshowImages] = useState<{ src: string, title: string }[]>([]);
+  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
   const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
   const limit = 12; // Numero di eventi per pagina
+
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = async (email: string) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteIds = data.profile.events.map((event: { id: string }) => event.id);
+      setFavoriteEventIds(favoriteIds);
+    } catch (error) {
+      console.error('Errore nel recupero dei preferiti:', error);
+    }
+  };
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -73,6 +90,16 @@ const HomePage: React.FC = () => {
         setEvents(data.events);
         setFilteredEvents(data.events);
         setTotalPages(data.totalPages);
+
+        // Recupera i preferiti se l'utente è autenticato
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          const userEmail = user.email;
+          await fetchFavorites(userEmail);
+        }
+
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -212,6 +239,7 @@ const HomePage: React.FC = () => {
                     } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
+                    isLiked={favoriteEventIds.includes(String(event._id))}
                     eventId={event._id}
                     backgroundColor={event.color || '#4E614E'}
                     title={event.title || 'Pasta di mandorle'}
@@ -220,6 +248,7 @@ const HomePage: React.FC = () => {
                       'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
                     }
                     size={(index + 1) % 4 === 0 ? 'large' : 'small'}
+                    onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
                     link={
                       <Link href={`/events/${event._id}`}>
                         <ArrowButton />
