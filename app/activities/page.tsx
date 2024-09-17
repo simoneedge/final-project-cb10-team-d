@@ -10,6 +10,7 @@ import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
 import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
+import { getAuth } from "firebase/auth";
 
 
 const fetchData = async (page: number, limit: number): Promise<{ activities: IActivity[], totalPages: number }> => {
@@ -17,6 +18,9 @@ const fetchData = async (page: number, limit: number): Promise<{ activities: IAc
     const res = await fetch(`http://localhost:3000/api/activities?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
     return data;
   } catch (error: unknown) {
@@ -39,6 +43,23 @@ export default function AttivitaPage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
+
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = async (email: string) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteIds = data.profile.events.map((event: { id: number }) => event.id);
+      setFavoriteEventIds(favoriteIds);
+    } catch (error) {
+      console.error('Errore nel recupero dei preferiti:', error);
+    }
+  };
+
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
@@ -53,7 +74,15 @@ export default function AttivitaPage() {
         const data = await fetchData(currentPage, limit);
         setActivities(data.activities);
         setFilteredEvents(data.activities);
-        setTotalPages(data.totalPages)
+        setTotalPages(data.totalPages);
+        // Recupera i preferiti se l'utente è autenticato
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          const userEmail = user.email;
+          await fetchFavorites(userEmail);
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -137,7 +166,6 @@ export default function AttivitaPage() {
       });
     }
 
-    console.log("Filtered events:", filtered); // Log di debug per vedere gli eventi filtrati
     setFilteredEvents(filtered);
   };
 
@@ -187,6 +215,9 @@ export default function AttivitaPage() {
                 title={activity.title || "No title available"}
                 imageSrc={activity.image || "default-image-url"}
                 link={<Link href={`/activities/${activity._id}`}><ArrowButton /></Link>}
+                isLiked={favoriteEventIds.includes(String(activity._id))}
+                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
+
               />
             ))
           ) : (
