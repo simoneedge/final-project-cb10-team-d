@@ -42,9 +42,8 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
       {images.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
         >
           <div className="absolute top-0 left-0 text-white text-sm p-2 bg-black bg-opacity-50">
             {index + 1} / {images.length}

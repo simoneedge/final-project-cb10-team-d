@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 export interface IEvent {
     color: string;
-    _id: string;
+    _id: number;
     title?: string;
     longTitle?: string;
     image?: string;

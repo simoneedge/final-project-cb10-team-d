@@ -11,7 +11,7 @@ interface CardProps {
   imageSrc: string | undefined;
   size?: "small" | "large";
   link?: React.ReactNode;
-  eventId: string; // Passa l'ID dell'evento come prop
+  eventId: number; // Passa l'ID dell'evento come prop
   onHeartClick?: () => void;
 }
 
