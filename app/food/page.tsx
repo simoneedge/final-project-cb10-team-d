@@ -23,9 +23,13 @@ const fetchData = async (page: number, limit: number): Promise<{ foods: IFood[],
     const data = await res.json();
     console.log("Fetched foods:", data.foods); // Log di debug
     return data;
-  } catch (error: any) {
-    console.error("Error fetching data:", error.message); // Log di errore
-    throw Error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching data:", error.message);
+      throw Error(error.message);
+    } else {
+      throw Error("Unknown error occurred");
+    }
   }
 };
 
