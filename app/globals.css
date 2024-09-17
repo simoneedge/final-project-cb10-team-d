@@ -81,6 +81,22 @@ body {
   transform: scale(0.8);
 }
 
+.custom-toast-success {
+  background-color: #822225 !important; 
+  color: white !important;
+}
+
+.custom-toast-error {
+  background-color: #822225 !important;
+  color: white !important;
+}
+
+.custom-toast-info {
+  background-color: #822225 !important; 
+  color: white !important;
+}
+
+
 /* Loading con Cerchietti */
 .loading-container {
   display: flex;

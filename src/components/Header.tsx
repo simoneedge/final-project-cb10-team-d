@@ -20,11 +20,13 @@ const Header = () => {
               alt="Logo"
               width={200}
               height={50}
+              className="my-4"
             />
           </Link>
         </div>
         <NavBar links={links} />
       </div>
+      <div className="w-full border border-rosso"></div>
     </header>
   );
 };

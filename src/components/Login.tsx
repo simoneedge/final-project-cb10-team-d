@@ -10,6 +10,7 @@ import {
 import { auth } from "@/firebaseconfig";
 import Button from "./Button";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface LoginButtonProps {
   buttonLabel?: string;
@@ -52,17 +53,23 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsModalOpen(false);
-      toast.success("Login effettuato con successo!");
+      toast.success("Login effettuato con successo!" , {
+        className: 'custom-toast-success',
+      });
       if (onLoginSuccess) onLoginSuccess(); // Chiama la funzione solo se è definita      router.push(redirectTo); // Effettua il redirect alla pagina specificata
       router.push(redirectTo); // Effettua il redirect alla pagina specificata
     } catch (error) {
-      toast.error("Errore di accesso, riprova.");
+      toast.error("Errore di accesso, riprova.", {
+        className: 'custom-toast-error',
+      });
     }
   };
 
   const handleLogout = () => {
     signOut(auth);
-    toast.info("Logout effettuato con successo!");
+    toast.info("Logout effettuato con successo!", {
+      className: 'custom-toast-info',
+    });
   };
 
   if (loading) {
@@ -80,7 +87,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative rounded-none">
-            <h2 className="text-xl text-rosso font-semibold mb-4">
+            <h2 className="font-titolo text-2xl text-rosso font-semibold mb-4">
               Fai il login
             </h2>
             <p className="mb-4">Inserisci le tue credenziali per accedere.</p>
@@ -109,7 +116,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
               />
               <button
                 type="submit"
-                className="bg-verde text-white p-2 hover:bg-indigo-700"
+                className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
               >
                 Login
               </button>
@@ -120,7 +127,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
                 Non sei ancora registrato?{" "}
                 <a
                   href="/signup"
-                  className="text-verde font-bold hover:underline"
+                  className="text-rosso font-bold hover:underline"
                 >
                   Registrati
                 </a>
