@@ -28,6 +28,8 @@ const cultureSchema = new Schema({
     dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
+    color: { type: String }
+
 });
 
 const Culture = mongoose.models.Culture || mongoose.model("Culture", cultureSchema);

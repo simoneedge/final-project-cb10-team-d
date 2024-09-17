@@ -28,6 +28,7 @@ const eventSchema = new Schema({
     dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
+    color: { type: String }
 });
 
 const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);

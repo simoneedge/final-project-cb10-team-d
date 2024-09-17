@@ -28,6 +28,8 @@ const foodsSchema = new Schema({
     dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
+    color: { type: String }
+
 });
 
 const Food = mongoose.models.Food || mongoose.model("Food", foodsSchema);

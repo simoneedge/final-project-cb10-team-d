@@ -28,6 +28,8 @@ const activitySchema = new Schema({
     dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
+    color: { type: String }
+
 });
 
 const Activity = mongoose.models.Activity || mongoose.model("Activity", activitySchema);

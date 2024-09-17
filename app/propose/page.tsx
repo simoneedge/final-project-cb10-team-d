@@ -58,6 +58,21 @@ export default function ProposePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Determina il colore in base alla categoria selezionata
+    let color = '';
+    switch (formData.category) {
+      case 'cultures':
+        color = '#4E614E';
+        break;
+      case 'foods':
+        color = '#822225';
+        break;
+      case 'activities':
+        color = '#F2B85A';
+        break;
+      default:
+        color = ''; // Valore predefinito
+    }
 
     const formattedData = {
       ...formData,
@@ -80,6 +95,7 @@ export default function ProposePage() {
     const finalFormData = {
       ...formattedData,
       image: imageUrl || formData.image,
+      color,  // Aggiungi il colore nel formData
     };
 
     try {
@@ -101,8 +117,6 @@ export default function ProposePage() {
           body: JSON.stringify(finalFormData),
         }),
       ]);
-
-
 
       // Gestione delle risposte
       if (responseCategory.ok && responseEvents.ok) {

@@ -10,7 +10,7 @@ import ArrowButton from '@/src/components/ArrowButton';
 import Filter from '@/src/components/Filter';
 import { formattedDate } from '@/data/formattDate';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Loading from '@/src/components/Loading'; 
+import Loading from '@/src/components/Loading';
 import Slideshow from '@/src/components/Slideshow';
 
 const getData = async (): Promise<{ events: IEvent[] }> => {
@@ -25,6 +25,7 @@ const getData = async (): Promise<{ events: IEvent[] }> => {
 
 const getRandomSlides = (items: IEvent[], count: number): IEvent[] => {
   const shuffled = [...items].sort(() => 0.5 - Math.random());
+  console.log('io sono shuf', shuffled)
   return shuffled.slice(0, count);
 };
 
@@ -149,7 +150,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
-      <Slideshow images={slideshowImages} /> 
+      <Slideshow images={slideshowImages} />
       <Filter
         onSearch={handleSearch}
         isFree={isFree}
@@ -170,9 +171,8 @@ const HomePage: React.FC = () => {
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${
-                    (index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
-                  } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+                  className={`${(index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
+                    } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
                     eventId={event._id}
