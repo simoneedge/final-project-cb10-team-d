@@ -1,13 +1,12 @@
 import { getAuth } from 'firebase/auth';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 
 interface HeartButtonProps {
   eventId?: string;
   title: string | undefined;
   image: string | undefined;
   color: string;
-  onClick?: () => void;
-
+  onClick?: () => void; // Callback per aggiornare le card nella pagina principale
 }
 
 const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, onClick }) => {
@@ -21,7 +20,6 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
       return;
     }
     const userEmail = user.email; // Ottieni l'email dell'utente
-    console.log(userEmail);
 
     try {
       const res = await fetch('/api/profiles', {
@@ -31,11 +29,13 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
         },
         body: JSON.stringify({
           mail: userEmail,
-          events: [{
-            id: eventId,
-            title: title,
-            image: image
-          }]
+          events: [
+            {
+              id: eventId,
+              title: title,
+              image: image,
+            },
+          ],
         }),
       });
 
@@ -43,6 +43,11 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
         const data = await res.json();
         console.log(data.message); // Messaggio di successo ("Event added" o "Event removed")
         setIsLiked(!isLiked); // Alterna lo stato del cuoricino
+
+        // Chiama la funzione onClick per notificare ProfilePage
+        if (onClick) {
+          onClick();
+        }
       } else {
         alert("Errore nell'aggiungere ai preferiti.");
       }
@@ -51,19 +56,17 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
     }
   };
 
-
   return (
     <button
-      onClick={onClick}
+      onClick={handleFavoriteClick} // Modificato per chiamare handleFavoriteClick direttamente
       className="p-1"
       style={{
         backgroundColor: color,
-        marginTop: -10
+        marginTop: -10,
       }}
       title="Heart Button"
     >
       <svg
-        onClick={handleFavoriteClick}
         className="w-4 h-4 text-white"
         fill="currentColor"
         viewBox="0 0 20 20"

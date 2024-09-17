@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth, db } from '@/firebaseconfig'; // Assicurati di importare db
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore'; // Importa getDoc da Firestore
+import { doc, getDoc } from 'firebase/firestore';
 import Link from 'next/link';
 import HeartButton from '@/src/components/HeartButton';
 import ArrowButton from '@/src/components/ArrowButton';
@@ -17,19 +17,17 @@ interface Card {
 
 const ProfilePage = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>(null); // Stato per nome utente
-  const [userLastName, setUserLastName] = useState<string | null>(null); // Stato per cognome utente
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userLastName, setUserLastName] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [showAccordion, setShowAccordion] = useState(false);
   const router = useRouter();
 
   // Funzione per recuperare le card
-  const fetchCards = async (email: string | null) => {
+  const fetchCards = useCallback(async (email: string | null) => {
     try {
       if (email) {
         const response = await fetch(`/api/profiles?email=${email}`);
-
-        // Verifica che la risposta abbia avuto successo
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -42,7 +40,7 @@ const ProfilePage = () => {
     } catch (error) {
       console.error('Errore nel recupero delle card:', error);
     }
-  };
+  }, []);
 
   // Funzione per recuperare i dati dell'utente da Firestore
   const fetchUserData = async (uid: string) => {
@@ -50,8 +48,8 @@ const ProfilePage = () => {
       const userDoc = await getDoc(doc(db, 'users', uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        setUserName(userData.firstName); // Imposta il nome
-        setUserLastName(userData.lastName); // Imposta il cognome
+        setUserName(userData.firstName);
+        setUserLastName(userData.lastName);
       } else {
         console.log('No user data found!');
       }
@@ -65,7 +63,7 @@ const ProfilePage = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
-        fetchUserData(user.uid); // Richiama la funzione per recuperare nome e cognome
+        fetchUserData(user.uid);
         fetchCards(user.email);
       } else {
         router.push('/');
@@ -73,16 +71,14 @@ const ProfilePage = () => {
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, [router, fetchCards]);
 
-  // Funzione per aggiornare le card
-  const handleUpdate = async () => {
-    try {
+  // Funzione per aggiornare le card dopo l'interazione
+  const handleUpdate = useCallback(async () => {
+    if (userEmail) {
       await fetchCards(userEmail); // Fetch cards after updating favorites
-    } catch (error) {
-      console.error('Errore nell\'aggiornamento delle card:', error);
     }
-  };
+  }, [userEmail, fetchCards]);
 
   // Funzione per mostrare o nascondere l'accordion
   const toggleAccordion = () => {
@@ -161,14 +157,18 @@ const ProfilePage = () => {
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
                 <HeartButton
-                  onClick={handleUpdate} // Passa la funzione di aggiornamento
+                  onClick={handleUpdate} 
                   title={card.title}
                   image={card.image}
                   eventId={card.id}
-                  color="#822225" />
+                  color="#822225"
+                />
               </div>
             </div>
-            <div className="diagonal-line-container p-3 text-white relative" style={{ backgroundColor: '#822225' }}>
+            <div
+              className="diagonal-line-container p-3 text-white relative"
+              style={{ backgroundColor: '#822225' }}
+            >
               <div className="diagonal-line-top"></div>
               <h2 className="text-[16px] font-titolo mt-4">{card.title}</h2>
               <div className="absolute bottom-2 right-2 cursor-pointer">
