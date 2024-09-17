@@ -13,19 +13,25 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Loading from '@/src/components/Loading';
 import Slideshow from '@/src/components/Slideshow';
 
+// Funzione per ottenere i dati degli eventi
 const getData = async (): Promise<{ events: IEvent[] }> => {
   try {
     const res = await fetch('http://localhost:3000/api/events', { cache: 'no-cache' });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
     return data;
   } catch (error: any) {
+    console.error('Errore durante il recupero dei dati:', error);
     throw Error(error.message);
   }
 };
 
+// Funzione per ottenere slides casuali
 const getRandomSlides = (items: IEvent[], count: number): IEvent[] => {
   const shuffled = [...items].sort(() => 0.5 - Math.random());
-  console.log('io sono shuf', shuffled)
+  console.log('Shuffled slides:', shuffled);
   return shuffled.slice(0, count);
 };
 
@@ -41,26 +47,24 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
 
+  // Gestisce l'autenticazione dell'utente
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        setUser(null);
-      }
+      setUser(currentUser ? currentUser : null);
     });
 
     return () => unsubscribe();
   }, []);
 
+  // Recupera i dati degli eventi all'inizializzazione
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const data = await getData();
         setEvents(data.events);
-        setFilteredEvents(data.events);
+        setFilteredEvents(data.events); // Inizialmente filtra tutti gli eventi
       } catch (error: any) {
         setErrorMessage(error.message);
       } finally {
@@ -70,11 +74,13 @@ const HomePage: React.FC = () => {
     fetchData();
   }, []);
 
+  // Gestisce la ricerca
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     applyFilters(query, isFree, today);
   };
 
+  // Filtra eventi di oggi
   const handleTodayClick = () => {
     const date = formattedDate();
     const dayOfYear = getDayOfYear(date);
@@ -82,6 +88,7 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, dayOfYear);
   };
 
+  // Filtra eventi di domani
   const handleTomorrowClick = () => {
     const date = formattedDate(1);
     const dayOfYear = getDayOfYear(date);
@@ -89,6 +96,7 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, dayOfYear);
   };
 
+  // Filtra eventi della prossima settimana
   const handleNextWeekClick = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -97,13 +105,14 @@ const HomePage: React.FC = () => {
     const nextSunday = nextMonday + 6;
     setStartNextWeek(nextMonday);
     setEndNextWeek(nextSunday);
-
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
 
+  // Applica i filtri agli eventi
   const applyFilters = (query: string, isFree: boolean, dayOfYear: number, startNextWeek?: number, endNextWeek?: number) => {
     let filtered = events;
 
+    // Filtra per query di ricerca
     if (query !== '') {
       filtered = filtered.filter(event =>
         event.title?.toLowerCase().includes(query.toLowerCase()) ||
@@ -112,21 +121,23 @@ const HomePage: React.FC = () => {
       );
     }
 
+    // Filtra per prezzo
     if (isFree) {
       filtered = filtered.filter(event => event.price === '0');
-    } else if (!isFree) {
+    } else {
       filtered = filtered.filter(event => event.price !== '0');
     }
 
+    // Filtra per giorno specifico
     if (dayOfYear) {
       filtered = filtered.filter(event => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
         const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-
         return dayOfYear >= startEvent && dayOfYear <= endEvent;
       });
     }
 
+    // Filtra per intervallo della prossima settimana
     if (startNextWeek !== undefined && endNextWeek !== undefined) {
       filtered = filtered.filter(event => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
@@ -138,6 +149,7 @@ const HomePage: React.FC = () => {
     setFilteredEvents(filtered);
   };
 
+  // Effetto che applica i filtri ogni volta che cambiano gli stati
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
@@ -164,7 +176,7 @@ const HomePage: React.FC = () => {
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
         {loading ? (
-          <Loading /> // Mostra l'animazione di caricamento
+          <Loading />
         ) : (
           <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 items-start w-full">
             {filteredEvents.length > 0 ? (
@@ -172,7 +184,7 @@ const HomePage: React.FC = () => {
                 <div
                   key={event._id || index}
                   className={`${(index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
-                    } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+                    } w-full md:w-auto flex justify-center`}
                 >
                   <Card
                     eventId={event._id}
