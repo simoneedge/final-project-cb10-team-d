@@ -10,16 +10,17 @@ interface HeartButtonProps {
 }
 
 const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, onClick }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(false); // Stato per la gestione del cuoricino
 
+  // Gestione del click sul cuoricino
   const handleFavoriteClick = async () => {
     const auth = getAuth();
-    const user = auth.currentUser; // Ottieni l'utente attuale da Firebase
+    const user = auth.currentUser; 
     if (!user) {
       alert("Devi effettuare il login per aggiungere ai preferiti.");
       return;
     }
-    const userEmail = user.email; // Ottieni l'email dell'utente
+    const userEmail = user.email;
 
     try {
       const res = await fetch('/api/profiles', {
@@ -41,10 +42,10 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data.message); // Messaggio di successo ("Event added" o "Event removed")
-        setIsLiked(!isLiked); // Alterna lo stato del cuoricino
+        console.log(data.message); 
+        setIsLiked(!isLiked); 
 
-        // Chiama la funzione onClick per notificare ProfilePage
+        // Notifica ProfilePage per aggiornare le card
         if (onClick) {
           onClick();
         }
@@ -58,8 +59,8 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
   return (
     <button
-      onClick={handleFavoriteClick} // Modificato per chiamare handleFavoriteClick direttamente
-      className="p-1"
+      onClick={handleFavoriteClick}
+      className={`p-1 transition-transform duration-200 ${isLiked ? 'scale-125' : 'scale-100'}`} // Aggiunge l'animazione di scaling
       style={{
         backgroundColor: color,
         marginTop: -10,
@@ -67,12 +68,12 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
       title="Heart Button"
     >
       <svg
-        className="w-4 h-4 text-white"
+        className={`w-6 h-6 transition-colors duration-300 ${isLiked ? 'text-[#8D3639]' : 'text-gray-400'}`} // Cambia il colore tra rosso e grigio
         fill="currentColor"
-        viewBox="0 0 20 20"
+        viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M3.172 5.172a4 4 0 015.656 0L10 6.344l1.172-1.172a4 4 0 115.656 5.656L10 18.828l-6.828-6.828a4 4 0 010-5.656z"></path>
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
       </svg>
     </button>
   );
