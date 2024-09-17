@@ -10,12 +10,12 @@ interface HeartButtonProps {
 }
 
 const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, onClick }) => {
-  const [isLiked, setIsLiked] = useState(false); // Stato per la gestione del cuoricino
+  const [isLiked, setIsLiked] = useState<boolean>(false); // Stato per la gestione del cuoricino
 
   // Gestione del click sul cuoricino
   const handleFavoriteClick = async () => {
     const auth = getAuth();
-    const user = auth.currentUser; 
+    const user = auth.currentUser;
     if (!user) {
       alert("Devi effettuare il login per aggiungere ai preferiti.");
       return;
@@ -42,8 +42,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data.message); 
-        setIsLiked(!isLiked); 
+        setIsLiked(!isLiked);
 
         // Notifica ProfilePage per aggiornare le card
         if (onClick) {
@@ -59,7 +58,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
   return (
     <button
-      onClick={handleFavoriteClick}
+      onClick={onClick}
       className={`p-1 transition-transform duration-200 ${isLiked ? 'scale-125' : 'scale-100'}`} // Aggiunge l'animazione di scaling
       style={{
         backgroundColor: color,
@@ -68,6 +67,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
       title="Heart Button"
     >
       <svg
+        onClick={handleFavoriteClick}
         className={`w-6 h-6 transition-colors duration-300 ${isLiked ? 'text-[#8D3639]' : 'text-gray-400'}`} // Cambia il colore tra rosso e grigio
         fill="currentColor"
         viewBox="0 0 24 24"

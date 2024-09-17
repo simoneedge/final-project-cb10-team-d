@@ -8,24 +8,24 @@ import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
 import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
-import Loading from "@/src/components/Loading"; 
+import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 
-// Funzione per recuperare i dati delle attività
-const fetchData = async (): Promise<{ activities: IActivity[] }> => {
+
+const fetchData = async (page: number, limit: number): Promise<{ activities: IActivity[], totalPages: number }> => {
   try {
-    const res = await fetch("http://localhost:3000/api/activities", {
+    const res = await fetch(`http://localhost:3000/api/activities?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
     const data = await res.json();
-    console.log("Fetched activities:", data.activities); // Log di debug
     return data;
-  } catch (error: any) {
-    console.error("Error fetching data:", error.message);
-    throw Error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching data:", error.message);
+      throw Error(error.message);
+    } else {
+      throw Error("Unknown error occurred");
+    }
   }
 };
 
@@ -33,35 +33,40 @@ export default function AttivitaPage() {
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IActivity[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isFree, setIsFree] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Stato per la paginazione
+  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
+  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
+  const limit = 12 // Numero di eventi per pagina
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
-        const data = await fetchData();
+        const data = await fetchData(currentPage, limit);
         setActivities(data.activities);
         setFilteredEvents(data.activities);
-      } catch (error: any) {
-        console.error("Failed to load data:", error); // Log di errore
-        setErrorMessage("Failed to load data.");
+        setTotalPages(data.totalPages)
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage("Failed to load data.");
+        }
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
-
     loadData();
-  }, []);
+  }, [currentPage]);
 
   // Funzione per gestire la ricerca
   const handleSearch = (query: string) => {
-    console.log("Search query:", query); // Log di debug
     setSearchQuery(query);
     applyFilters(query, isFree, today);
   };
@@ -141,6 +146,20 @@ export default function AttivitaPage() {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [activities, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+
+
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
       <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
@@ -158,10 +177,11 @@ export default function AttivitaPage() {
         <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {loading ? (
-            <Loading /> 
+            <Loading />
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((activity, index) => (
               <Card
+                eventId={activity._id}
                 key={activity._id || index}
                 backgroundColor="#F2B85A"
                 title={activity.title || "No title available"}
@@ -173,7 +193,18 @@ export default function AttivitaPage() {
             <p className="justify-items-center">No events found...</p>
           )}
         </div>
+        {/* Controlli di paginazione */}
+        <div className="pagination-controls flex justify-center mt-4">
+          <button onClick={handlePreviousPage} disabled={currentPage === 1} className="mr-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+            Previous
+          </button>
+          <span className="text-center px-4 py-2">{currentPage} of {totalPages}</span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages} className="ml-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+

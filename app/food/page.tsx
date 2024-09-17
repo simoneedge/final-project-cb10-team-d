@@ -8,13 +8,13 @@ import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
 import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
-import Loading from "@/src/components/Loading"; 
+import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 
 // Funzione per recuperare i dati dei cibi
-const fetchData = async (): Promise<{ foods: IFood[] }> => {
+const fetchData = async (page: number, limit: number): Promise<{ foods: IFood[], totalPages: number }> => {
   try {
-    const res = await fetch("http://localhost:3000/api/foods", {
+    const res = await fetch(`http://localhost:3000/api/foods?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
     if (!res.ok) {
@@ -33,35 +33,42 @@ export default function FoodPage() {
   const [foods, setFoods] = useState<IFood[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IFood[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isFree, setIsFree] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Stato per la paginazione
+  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
+  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
+  const limit = 10 // Numero di eventi per pagina
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
-        const data = await fetchData();
+        const data = await fetchData(currentPage, limit);
         setFoods(data.foods);
         setFilteredEvents(data.foods);
-      } catch (error: any) {
-        console.error("Failed to load data:", error); // Log di errore
-        setErrorMessage("Failed to load data.");
+        setTotalPages(data.totalPages);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage("Failed to load data.");
+        }
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
+
     loadData();
-  }, []);
+  }, [currentPage]);
 
   // Funzione per gestire la ricerca
   const handleSearch = (query: string) => {
-    console.log("Search query:", query); // Log di debug
     setSearchQuery(query);
     applyFilters(query, isFree, today);
   };
@@ -101,15 +108,15 @@ export default function FoodPage() {
     // Filtro per la query di ricerca
     if (query !== '') {
       filtered = filtered.filter(event =>
-        event.title?.toLowerCase().includes(query.toLowerCase()) || 
-        event.location?.toLowerCase().includes(query.toLowerCase()) || 
+        event.title?.toLowerCase().includes(query.toLowerCase()) ||
+        event.location?.toLowerCase().includes(query.toLowerCase()) ||
         event.tag?.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
       );
     }
 
     // Filtro per eventi gratuiti
     if (isFree) {
-      filtered = filtered.filter(event => event.price === '0'); 
+      filtered = filtered.filter(event => event.price === '0');
     } else {
       filtered = filtered.filter(event => event.price !== '0');
     }
@@ -132,7 +139,6 @@ export default function FoodPage() {
       });
     }
 
-    console.log("Filtered events:", filtered); // Log di debug per verificare i risultati dei filtri
     setFilteredEvents(filtered);
   };
 
@@ -140,6 +146,19 @@ export default function FoodPage() {
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [foods, searchQuery, isFree, today, startNextWeek, endNextWeek]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
@@ -158,10 +177,11 @@ export default function FoodPage() {
         <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {loading ? (
-            <Loading /> 
+            <Loading />
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((food, index) => (
               <Card
+                eventId={food._id}
                 key={food._id || index}
                 backgroundColor="#822225"
                 title={food.title || "No title available"}
@@ -172,6 +192,16 @@ export default function FoodPage() {
           ) : (
             <p className="justify-items-center">No events found...</p>
           )}
+        </div>
+        {/* Controlli di paginazione */}
+        <div className="pagination-controls flex justify-center mt-4">
+          <button onClick={handlePreviousPage} disabled={currentPage === 1} className="mr-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+            Previous
+          </button>
+          <span className="text-center px-4 py-2">{currentPage} of {totalPages}</span>
+          <button onClick={handleNextPage} disabled={currentPage === totalPages} className="ml-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+            Next
+          </button>
         </div>
       </div>
     </div>
