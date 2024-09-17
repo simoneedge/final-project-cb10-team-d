@@ -1,17 +1,9 @@
-import React from "react";
+'use client';
 
-interface Event {
-  _id: string;
-  title?: string;
-  image?: string;
-  tag?: string[];
-  description?: string;
-  dateStart?: string;
-  dateEnd?: string;
-  price?: string;
-  location?: string;
-  color: string;
-}
+import React, { useEffect, useState } from "react";
+import Loading from "../../../src/components/Loading"; // Importa il componente di loading
+import { IEvent } from "@/app/(models)/Event";
+
 
 const getData = async (id: string) => {
   try {
@@ -27,17 +19,51 @@ const getData = async (id: string) => {
 
     const data = await res.json();
     return data.event;
-  } catch (error: any) {
-    throw new Error(
-      error.message || "Errore sconosciuto durante il fetch dei dati"
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        error.message || "Errore sconosciuto durante il fetch dei dati"
+      );
+    } else {
+      throw new Error("Errore sconosciuto durante il fetch dei dati");
+    }
   }
 };
 
-const EventDetailPage = async ({ params }: { params: { id: string } }) => {
+const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
+  const [event, setEvent] = useState<IEvent | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);// Stato per il caricamento
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const event = await getData(id);
+  useEffect(() => {
+    const fetchEvent = async () => {
+      setLoading(true); // Inizia il caricamento
+      try {
+        const fetchedEvent = await getData(id);
+        setEvent(fetchedEvent);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+        } else {
+          setErrorMessage("Errore sconosciuto");
+        }
+      } finally {
+        setLoading(false); // Termina il caricamento
+      }
+    };
+    fetchEvent();
+  }, [id]);
+
+
+  if (loading) {
+    return <Loading />; // Mostra l'animazione di caricamento durante il fetching
+  }
+
+  if (errorMessage) {
+    return <p className="text-red-500">{errorMessage}</p>; // Mostra l'errore se presente
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -63,7 +89,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
       <div className="p-5 max-w-5xl mx-auto text-black">
         {/* Altri dettagli */}
         <div className="mt">
-          {event.tag && (
+          {event?.tag && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Tag:{" "}
@@ -71,7 +97,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
               {event.tag.join(", ")}
             </p>
           )}
-          {event.dateStart && (
+          {event?.dateStart && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data inizio:
@@ -79,15 +105,15 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
               {event.dateStart}
             </p>
           )}
-          {event.dateEnd && (
+          {event?.dateEnd && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Data fine:
               </strong>
-              {event.dateEnd}
+              {event?.dateEnd}
             </p>
           )}
-          {event.price && (
+          {event?.price && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Prezzo:{" "}
@@ -97,7 +123,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
                 : ` ${event.price}€`}
             </p>
           )}
-          {event.location && (
+          {event?.location && (
             <p>
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Luogo:{" "}
@@ -108,7 +134,7 @@ const EventDetailPage = async ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Descrizione dell'evento */}
-        <p className="mt-6">{event.description}</p>
+        <p className="mt-6">{event?.description}</p>
       </div>
     </div>
   );

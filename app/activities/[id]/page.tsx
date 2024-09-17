@@ -30,17 +30,20 @@ const getData = async (id: string) => {
 
     const data = await res.json();
     return data.event; // Assicurati di accedere all'evento specifico
-  } catch (error: any) {
-    throw new Error(
-      error.message || "Errore sconosciuto durante il fetch dei dati"
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        error.message || "Errore sconosciuto durante il fetch dei dati"
+      );
+    } else {
+      throw new Error("Errore sconosciuto durante il fetch dei dati");
+    }
   }
 };
-
 const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true); // Stato di caricamento
+  const [loading, setLoading] = useState<boolean>(true); // Stato di caricamento
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,8 +52,12 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
-      } catch (error: any) {
-        setErrorMessage(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+        } else {
+          setErrorMessage("Errore sconosciuto");
+        }
       } finally {
         setLoading(false); // Termina il caricamento
       }
@@ -78,8 +85,8 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         />
       )}
 
-        {/* Rettangolo rosso con titolo */}
-        <div className="bg-giallo w-full py-4 mb-4">
+      {/* Rettangolo rosso con titolo */}
+      <div className="bg-giallo w-full py-4 mb-4">
         <div className="max-w-5xl mx-auto px-5">
           <h1 className="text-white text-4xl font-titolo font-bold text-left">
             {event?.title}
@@ -91,49 +98,49 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       <div className="p-5 max-w-5xl mx-auto text-black">
         {/* Altri dettagli */}
         <div className="mt-4">
-          {event?.tag && ( 
+          {event?.tag && (
             <p>
-            <strong className="text-xl font-titolo mb-4 text-rosso">
-              Tag:{" "}
-            </strong>
-            {event?.tag.join(", ")}
-          </p>
-        )}
-        {event?.dateStart && (
-          <p>
-            <strong className="text-xl font-titolo mb-4 text-rosso">
-              Data inizio:
-            </strong>
-            {event?.dateStart}
-          </p>
-        )}
-        {event?.dateEnd && (
-          <p>
-            <strong className="text-xl font-titolo mb-4 text-rosso">
-              Data fine:
-            </strong>
-            {event?.dateEnd}
-          </p>
-        )}
-        {event?.price && (
-          <p>
-            <strong className="text-xl font-titolo mb-4 text-rosso">
-              Prezzo:{" "}
-            </strong>
-            {event?.price === "0" ? "Ingresso gratuito" : ` ${event.price}€`}
-          </p>
-        )}
-        {event?.location && (
-          <p>
-            <strong className="text-xl font-titolo mb-4 text-rosso">
-              Luogo:{" "}
-            </strong>
-            {event?.location}
-          </p>
-        )}
-      </div>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Tag:{" "}
+              </strong>
+              {event?.tag.join(", ")}
+            </p>
+          )}
+          {event?.dateStart && (
+            <p>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Data inizio:
+              </strong>
+              {event?.dateStart}
+            </p>
+          )}
+          {event?.dateEnd && (
+            <p>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Data fine:
+              </strong>
+              {event?.dateEnd}
+            </p>
+          )}
+          {event?.price && (
+            <p>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Prezzo:{" "}
+              </strong>
+              {event?.price === "0" ? "Ingresso gratuito" : ` ${event.price}€`}
+            </p>
+          )}
+          {event?.location && (
+            <p>
+              <strong className="text-xl font-titolo mb-4 text-rosso">
+                Luogo:{" "}
+              </strong>
+              {event?.location}
+            </p>
+          )}
+        </div>
 
-          {/* Descrizione dell'evento */}
+        {/* Descrizione dell'evento */}
         <p className="mt-6">{event?.description}</p>
       </div>
     </div>
