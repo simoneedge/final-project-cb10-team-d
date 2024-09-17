@@ -2,6 +2,8 @@
 
 import EventForm from '@/src/components/EventForm';
 import { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
   const accessKey = 'xrl-d5mGda3B79duvjalC99m_jQ00I3MzfOzrkO5ksM';
@@ -124,10 +126,33 @@ export default function ProposePage() {
         const dataEvents = await responseEvents.json();
         console.log('Event created in category:', dataCategory);
         console.log('Event created in events:', dataEvents);
+
+        // Mostra un toast di successo e svuota i campi del modulo
+        toast.success('Evento creato con successo!', {
+          className: 'bg-green-500 text-white p-2 rounded-lg',
+        });
+
+        setFormData({
+          title: '',
+          image: '',
+          tag: [],
+          description: '',
+          dateStart: '',
+          dateEnd: '',
+          price: '',
+          location: '',
+          category: '',
+        });
       } else {
+        toast.error('Errore nella creazione dell\'evento.', {
+          className: 'bg-red-500 text-white p-2 rounded-lg',
+        });
         console.error('Failed to create event in one or both APIs');
       }
     } catch (error) {
+      toast.error('Errore nella creazione dell\'evento.', {
+        className: 'bg-red-500 text-white p-2 rounded-lg',
+      });
       console.error('Error creating event', error);
     }
   };
@@ -142,6 +167,7 @@ export default function ProposePage() {
           onTagChange={handleTagChange}
           onSubmit={handleSubmit}
         />
+        <ToastContainer />
       </div>
     </div>
   );
