@@ -1,4 +1,5 @@
 'use client';
+
 import { getDayOfYear } from '@/data/getDayOfYear';
 import { useEffect, useState } from 'react';
 import Button from '@/src/components/Button';
@@ -25,7 +26,6 @@ const getData = async (): Promise<{ events: IEvent[] }> => {
 
 const getRandomSlides = (items: IEvent[], count: number): IEvent[] => {
   const shuffled = [...items].sort(() => 0.5 - Math.random());
-  console.log('io sono shuf', shuffled)
   return shuffled.slice(0, count);
 };
 
@@ -40,6 +40,7 @@ const HomePage: React.FC = () => {
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [slideshowImages, setSlideshowImages] = useState<{ src: string, title: string }[]>([]);
 
   useEffect(() => {
     const auth = getAuth();
@@ -69,6 +70,15 @@ const HomePage: React.FC = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const randomSlides = getRandomSlides(events, 5);
+    const images = randomSlides.map(event => ({
+      src: event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
+      title: event.title || 'Default Title',
+    }));
+    setSlideshowImages(images);
+  }, [events]); // Solo quando 'events' cambia
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -142,12 +152,6 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
-  const randomSlides = getRandomSlides(events, 5);
-  const slideshowImages = randomSlides.map(event => ({
-    src: event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
-    title: event.title || 'Default Title',
-  }));
-
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <Slideshow images={slideshowImages} />
@@ -183,11 +187,11 @@ const HomePage: React.FC = () => {
                       'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
                     }
                     size={(index + 1) % 4 === 0 ? 'large' : 'small'}
-                    link={
+                    link={(
                       <Link href={`/events/${event._id}`}>
                         <ArrowButton />
                       </Link>
-                    }
+                    )}
                   />
                 </div>
               ))

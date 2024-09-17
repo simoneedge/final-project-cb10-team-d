@@ -111,7 +111,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
                 type="submit"
                 className="bg-verde text-white p-2 hover:bg-indigo-700"
               >
-                Login
+                Sign In
               </button>
             </form>
 
