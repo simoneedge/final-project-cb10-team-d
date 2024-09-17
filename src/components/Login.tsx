@@ -47,7 +47,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     setIsModalOpen(false);
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
