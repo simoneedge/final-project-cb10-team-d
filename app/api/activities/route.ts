@@ -5,7 +5,7 @@ import Activity, { IActivity } from '../../(models)/Activities'
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get('page')) || 1; // Pagina di default 1
-    const limit = Number(searchParams.get('limit')) || 10; // Limite di default 10 per pagina
+    const limit = Number(searchParams.get('limit')) || 9; // Limite di default 10 per pagina
     const skip = (page - 1) * limit; // Calcola quanti documenti saltare
 
     try {

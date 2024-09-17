@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
-
 interface Event {
   _id: string;
   title?: string;
