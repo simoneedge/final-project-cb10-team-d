@@ -17,6 +17,9 @@ import { User } from 'firebase/auth';
 const getData = async (page: number, limit: number): Promise<{ events: IEvent[], totalPages: number }> => {
   try {
     const res = await fetch(`http://localhost:3000/api/events?page=${page}&limit=${limit}`, { cache: 'no-cache' });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
     return data;
   } catch (error: unknown) {
@@ -46,7 +49,7 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
   const [slideshowImages, setSlideshowImages] = useState<{ src: string, title: string }[]>([]);
-  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
@@ -61,8 +64,8 @@ const HomePage: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteIds = data.profile.events.map((event: { id: string }) => event.id);
-      setFavoriteEventIds(favoriteIds);
+      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
       console.error('Errore nel recupero dei preferiti:', error);
     }
@@ -239,7 +242,7 @@ const HomePage: React.FC = () => {
                     } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
-                    isLiked={favoriteEventIds.includes(String(event._id))}
+                    isLiked={favoriteEventTitle.includes(event.title)}
                     eventId={event._id}
                     backgroundColor={event.color || '#4E614E'}
                     title={event.title || 'Pasta di mandorle'}

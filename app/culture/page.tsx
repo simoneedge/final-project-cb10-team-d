@@ -19,6 +19,9 @@ const fetchData = async (page: number, limit: number): Promise<{ cultures: ICult
     const res = await fetch(`http://localhost:3000/api/cultures?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
     return data;
   } catch (error: unknown) {
@@ -40,7 +43,7 @@ export default function CulturePage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
-  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
 
   // Funzione per recuperare i preferiti dell'utente
@@ -51,8 +54,8 @@ export default function CulturePage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteIds = data.profile.events.map((event: { id: string }) => event.id);
-      setFavoriteEventIds(favoriteIds);
+      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
       console.error('Errore nel recupero dei preferiti:', error);
     }
@@ -213,7 +216,7 @@ export default function CulturePage() {
                 title={culture.title || "No title available"}
                 imageSrc={culture.image || "default-image-url"}
                 link={<Link href={`/culture/${culture._id}`}><ArrowButton /></Link>}
-                isLiked={favoriteEventIds.includes(String(culture._id))}
+                isLiked={favoriteEventTitle.includes(culture.title)}
                 onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
               />
             ))

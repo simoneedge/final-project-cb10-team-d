@@ -44,7 +44,7 @@ export default function FoodPage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
-  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string) => {
@@ -54,8 +54,8 @@ export default function FoodPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteIds = data.profile.events.map((event: { id: number }) => event.id);
-      setFavoriteEventIds(favoriteIds);
+      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
       console.error('Errore nel recupero dei preferiti:', error);
     }
@@ -219,7 +219,7 @@ export default function FoodPage() {
                 title={food.title || "No title available"}
                 imageSrc={food.image || "default-image-url"}
                 link={<Link href={`/food/${food._id}`}><ArrowButton /></Link>}
-                isLiked={favoriteEventIds.includes(String(food._id))}
+                isLiked={favoriteEventTitle.includes(food.title)}
                 onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
               />
             ))

@@ -43,7 +43,7 @@ export default function AttivitaPage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
-  const [favoriteEventIds, setFavoriteEventIds] = useState<string[]>([]);
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string) => {
@@ -53,8 +53,8 @@ export default function AttivitaPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteIds = data.profile.events.map((event: { id: number }) => event.id);
-      setFavoriteEventIds(favoriteIds);
+      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
       console.error('Errore nel recupero dei preferiti:', error);
     }
@@ -215,7 +215,7 @@ export default function AttivitaPage() {
                 title={activity.title || "No title available"}
                 imageSrc={activity.image || "default-image-url"}
                 link={<Link href={`/activities/${activity._id}`}><ArrowButton /></Link>}
-                isLiked={favoriteEventIds.includes(String(activity._id))}
+                isLiked={favoriteEventTitle.includes(activity.title)}
                 onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
 
               />
