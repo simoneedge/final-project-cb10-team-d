@@ -172,11 +172,9 @@ const NavBar = ({ links = [] }: NavBarProps) => {
           </svg>
         </button>
       </div>
-
       {/* Mobile Menu */}
-      {isOpen && (
         <div
-          className={`fixed top-0 right-0 w-full bg-bianco z-50 transform transition-transform duration-300 ${
+          className={`fixed top-50px right-0 w-full h-80 bg-bianco z-50 transform transition-transform duration-300 ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -184,20 +182,6 @@ const NavBar = ({ links = [] }: NavBarProps) => {
             onClick={toggleMenu}
             className="p-4 text-verde focus:outline-none absolute top-4 right-4"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
           </button>
           <div className="flex flex-col items-center space-y-4 p-6 text-center h-auto">
             {/* Cambia h-full a h-auto */}
@@ -258,7 +242,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
             )}
           </div>
         </div>
-      )}
+      
     </header>
   );
 };
