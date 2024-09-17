@@ -108,14 +108,14 @@ const ProfilePage = () => {
       </div>
 
       {showAccordion && (
-        <div className="mt-4 border border-rosso p-4 bg-[#f5f5f5] text-foreground relative rounded-lg shadow-md max-w-xs mx-auto">
+        <div className="mt-4 border-2 border-rosso p-4 bg-gray-100 text-foreground relative shadow-md max-w-xs mx-auto">
           <button
             className="absolute top-2 right-2 text-rosso"
             onClick={toggleAccordion}
           >
             &times;
           </button>
-          <h3 className="text-lg font-titolo text-rosso mb-2">
+          <h3 className="text-2xl font-titolo text-rosso mb-2">
             Preferenze account
           </h3>
           <div className="mb-4">
@@ -133,16 +133,17 @@ const ProfilePage = () => {
         </div>
       )}
 
-      <div className="mt-4 flex flex-col items-center space-y-4">
-        <Link href="/propose">
-          <button className="bg-giallo text-white py-2 px-4 rounded font-testo">
-            Proponi evento
-          </button>
-        </Link>
-        <button className="bg-rosso text-white py-2 px-4 rounded font-testo">
-          Eventi preferiti
-        </button>
-      </div>
+<div className="mt-4 flex flex-row items-center justify-center space-x-4">
+  <Link href="/propose">
+    <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
+      Proponi evento
+    </button>
+  </Link>
+  <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
+    Eventi preferiti
+  </button>
+</div>
+
 
       <div className="mt-6 grid grid-cols-1 gap-4">
         {cards.map((card, index) => (

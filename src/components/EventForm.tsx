@@ -159,7 +159,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
         />
         <button
           type="submit"
-          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white"
+          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
         >
           Crea Evento
         </button>

@@ -68,7 +68,7 @@ export default function SignUp() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6">Registration Form</h1>
+        <h1 className="text-4xl font-titolo text-rosso mb-6">Registrati</h1>
         {error && (
           <div className="mb-4 p-4 border-l-4 border-red-500 bg-red-50 text-red-700 rounded">
             <strong className="font-semibold">Error:</strong>
@@ -169,8 +169,8 @@ export default function SignUp() {
               </button>
               <button
                 type="submit"
-                className={`rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-600 ${
-                  formValidation ? 'opacity-50 cursor-not-allowed' : ''
+                className={`border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold ${
+                  formValidation ? 'opacity-100 cursor-not-allowed' : ''
                 }`}
                 disabled={formValidation}
               >
