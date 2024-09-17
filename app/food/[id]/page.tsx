@@ -1,6 +1,5 @@
 'use client';
 
-import Card from "../../../src/components/Card";
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
 
@@ -31,17 +30,21 @@ const getData = async (id: string) => {
 
     const data = await res.json();
     return data.event; // Assicurati di accedere all'evento specifico
-  } catch (error: any) {
-    throw new Error(
-      error.message || "Errore sconosciuto durante il fetch dei dati"
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        error.message || "Errore sconosciuto durante il fetch dei dati"
+      );
+    } else {
+      throw new Error("Errore sconosciuto durante il fetch dei dati");
+    }
   }
 };
 
 const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true); // Stato per il caricamento
+  const [loading, setLoading] = useState<boolean>(true); // Stato per il caricamento
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,13 +53,16 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
-      } catch (error: any) {
-        setErrorMessage(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+        } else {
+          setErrorMessage("Errore sconosciuto");
+        }
       } finally {
         setLoading(false); // Termina il caricamento
       }
     };
-
     fetchEvent();
   }, [id]);
 
@@ -70,26 +76,26 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-    {/* Immagine dell'evento */}
-    {event?.image && (
-      <img
-        src={event.image}
-        alt={event.title}
-        className="w-full h-[60vh] object-cover"
-      />
-    )}
+      {/* Immagine dell'evento */}
+      {event?.image && (
+        <img
+          src={event.image}
+          alt={event.title}
+          className="w-full h-[60vh] object-cover"
+        />
+      )}
 
-    {/* Rettangolo rosso con titolo */}
+      {/* Rettangolo rosso con titolo */}
       <div className="bg-rosso w-full py-4 mb-4">
         <div className="max-w-5xl mx-auto px-5">
           <h1 className="text-white text-4xl font-titolo font-bold text-left">
             {event?.title}
           </h1>
         </div>
-      </div> 
+      </div>
 
-  {/* Dettagli dell'evento */}
-  <div className="p-5 max-w-5xl mx-auto text-black">
+      {/* Dettagli dell'evento */}
+      <div className="p-5 max-w-5xl mx-auto text-black">
         {/* Altri dettagli */}
         <div className="mt-4">
           {event?.tag && (
@@ -134,10 +140,10 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           )}
         </div>
 
-         {/* Descrizione dell'evento */}
-         <p className="mt-6">{event?.description}</p>
+        {/* Descrizione dell'evento */}
+        <p className="mt-6">{event?.description}</p>
       </div>
-  </div>
+    </div>
   );
 };
 

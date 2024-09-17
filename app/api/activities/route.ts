@@ -2,11 +2,24 @@ import { NextResponse } from "next/server";
 import Activity, { IActivity } from '../../(models)/Activities'
 
 
-export async function GET() {
-    try {
-        const activities: IActivity[] = await Activity.find();
+export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const page = Number(searchParams.get('page')) || 1; // Pagina di default 1
+    const limit = Number(searchParams.get('limit')) || 10; // Limite di default 10 per pagina
+    const skip = (page - 1) * limit; // Calcola quanti documenti saltare
 
-        return NextResponse.json({ activities }, { status: 200 }); // Restituisce un oggetto con l'array di eventi
+    try {
+        const activities: IActivity[] = await Activity.find()
+            .limit(limit)
+            .skip(skip);
+
+        const totalActivities = await Activity.countDocuments();
+
+        return NextResponse.json({
+            activities,
+            totalPages: Math.ceil(totalActivities / limit), // Calcola il numero di pagine totali
+            currentPage: page
+        }, { status: 200 }); // Restituisce un oggetto con l'array di eventi
 
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 })

@@ -1,9 +1,6 @@
-import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import Profile, { IProfile } from "../../(models)/Profile";
 import { IEvent } from "@/app/(models)/Event";
-
-
 
 export async function GET(req: NextRequest) {
     try {
@@ -48,7 +45,7 @@ export async function POST(req: NextRequest) {
             }
 
             const newEvent = events[0]; // Supponiamo che stai inviando un solo evento
-            const eventIndex = profile.events.findIndex((e: any) => e.title === newEvent.title);
+            const eventIndex = profile.events.findIndex((e: IEvent) => e.title === newEvent.title);
 
             if (eventIndex !== -1) {
                 // Se l'evento esiste, rimuovilo dall'array
@@ -76,59 +73,3 @@ export async function POST(req: NextRequest) {
 
 
 
-
-/*
-export async function GET(
-req: NextRequest,
-{ params }: { params: { id: string } }
-) {
-try {
-const { id } = params;
-
-// Verifica che l'ID sia valido
-if (!mongoose.Types.ObjectId.isValid(id)) {
-console.error("ID non valido:", id);
-return NextResponse.json({ error: "ID non valido" }, { status: 400 });
-}
-
-const profile: IProfile | null = await Profile.findById(id);
-
-if (!profile) {
-return NextResponse.json(
-    { error: "Profilo non trovato" },
-    { status: 404 }
-);
-}
-
-return NextResponse.json({ profile }, { status: 200 });
-} catch (error) {
-console.error("Errore nella richiesta:", error);
-return NextResponse.json({ error: "Errore del server" }, { status: 500 });
-}
-} */
-
-
-
-/* export async function PUT(req: Request) {
-    try {
-        const { eventId } = await req.json();
-        const user = await Profile.findOne({ userMail: userEmail });
-
-        if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-
-        const isFavorite = user.favoriteEvents.includes(eventId);
-
-        if (isFavorite) {
-            user.favoriteEvents.pull(eventId);
-        } else {
-            user.favoriteEvents.push(eventId);
-        }
-
-        await user.save();
-        return NextResponse.json({ user }, { status: 200 });
-    } catch (error) {
-        console.log(error);
-        return NextResponse.json({ error: 'Failed to update favorites', details: error }, { status: 500 });
-    }
-}
- */
