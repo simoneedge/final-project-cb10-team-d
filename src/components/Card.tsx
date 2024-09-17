@@ -13,6 +13,7 @@ interface CardProps {
   link?: React.ReactNode;
   eventId: number; // Passa l'ID dell'evento come prop
   onHeartClick?: () => void;
+  isLiked?: boolean; // Nuova prop per gestire lo stato del cuoricino
 }
 
 const Card: React.FC<CardProps> = ({
@@ -22,6 +23,7 @@ const Card: React.FC<CardProps> = ({
   size = "small",
   link,
   eventId,
+  isLiked = false,
   onHeartClick
 }) => {
 
@@ -48,6 +50,7 @@ const Card: React.FC<CardProps> = ({
             image={imageSrc}
             eventId={eventId}  // Passa l'ID dell'evento a HeartButton
             color={backgroundColor}
+            isLiked={isLiked} // Passa lo stato del 
           />
         </div>
       </div>

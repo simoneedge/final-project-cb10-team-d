@@ -10,6 +10,8 @@ import Filter from "@/src/components/Filter";
 import { formattedDate } from "@/data/formattDate";
 import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
+import { getAuth } from 'firebase/auth';
+
 
 // Funzione per recuperare i dati delle culture
 const fetchData = async (page: number, limit: number): Promise<{ cultures: ICulture[], totalPages: number }> => {
@@ -17,6 +19,9 @@ const fetchData = async (page: number, limit: number): Promise<{ cultures: ICult
     const res = await fetch(`http://localhost:3000/api/cultures?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
     return data;
   } catch (error: unknown) {
@@ -38,6 +43,23 @@ export default function CulturePage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+
+
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = async (email: string) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      setFavoriteEventTitle(favoriteTitle);
+    } catch (error) {
+      console.error('Errore nel recupero dei preferiti:', error);
+    }
+  };
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
@@ -53,6 +75,14 @@ export default function CulturePage() {
         setCultures(data.cultures);
         setFilteredEvents(data.cultures);
         setTotalPages(data.totalPages);
+        // Recupera i preferiti se l'utente è autenticato
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          const userEmail = user.email;
+          await fetchFavorites(userEmail);
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -186,6 +216,8 @@ export default function CulturePage() {
                 title={culture.title || "No title available"}
                 imageSrc={culture.image || "default-image-url"}
                 link={<Link href={`/culture/${culture._id}`}><ArrowButton /></Link>}
+                isLiked={favoriteEventTitle.includes(culture.title)}
+                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
               />
             ))
           ) : (

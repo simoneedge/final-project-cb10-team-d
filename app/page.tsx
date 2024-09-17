@@ -17,6 +17,9 @@ import { User } from 'firebase/auth';
 const getData = async (page: number, limit: number): Promise<{ events: IEvent[], totalPages: number }> => {
   try {
     const res = await fetch(`http://localhost:3000/api/events?page=${page}&limit=${limit}`, { cache: 'no-cache' });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
     return data;
   } catch (error: unknown) {
@@ -46,11 +49,28 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
   const [slideshowImages, setSlideshowImages] = useState<{ src: string, title: string }[]>([]);
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
   const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
   const limit = 12; // Numero di eventi per pagina
+
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = async (email: string) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      setFavoriteEventTitle(favoriteTitle);
+    } catch (error) {
+      console.error('Errore nel recupero dei preferiti:', error);
+    }
+  };
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -73,6 +93,16 @@ const HomePage: React.FC = () => {
         setEvents(data.events);
         setFilteredEvents(data.events);
         setTotalPages(data.totalPages);
+
+        // Recupera i preferiti se l'utente è autenticato
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          const userEmail = user.email;
+          await fetchFavorites(userEmail);
+        }
+
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -212,6 +242,7 @@ const HomePage: React.FC = () => {
                     } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
+                    isLiked={favoriteEventTitle.includes(event.title)}
                     eventId={event._id}
                     backgroundColor={event.color || '#4E614E'}
                     title={event.title || 'Pasta di mandorle'}
@@ -220,6 +251,7 @@ const HomePage: React.FC = () => {
                       'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
                     }
                     size={(index + 1) % 4 === 0 ? 'large' : 'small'}
+                    onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
                     link={
                       <Link href={`/events/${event._id}`}>
                         <ArrowButton />
