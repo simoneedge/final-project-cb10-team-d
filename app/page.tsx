@@ -57,7 +57,7 @@ const HomePage: React.FC = () => {
   const limit = 12; // Numero di eventi per pagina
 
   // Funzione per recuperare i preferiti dell'utente
-  const fetchFavorites = async (email: string) => {
+  const fetchFavorites = async (email: string | null) => {
     try {
       const response = await fetch(`/api/profiles?email=${email}`);
       if (!response.ok) {
