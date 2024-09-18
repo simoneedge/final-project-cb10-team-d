@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore"; // Importa Firestore
 
 // Configurazione Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBYY9bA6zqPcCYoFEhLkAK18UTOYJ3TvH0",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "sicilipulse.firebaseapp.com",
   projectId: "sicilipulse",
   storageBucket: "sicilipulse.appspot.com",
