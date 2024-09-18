@@ -19,7 +19,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    /*   --foreground: #ededed; */
   }
 }
 
@@ -82,7 +82,7 @@ body {
 }
 
 .custom-toast-success {
-  background-color: #822225 !important; 
+  background-color: #822225 !important;
   color: white !important;
 }
 
@@ -92,7 +92,7 @@ body {
 }
 
 .custom-toast-info {
-  background-color: #822225 !important; 
+  background-color: #822225 !important;
   color: white !important;
 }
 
@@ -115,10 +115,13 @@ body {
 }
 
 @keyframes loading-circle {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(0.6);
     opacity: 0.7;
   }
+
   50% {
     transform: scale(1);
     opacity: 1;
@@ -145,6 +148,6 @@ body {
   .card-container {
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
   }
 }
