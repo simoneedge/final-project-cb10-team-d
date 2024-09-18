@@ -15,7 +15,7 @@ import { getAuth } from "firebase/auth";
 
 const fetchData = async (page: number, limit: number): Promise<{ activities: IActivity[], totalPages: number }> => {
   try {
-    const res = await fetch(`http://localhost:3000/api/activities?page=${page}&limit=${limit}`, {
+    const res = await fetch(`/api/activities?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
     if (!res.ok) {

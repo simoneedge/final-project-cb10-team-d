@@ -15,7 +15,7 @@ import { getAuth } from "firebase/auth";
 // Funzione per recuperare i dati dei cibi
 const fetchData = async (page: number, limit: number): Promise<{ foods: IFood[], totalPages: number }> => {
   try {
-    const res = await fetch(`http://localhost:3000/api/foods?page=${page}&limit=${limit}`, {
+    const res = await fetch(`/api/foods?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
     if (!res.ok) {

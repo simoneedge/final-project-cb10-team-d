@@ -16,7 +16,7 @@ import { User } from 'firebase/auth';
 
 const getData = async (page: number, limit: number): Promise<{ events: IEvent[], totalPages: number }> => {
   try {
-    const res = await fetch(`http://localhost:3000/api/events?page=${page}&limit=${limit}`, { cache: 'no-cache' });
+    const res = await fetch(`/api/events?page=${page}&limit=${limit}`, { cache: 'no-cache' });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

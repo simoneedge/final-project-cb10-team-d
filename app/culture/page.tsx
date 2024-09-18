@@ -16,7 +16,7 @@ import { getAuth } from 'firebase/auth';
 // Funzione per recuperare i dati delle culture
 const fetchData = async (page: number, limit: number): Promise<{ cultures: ICulture[], totalPages: number }> => {
   try {
-    const res = await fetch(`http://localhost:3000/api/cultures?page=${page}&limit=${limit}`, {
+    const res = await fetch(`/api/cultures?page=${page}&limit=${limit}`, {
       cache: "no-cache",
     });
     if (!res.ok) {
