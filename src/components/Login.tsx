@@ -48,12 +48,12 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     setIsModalOpen(false);
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setIsModalOpen(false);
-      toast.success("Login effettuato con successo!" , {
+      toast.success("Login effettuato con successo!", {
         className: 'custom-toast-success',
       });
       if (onLoginSuccess) onLoginSuccess(); // Chiama la funzione solo se è definita      router.push(redirectTo); // Effettua il redirect alla pagina specificata
