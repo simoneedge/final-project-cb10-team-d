@@ -257,9 +257,8 @@ const HomePage: React.FC = () => {
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${
-                    (index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"
-                  } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+                  className={`${(index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"
+                    } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
                     isLiked={
@@ -295,23 +294,21 @@ const HomePage: React.FC = () => {
       {/* Controlli di paginazione */}
 
       <div className="pagination-controls flex justify-center m-10">
-        <button
+        <Button
           onClick={handlePreviousPage}
+          label="Previous"
+          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
           disabled={currentPage === 1}
-          className="mr-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
-        >
-          Previous
-        </button>
+        />
         <span className="text-center px-4 py-2 text-gray-700 font-medium">
           {currentPage} of {totalPages}
         </span>
-        <button
+        <Button
           onClick={handleNextPage}
+          label="Next"
+          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
           disabled={currentPage === totalPages}
-          className="ml-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
-        >
-          Next
-        </button>
+        />
       </div>
       <ScrollToTopButton />
     </div>

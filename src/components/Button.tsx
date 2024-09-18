@@ -5,13 +5,15 @@ interface ButtonProps {
   icon?: React.ReactNode;
   onClick?: () => void;
   className?: string;  
+  disabled?:boolean;
 }
 
-const Button = ({ label, icon, onClick, className }: ButtonProps) => {
+const Button = ({ label, icon, onClick, className, disabled }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
       className={className}
+      disabled={disabled}
     >
       <span>{label}</span>
       {icon && (
