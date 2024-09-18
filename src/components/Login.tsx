@@ -7,7 +7,8 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "@/firebaseconfig";
+import { auth, db } from "@/firebaseconfig";
+import { doc, getDoc } from "firebase/firestore";
 import Button from "./Button";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -50,15 +51,45 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setIsModalOpen(false);
-      toast.success("Login effettuato con successo!", {
-        className: "custom-toast-success",
-      });
-      if (onLoginSuccess) onLoginSuccess(); // Chiama la funzione solo se è definita      router.push(redirectTo); // Effettua il redirect alla pagina specificata
-      router.push(redirectTo); // Effettua il redirect alla pagina specificata
+      // Effettua il login con Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // Recupera i dati utente da Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+  
+        // Verifica se l'utente è attivo
+        if (!userData.active) {
+          // Effettua il logout immediatamente se l'account è disattivato
+          await signOut(auth);
+          setLoading(false);
+          toast.error("Il tuo account è disattivato. Contatta il supporto.", {
+            className: "custom-toast-error",
+          });
+          return; // Blocca il proseguimento del login
+        }
+  
+        // Se l'utente è attivo, consenti l'accesso e mostra un toast di successo
+        setIsModalOpen(false);
+        toast.success("Login effettuato con successo!", {
+          className: "custom-toast-success",
+        });
+        router.push(redirectTo); // Effettua il redirect alla pagina specificata
+      } else {
+        setLoading(false);
+        toast.error("Utente non trovato.", {
+          className: "custom-toast-error",
+        });
+      }
     } catch (error) {
+      console.log(error)
+      setLoading(false);
       toast.error("Errore di accesso, riprova.", {
         className: "custom-toast-error",
       });
