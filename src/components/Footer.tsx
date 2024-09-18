@@ -1,12 +1,13 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className=" relative ">
+    <footer className="relative">
       <div className="w-full border border-rosso"></div>
-      <div className="w-full bg-white  py-6">
-        <div className=" space-x-1">
+
+      <div className="w-full bg-white py-6">
+        <div className="flex justify-center">
           <Image
             src="/siclipulse-02.svg"
             alt="SiciliPulse Logo"
@@ -18,12 +19,16 @@ const Footer = () => {
       </div>
 
       <div className="w-full border-b-4 border-rosso"></div>
-      <div className="bg-giallo w-full   ">
-        <p className=" text-gray-700 ">
+
+      {/* Sezione contenente testo e icone */}
+      <div className="bg-giallo w-full py-4 flex flex-col sm:flex-row justify-between items-center px-4">
+        {/* Testo del copyright */}
+        <p className="text-gray-700 mb-4 sm:mb-0">
           ©2024 SicilyPulse | Tutti i diritti sono riservati
         </p>
 
-        <div className=" ">
+        {/* Sezione delle icone dei social media */}
+        <div className="flex space-x-4">
           <Image
             src="/instagram.svg"
             alt="Instagram Icon"
@@ -32,7 +37,7 @@ const Footer = () => {
             className="cursor-pointer"
             style={{
               filter:
-                'invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)',
+                "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
             }}
           />
           <Image
@@ -43,7 +48,7 @@ const Footer = () => {
             className="cursor-pointer"
             style={{
               filter:
-                'invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)',
+                "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
             }}
           />
           <Image
@@ -54,12 +59,11 @@ const Footer = () => {
             className="cursor-pointer"
             style={{
               filter:
-                'invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)',
+                "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
             }}
           />
         </div>
       </div>
-
     </footer>
   );
 };

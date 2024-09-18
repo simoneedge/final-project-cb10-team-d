@@ -105,14 +105,14 @@ const LoginButton: React.FC<LoginButtonProps> = ({
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border border-gray-300 p-2 focus:ring-2 focus:ring-verde"
+                className="border border-gray-300 p-2 focus:ring-2 text-gray-600 focus:ring-verde"
               />
               <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border border-gray-300 p-2 focus:ring-2 focus:ring-verde"
+                className="border border-gray-300 p-2 focus:ring-2  text-gray-600 focus:ring-verde"
               />
               <button
                 type="submit"

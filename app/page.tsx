@@ -1,22 +1,27 @@
-'use client';
-import { getDayOfYear } from '@/data/getDayOfYear';
-import { useEffect, useState } from 'react';
-import Button from '@/src/components/Button';
-import Card from '@/src/components/Card';
-import ScrollToTopButton from '@/src/components/ScrollToTopButton';
-import { IEvent } from './(models)/Event';
-import Link from 'next/link';
-import ArrowButton from '@/src/components/ArrowButton';
-import Filter from '@/src/components/Filter';
-import { formattedDate } from '@/data/formattDate';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Loading from '@/src/components/Loading';
-import Slideshow from '@/src/components/Slideshow';
-import { User } from 'firebase/auth';
+"use client";
+import { getDayOfYear } from "@/data/getDayOfYear";
+import { useEffect, useState } from "react";
+import Button from "@/src/components/Button";
+import Card from "@/src/components/Card";
+import ScrollToTopButton from "@/src/components/ScrollToTopButton";
+import { IEvent } from "./(models)/Event";
+import Link from "next/link";
+import ArrowButton from "@/src/components/ArrowButton";
+import Filter from "@/src/components/Filter";
+import { formattedDate } from "@/data/formattDate";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Loading from "@/src/components/Loading";
+import Slideshow from "@/src/components/Slideshow";
+import { User } from "firebase/auth";
 
-const getData = async (page: number, limit: number): Promise<{ events: IEvent[], totalPages: number }> => {
+const getData = async (
+  page: number,
+  limit: number
+): Promise<{ events: IEvent[]; totalPages: number }> => {
   try {
-    const res = await fetch(`/api/events?page=${page}&limit=${limit}`, { cache: 'no-cache' });
+    const res = await fetch(`/api/events?page=${page}&limit=${limit}`, {
+      cache: "no-cache",
+    });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -41,14 +46,18 @@ const HomePage: React.FC = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
-  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
+  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(
+    undefined
+  );
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
-  const [slideshowImages, setSlideshowImages] = useState<{ src: string, title: string }[]>([]);
+  const [slideshowImages, setSlideshowImages] = useState<
+    { src: string; title: string }[]
+  >([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
   // Stato per la paginazione
@@ -64,20 +73,21 @@ const HomePage: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      const favoriteTitle = data.profile.events.map(
+        (event: { title: string }) => event.title
+      );
       setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
-      console.error('Errore nel recupero dei preferiti:', error);
+      console.error("Errore nel recupero dei preferiti:", error);
     }
   };
-
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
       if (currentUser) {
         setUser(currentUser);
-        console.log(user)
+        console.log(user);
       } else {
         setUser(null);
       }
@@ -103,7 +113,6 @@ const HomePage: React.FC = () => {
           const userEmail = user.email;
           await fetchFavorites(userEmail);
         }
-
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -118,9 +127,10 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const randomSlides = getRandomSlides(events, 5);
-    const images = randomSlides.map(event => ({
-      src: event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
-      title: event.title || 'Default Title',
+    const images = randomSlides.map((event) => ({
+      src:
+        event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
+      title: event.title || "Default Title",
     }));
     setSlideshowImages(images);
   }, [events]); // Solo quando 'events' cambia
@@ -156,25 +166,34 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
 
-  const applyFilters = (query: string, isFree: boolean, dayOfYear: number, startNextWeek?: number, endNextWeek?: number) => {
+  const applyFilters = (
+    query: string,
+    isFree: boolean,
+    dayOfYear: number,
+    startNextWeek?: number,
+    endNextWeek?: number
+  ) => {
     let filtered = events;
 
-    if (query !== '') {
-      filtered = filtered.filter(event =>
-        event.title?.toLowerCase().includes(query.toLowerCase()) ||
-        event.location?.toLowerCase().includes(query.toLowerCase()) ||
-        event.tag?.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+    if (query !== "") {
+      filtered = filtered.filter(
+        (event) =>
+          event.title?.toLowerCase().includes(query.toLowerCase()) ||
+          event.location?.toLowerCase().includes(query.toLowerCase()) ||
+          event.tag?.some((tag) =>
+            tag.toLowerCase().includes(query.toLowerCase())
+          )
       );
     }
 
     if (isFree) {
-      filtered = filtered.filter(event => event.price === '0');
+      filtered = filtered.filter((event) => event.price === "0");
     } else if (!isFree) {
-      filtered = filtered.filter(event => event.price !== '0');
+      filtered = filtered.filter((event) => event.price !== "0");
     }
 
     if (dayOfYear) {
-      filtered = filtered.filter(event => {
+      filtered = filtered.filter((event) => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
         const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
 
@@ -183,7 +202,7 @@ const HomePage: React.FC = () => {
     }
 
     if (startNextWeek !== undefined && endNextWeek !== undefined) {
-      filtered = filtered.filter(event => {
+      filtered = filtered.filter((event) => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
         const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
         return startEvent <= endNextWeek && endEvent >= startNextWeek;
@@ -208,7 +227,6 @@ const HomePage: React.FC = () => {
       setCurrentPage(currentPage - 1);
     }
   };
-
 
   /*   const randomSlides = getRandomSlides(events, 5);
     const slideshowImages = randomSlides.map(event => ({
@@ -239,20 +257,27 @@ const HomePage: React.FC = () => {
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${(index + 1) % 4 === 0 ? 'col-span-3' : 'col-span-1'
-                    } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+                  className={`${
+                    (index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"
+                  } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
-                    isLiked={event.title ? favoriteEventTitle.includes(event.title) : false}
+                    isLiked={
+                      event.title
+                        ? favoriteEventTitle.includes(event.title)
+                        : false
+                    }
                     eventId={event._id}
-                    backgroundColor={event.color || '#4E614E'}
-                    title={event.title || 'Pasta di mandorle'}
+                    backgroundColor={event.color || "#4E614E"}
+                    title={event.title || "Pasta di mandorle"}
                     imageSrc={
                       event.image ||
-                      'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg'
+                      "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
                     }
-                    size={(index + 1) % 4 === 0 ? 'large' : 'small'}
-                    onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
+                    size={(index + 1) % 4 === 0 ? "large" : "small"}
+                    onHeartClick={() =>
+                      fetchFavorites(getAuth().currentUser?.email || "")
+                    }
                     link={
                       <Link href={`/events/${event._id}`}>
                         <ArrowButton />
@@ -265,16 +290,26 @@ const HomePage: React.FC = () => {
               <p className="justify-items-center">No events found...</p>
             )}
           </div>
-
         )}
       </main>
       {/* Controlli di paginazione */}
+
       <div className="pagination-controls flex justify-center m-10">
-        <button onClick={handlePreviousPage} disabled={currentPage === 1} className="mr-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className="mr-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
+        >
           Previous
         </button>
-        <span className="text-center px-4 py-2">{currentPage} of {totalPages}</span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages} className="ml-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+        <span className="text-center px-4 py-2 text-gray-700 font-medium">
+          {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="ml-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
+        >
           Next
         </button>
       </div>
