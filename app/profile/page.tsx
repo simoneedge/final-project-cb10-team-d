@@ -13,6 +13,7 @@ interface Card {
   id: number;
   title: string;
   image: string;
+  color: string;
 }
 
 const ProfilePage = () => {
@@ -172,7 +173,7 @@ const ProfilePage = () => {
           <Card
             eventId={card.id}
             key={card.title}  // Usa il titolo come chiave univoca
-            backgroundColor="#822225"
+            backgroundColor={card.color}
             title={card.title || "No title available"}
             imageSrc={card.image || "default-image-url"}
             link={
