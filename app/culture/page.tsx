@@ -216,7 +216,7 @@ export default function CulturePage() {
                 title={culture.title || "No title available"}
                 imageSrc={culture.image || "default-image-url"}
                 link={<Link href={`/culture/${culture._id}`}><ArrowButton /></Link>}
-                isLiked={favoriteEventTitle.includes(culture.title)}
+                isLiked={culture.title ? favoriteEventTitle.includes(culture.title) : false}
                 onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
               />
             ))

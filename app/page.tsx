@@ -243,7 +243,7 @@ const HomePage: React.FC = () => {
                     } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
-                    isLiked={favoriteEventTitle.includes(event.title)}
+                    isLiked={event.title ? favoriteEventTitle.includes(event.title) : false}
                     eventId={event._id}
                     backgroundColor={event.color || '#4E614E'}
                     title={event.title || 'Pasta di mandorle'}

@@ -219,7 +219,8 @@ export default function FoodPage() {
                 title={food.title || "No title available"}
                 imageSrc={food.image || "default-image-url"}
                 link={<Link href={`/food/${food._id}`}><ArrowButton /></Link>}
-                isLiked={favoriteEventTitle.includes(food.title)}
+                isLiked={food.title ? favoriteEventTitle.includes(food.title) : false}
+
                 onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
               />
             ))

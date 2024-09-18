@@ -53,7 +53,7 @@ export default function AttivitaPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      const favoriteTitle = data.profile.events.map((event: { title: string | undefined }) => event.title);
       setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
       console.error('Errore nel recupero dei preferiti:', error);
@@ -215,7 +215,7 @@ export default function AttivitaPage() {
                 title={activity.title || "No title available"}
                 imageSrc={activity.image || "default-image-url"}
                 link={<Link href={`/activities/${activity._id}`}><ArrowButton /></Link>}
-                isLiked={favoriteEventTitle.includes(activity.title)}
+                isLiked={activity.title ? favoriteEventTitle.includes(activity.title) : false}
                 onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
 
               />
