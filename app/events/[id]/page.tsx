@@ -67,6 +67,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
     fetchEvent();
   }, [id]);
 
+  /* add comment for deploy */
   if (loading) {
     return <Loading />; // Mostra l'animazione di caricamento durante il fetching
   }
