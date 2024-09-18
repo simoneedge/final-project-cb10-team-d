@@ -18,13 +18,13 @@ export const labels = {
     eventDetails: "Dettagli Evento",
     articleDetails: "Dettagli Articolo",
     viewDetails: "Visualizza Dettagli",
-    
+
     // Etichette per l'azione sui contenuti
     edit: "Modifica",
     delete: "Cancella",
     save: "Salva",
     cancel: "Annulla",
-    
+
     // Etichette per la navigazione e i messaggi
     goBackHome: "Torna alla Home",
     loading: "Caricamento...",
@@ -44,7 +44,9 @@ export const labels = {
     navFood: "Food",
     navAttivita: "Attività",
     navProponiEvento: "Proponi Evento",
-    
+
+    errorHuHo: 'Error',
+
     // Footer
     footerText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 };
