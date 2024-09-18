@@ -258,7 +258,7 @@ const HomePage: React.FC = () => {
                 <div
                   key={event._id || index}
                   className={`${(index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"
-                    } w-full md:w-auto flex justify-center`} // Mantieni 'flex justify-center' qui
+                    } w-full md:w-auto flex justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
                     isLiked={
