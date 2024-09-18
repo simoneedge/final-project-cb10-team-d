@@ -8,7 +8,6 @@ import { useMediaQuery } from 'react-responsive';
 import Link from 'next/link';
 
 const Header = () => {
-  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   return (
     <header className="bg-bianco p-0 m-0">

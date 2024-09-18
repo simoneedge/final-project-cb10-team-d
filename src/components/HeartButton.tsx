@@ -6,7 +6,7 @@ interface HeartButtonProps {
   title: string | undefined;
   image: string | undefined;
   color: string;
-  isLiked?: boolean;
+  isLiked?: boolean | undefined;
   onClick?: () => void; // Callback per aggiornare le card nella pagina principale
 }
 
@@ -47,6 +47,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
       if (res.ok) {
         const data = await res.json();
+        console.log(data);
         setLiked(!liked);
 
         // Notifica ProfilePage per aggiornare le card
