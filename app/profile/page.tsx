@@ -4,10 +4,12 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../../firebaseconfig"; // Assicurati di importare db
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc  } from "firebase/firestore";
 import Link from "next/link";
 import ArrowButton from "../../src/components/ArrowButton";
 import Card from "@/src/components/Card";
+import { signOut } from "firebase/auth";
+import { toast } from "react-toastify";
 
 interface Card {
   id: number;
@@ -93,6 +95,32 @@ const ProfilePage = () => {
     return () => unsubscribe();
   }, [router, fetchCards, fetchFavorites]);
 
+   // Funzione per eliminare (disattivare) l'account
+   const handleDeleteAccount = async () => {
+    try {
+      const user = auth.currentUser;
+  
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { active: false }); // Imposta il campo active su false
+        console.log("Account disattivato con successo.");
+  
+        // Mostra un toast per informare l'utente che l'account è stato cancellato
+        toast.success("Il tuo account è stato cancellato con successo.");
+  
+        // Effettua il logout
+        await signOut(auth);
+        toast.info("Logout effettuato con successo!");
+  
+        // Reindirizza alla homepage
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Errore durante la disattivazione dell'account:", error);
+      toast.error("Si è verificato un errore durante la disattivazione dell'account.");
+    }
+  };
+  
   // Funzione per aggiornare le card dopo l'interazione
   const handleUpdate = useCallback(async () => {
     if (userEmail) {
@@ -152,6 +180,12 @@ const ProfilePage = () => {
               <strong>Email:</strong> {userEmail}
             </p>
           </div>
+          <button
+            className="mt-4 border-2 border-red-600 bg-red-100 text-red-600 p-2 hover:bg-red-600 hover:text-white font-bold transition-colors duration-300 w-full"
+            onClick={handleDeleteAccount}
+          >
+            Elimina account
+          </button>
         </div>
       )}
 
