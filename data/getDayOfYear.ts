@@ -1,6 +1,5 @@
 export const getDayOfYear = (dateStr: string): number => {
-    // Parsing della stringa data
-    const [day, month, year] = dateStr.split('-').map(Number);
+    const [day, month, year] = dateStr.split('-').map(Number);// Parsing della stringa data
 
     // Crea una data a partire dall'anno, mese e giorno (l'anno è completo, per esempio 2024)
     const date = new Date(year, month - 1, day); // JavaScript usa 0-based per i mesi
