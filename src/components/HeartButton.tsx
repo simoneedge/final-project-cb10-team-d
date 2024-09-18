@@ -40,6 +40,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
               id: eventId,
               title: title,
               image: image,
+              color: color
             },
           ],
         }),

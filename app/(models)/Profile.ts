@@ -9,6 +9,7 @@ export interface IEvent {
     id: string;
     title: string;
     image: string;
+    color: string;
 }
 
 mongoose.connect(process.env.MONGODB_URI!);
@@ -17,7 +18,8 @@ mongoose.Promise = global.Promise;
 const eventSchema = new Schema({
     id: { type: String },
     title: { type: String },
-    image: { type: String }
+    image: { type: String },
+    color: { type: String }
 });
 
 const profileSchema = new Schema({
