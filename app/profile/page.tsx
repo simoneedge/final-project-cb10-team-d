@@ -168,10 +168,10 @@ const ProfilePage = () => {
 
       {/* Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {cards.map((card, index) => (
+        {cards.map((card) => (
           <Card
             eventId={card.id}
-            key={index}
+            key={card.title}  // Usa il titolo come chiave univoca
             backgroundColor="#822225"
             title={card.title || "No title available"}
             imageSrc={card.image || "default-image-url"}
@@ -180,9 +180,7 @@ const ProfilePage = () => {
                 <ArrowButton />
               </Link>
             }
-            isLiked={
-              card.title ? favoriteEventTitle.includes(card.title) : false
-            }
+            isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
             onHeartClick={async () => {
               await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
               handleUpdate();  // Aggiorna anche le card
