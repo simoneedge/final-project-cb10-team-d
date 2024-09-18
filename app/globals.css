@@ -6,7 +6,8 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  /*   --foreground: #171717;
+ */
 }
 
 
@@ -18,7 +19,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    /*     --background: #0a0a0a;
+ */
     /*   --foreground: #ededed; */
   }
 }
@@ -26,7 +28,7 @@
 body {
   @apply font-testo;
   color: var(--background);
-  background: var(--foreground);
+  background: var(--background);
 }
 
 @layer utilities {

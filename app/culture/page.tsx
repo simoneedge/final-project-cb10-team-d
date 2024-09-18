@@ -203,7 +203,7 @@ export default function CulturePage() {
             onNextWeekClick={handleNextWeekClick}
           />
         </div>
-        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center items-start">
+        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {loading ? (
             <Loading />
@@ -225,7 +225,7 @@ export default function CulturePage() {
           )}
         </div>
         {/* Controlli di paginazione */}
-        <div className="pagination-controls flex justify-center mt-4">
+        <div className="pagination-controls flex justify-center m-10">
           <button onClick={handlePreviousPage} disabled={currentPage === 1} className="mr-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
             Previous
           </button>

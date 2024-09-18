@@ -1,63 +1,60 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="relative flex flex-col items-center">
+    <footer className=" relative ">
       <div className="w-full border border-rosso"></div>
-    <div className="w-full bg-white flex flex-col items-center py-6">
-      <div className="flex items-center space-x-6">
-        <Image
-          src="/siclipulse-02.svg"
-          alt="SiciliPulse Logo"
-          width={200}
-          height={50}
-          className="my-4"
-        />
+      <div className="w-full bg-white  py-6">
+        <div className=" space-x-1">
+          <Image
+            src="/siclipulse-02.svg"
+            alt="SiciliPulse Logo"
+            width={200}
+            height={50}
+            className="my-4"
+          />
+        </div>
       </div>
-    </div>
 
-    <div className="w-full border-b-4 border-rosso"></div>
-      <div className="bg-giallo flex justify-between items-center w-full py-4 px-4">
-        <p className="text-xs text-gray-700 scale-80"> 
-        ©2024 SiciliPulse | Tutti i diritti sono riservati
+      <div className="w-full border-b-4 border-rosso"></div>
+      <div className="bg-giallo w-full   ">
+        <p className=" text-gray-700 ">
+          ©2024 SicilyPulse | Tutti i diritti sono riservati
         </p>
-        <Link href="/about" className="text-verde hover:text-verde hover:font-bold ml-[80rem]">
-          Chi siamo
-        </Link>
-        <div className="flex space-x-3">
+
+        <div className=" ">
           <Image
             src="/instagram.svg"
             alt="Instagram Icon"
-            width={20}
-            height={20}
+            width={30}
+            height={30}
             className="cursor-pointer"
             style={{
               filter:
-                'invert(20%) sepia(70%) saturate(3000%) hue-rotate(-10deg) brightness(90%) contrast(120%)',
+                'invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)',
             }}
           />
           <Image
             src="/fb.svg"
             alt="Facebook Icon"
-            width={20}
-            height={20}
+            width={30}
+            height={30}
             className="cursor-pointer"
             style={{
               filter:
-                'invert(20%) sepia(70%) saturate(3000%) hue-rotate(-10deg) brightness(90%) contrast(120%)',
+                'invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)',
             }}
           />
           <Image
             src="/youtube.svg"
             alt="YouTube Icon"
-            width={20}
-            height={20}
+            width={30}
+            height={30}
             className="cursor-pointer"
             style={{
               filter:
-                'invert(20%) sepia(70%) saturate(3000%) hue-rotate(-10deg) brightness(90%) contrast(120%)',
+                'invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)',
             }}
           />
         </div>
