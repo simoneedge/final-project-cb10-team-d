@@ -77,6 +77,7 @@ const HomePage: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
       if (currentUser) {
         setUser(currentUser);
+        console.log(user)
       } else {
         setUser(null);
       }
