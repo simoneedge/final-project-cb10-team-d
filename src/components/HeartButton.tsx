@@ -11,7 +11,7 @@ interface HeartButtonProps {
 }
 
 const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image, isLiked, onClick }) => {
-  const [liked, setLiked] = useState<boolean>(isLiked); // Stato per la gestione del cuoricino
+  const [liked, setLiked] = useState<boolean>(isLiked || false); // Stato per la gestione del cuoricino
 
   useEffect(() => {
     setLiked(isLiked || false);
