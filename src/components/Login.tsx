@@ -10,7 +10,7 @@ import {
 import { auth } from "@/firebaseconfig";
 import Button from "./Button";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 interface LoginButtonProps {
   buttonLabel?: string;
@@ -54,13 +54,13 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       await signInWithEmailAndPassword(auth, email, password);
       setIsModalOpen(false);
       toast.success("Login effettuato con successo!", {
-        className: 'custom-toast-success',
+        className: "custom-toast-success",
       });
       if (onLoginSuccess) onLoginSuccess(); // Chiama la funzione solo se è definita      router.push(redirectTo); // Effettua il redirect alla pagina specificata
       router.push(redirectTo); // Effettua il redirect alla pagina specificata
     } catch (error) {
       toast.error("Errore di accesso, riprova.", {
-        className: 'custom-toast-error',
+        className: "custom-toast-error",
       });
     }
   };
@@ -68,7 +68,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
   const handleLogout = () => {
     signOut(auth);
     toast.info("Logout effettuato con successo!", {
-      className: 'custom-toast-info',
+      className: "custom-toast-info",
     });
   };
 
@@ -86,7 +86,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative rounded-none">
+          <div className="bg-white p-6  shadow-lg max-w-sm w-full relative rounded-none">
             <h2 className="font-titolo text-2xl text-rosso font-semibold mb-4">
               Fai il login
             </h2>
