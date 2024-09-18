@@ -18,7 +18,7 @@ interface Event {
 
 const getData = async (id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/events/${id}`, {
+    const res = await fetch(`/api/events/${id}`, {
       cache: "no-cache",
     });
 

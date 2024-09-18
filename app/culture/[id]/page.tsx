@@ -7,7 +7,7 @@ import { IEvent } from "@/app/(models)/Event";
 
 const getData = async (id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/cultures/${id}`, {
+    const res = await fetch(`/api/cultures/${id}`, {
       cache: "no-cache",
     });
 
