@@ -14,7 +14,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
   const [liked, setLiked] = useState<boolean>(isLiked); // Stato per la gestione del cuoricino
 
   useEffect(() => {
-    setLiked(isLiked);
+    setLiked(isLiked || false);
   }, [isLiked]);
 
   // Gestione del click sul cuoricino
