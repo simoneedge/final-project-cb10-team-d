@@ -10,7 +10,7 @@ import HeartButton from '@/src/components/HeartButton';
 import ArrowButton from '@/src/components/ArrowButton';
 
 interface Card {
-  id: string;
+  id: number;
   title: string;
   image: string;
 }
@@ -133,16 +133,16 @@ const ProfilePage = () => {
         </div>
       )}
 
-<div className="mt-4 flex flex-row items-center justify-center space-x-4">
-  <Link href="/propose">
-    <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
-      Proponi evento
-    </button>
-  </Link>
-  <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
-    Eventi preferiti
-  </button>
-</div>
+      <div className="mt-4 flex flex-row items-center justify-center space-x-4">
+        <Link href="/propose">
+          <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
+            Proponi evento
+          </button>
+        </Link>
+        <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
+          Eventi preferiti
+        </button>
+      </div>
 
 
       <div className="mt-6 grid grid-cols-1 gap-4">
@@ -158,7 +158,7 @@ const ProfilePage = () => {
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
                 <HeartButton
-                  onClick={handleUpdate} 
+                  onClick={handleUpdate}
                   title={card.title}
                   image={card.image}
                   eventId={card.id}
