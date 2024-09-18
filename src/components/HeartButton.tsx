@@ -6,7 +6,7 @@ interface HeartButtonProps {
   title: string | undefined;
   image: string | undefined;
   color: string;
-  isLiked?: boolean | undefined;
+  isLiked?: boolean | false;
   onClick?: () => void; // Callback per aggiornare le card nella pagina principale
 }
 

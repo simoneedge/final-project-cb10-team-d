@@ -4,7 +4,6 @@ import React from 'react';
 import Image from 'next/image';
 import NavBar from './NavBar';
 import { links } from '@/data/nav_link';
-import { useMediaQuery } from 'react-responsive';
 import Link from 'next/link';
 
 const Header = () => {
