@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Card from "@/src/components/Card";
 import React, { useEffect, useState } from "react";
@@ -13,7 +13,10 @@ import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 
 // Funzione per recuperare i dati dei cibi
-const fetchData = async (page: number, limit: number): Promise<{ foods: IFood[], totalPages: number }> => {
+const fetchData = async (
+  page: number,
+  limit: number
+): Promise<{ foods: IFood[]; totalPages: number }> => {
   try {
     const res = await fetch(`/api/foods?page=${page}&limit=${limit}`, {
       cache: "no-cache",
@@ -38,10 +41,12 @@ export default function FoodPage() {
   const [foods, setFoods] = useState<IFood[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IFood[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
-  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
+  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(
+    undefined
+  );
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
@@ -54,18 +59,19 @@ export default function FoodPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const favoriteTitle = data.profile.events.map((event: { title: string }) => event.title);
+      const favoriteTitle = data.profile.events.map(
+        (event: { title: string }) => event.title
+      );
       setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
-      console.error('Errore nel recupero dei preferiti:', error);
+      console.error("Errore nel recupero dei preferiti:", error);
     }
   };
-
 
   // Stato per la paginazione
   const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
   const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
-  const limit = 10 // Numero di eventi per pagina
+  const limit = 10; // Numero di eventi per pagina
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
@@ -85,7 +91,6 @@ export default function FoodPage() {
           const userEmail = user.email;
           await fetchFavorites(userEmail);
         }
-
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
@@ -94,7 +99,6 @@ export default function FoodPage() {
         setLoading(false);
       }
     };
-
 
     loadData();
   }, [currentPage]);
@@ -134,28 +138,37 @@ export default function FoodPage() {
   };
 
   // Funzione per applicare i filtri agli eventi
-  const applyFilters = (query: string, isFree: boolean, dayOfYear: number, startNextWeek?: number, endNextWeek?: number) => {
+  const applyFilters = (
+    query: string,
+    isFree: boolean,
+    dayOfYear: number,
+    startNextWeek?: number,
+    endNextWeek?: number
+  ) => {
     let filtered = foods;
 
     // Filtro per la query di ricerca
-    if (query !== '') {
-      filtered = filtered.filter(event =>
-        event.title?.toLowerCase().includes(query.toLowerCase()) ||
-        event.location?.toLowerCase().includes(query.toLowerCase()) ||
-        event.tag?.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+    if (query !== "") {
+      filtered = filtered.filter(
+        (event) =>
+          event.title?.toLowerCase().includes(query.toLowerCase()) ||
+          event.location?.toLowerCase().includes(query.toLowerCase()) ||
+          event.tag?.some((tag) =>
+            tag.toLowerCase().includes(query.toLowerCase())
+          )
       );
     }
 
     // Filtro per eventi gratuiti
     if (isFree) {
-      filtered = filtered.filter(event => event.price === '0');
+      filtered = filtered.filter((event) => event.price === "0");
     } else {
-      filtered = filtered.filter(event => event.price !== '0');
+      filtered = filtered.filter((event) => event.price !== "0");
     }
 
     // Filtro per il giorno specifico
     if (dayOfYear) {
-      filtered = filtered.filter(event => {
+      filtered = filtered.filter((event) => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
         const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
         return dayOfYear >= startEvent && dayOfYear <= endEvent;
@@ -164,7 +177,7 @@ export default function FoodPage() {
 
     // Filtro per la prossima settimana
     if (startNextWeek !== undefined && endNextWeek !== undefined) {
-      filtered = filtered.filter(event => {
+      filtered = filtered.filter((event) => {
         const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
         const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
         return startEvent <= endNextWeek && endEvent >= startNextWeek;
@@ -190,7 +203,6 @@ export default function FoodPage() {
       setCurrentPage(currentPage - 1);
     }
   };
-
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
@@ -218,10 +230,17 @@ export default function FoodPage() {
                 backgroundColor="#822225"
                 title={food.title || "No title available"}
                 imageSrc={food.image || "default-image-url"}
-                link={<Link href={`/food/${food._id}`}><ArrowButton /></Link>}
-                isLiked={food.title ? favoriteEventTitle.includes(food.title) : false}
-
-                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || '')}
+                link={
+                  <Link href={`/food/${food._id}`}>
+                    <ArrowButton />
+                  </Link>
+                }
+                isLiked={
+                  food.title ? favoriteEventTitle.includes(food.title) : false
+                }
+                onHeartClick={() =>
+                  fetchFavorites(getAuth().currentUser?.email || "")
+                }
               />
             ))
           ) : (
@@ -230,11 +249,21 @@ export default function FoodPage() {
         </div>
         {/* Controlli di paginazione */}
         <div className="pagination-controls flex justify-center m-10">
-          <button onClick={handlePreviousPage} disabled={currentPage === 1} className="mr-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="mr-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
+          >
             Previous
           </button>
-          <span className="text-center px-4 py-2">{currentPage} of {totalPages}</span>
-          <button onClick={handleNextPage} disabled={currentPage === totalPages} className="ml-4 px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
+          <span className="text-center px-4 py-2 text-gray-700 font-medium">
+            {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="ml-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
+          >
             Next
           </button>
         </div>

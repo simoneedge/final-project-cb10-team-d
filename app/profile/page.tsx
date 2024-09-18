@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth, db } from '@/firebaseconfig'; // Assicurati di importare db
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import Link from 'next/link';
-import HeartButton from '@/src/components/HeartButton';
-import ArrowButton from '@/src/components/ArrowButton';
+import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { auth, db } from "../../firebaseconfig"; // Assicurati di importare db
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import Link from "next/link";
+import HeartButton from "../../src/components/HeartButton";
+import ArrowButton from "../../src/components/ArrowButton";
 
 interface Card {
   id: number;
@@ -35,26 +35,26 @@ const ProfilePage = () => {
         const data = await response.json();
         setCards(data.profile.events);
       } else {
-        console.error('Email utente non trovata');
+        console.error("Email utente non trovata");
       }
     } catch (error) {
-      console.error('Errore nel recupero delle card:', error);
+      console.error("Errore nel recupero delle card:", error);
     }
   }, []);
 
   // Funzione per recuperare i dati dell'utente da Firestore
   const fetchUserData = async (uid: string) => {
     try {
-      const userDoc = await getDoc(doc(db, 'users', uid));
+      const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserName(userData.firstName);
         setUserLastName(userData.lastName);
       } else {
-        console.log('No user data found!');
+        console.log("No user data found!");
       }
     } catch (error) {
-      console.error('Errore nel recupero dei dati utente:', error);
+      console.error("Errore nel recupero dei dati utente:", error);
     }
   };
 
@@ -66,7 +66,7 @@ const ProfilePage = () => {
         fetchUserData(user.uid);
         fetchCards(user.email);
       } else {
-        router.push('/');
+        router.push("/");
       }
     });
 
@@ -86,9 +86,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="p-4 bg-bianco min-h-screen">
+    <div className="p-4 bg-white min-h-screen">
+      {/* Sezione di Benvenuto */}
       <div className="mt-4 text-center flex justify-center items-center">
-        <h2 className="text-xl font-titolo text-foreground">
+        <h2 className="text-2xl font-bold text-gray-800">
           Ciao {userName} {userLastName}
         </h2>
         <button onClick={toggleAccordion} className="ml-2">
@@ -107,53 +108,58 @@ const ProfilePage = () => {
         </button>
       </div>
 
+      {/* Accordion delle Preferenze */}
       {showAccordion && (
-        <div className="mt-4 border-2 border-rosso p-4 bg-gray-100 text-foreground relative shadow-md max-w-xs mx-auto">
+        <div className="mt-4 border-2 border-rosso p-4 bg-gray-100 text-gray-900 relative shadow-md max-w-lg mx-auto">
           <button
-            className="absolute top-2 right-2 text-rosso"
+            className="absolute top-2 right-2 text-red-600"
             onClick={toggleAccordion}
           >
             &times;
           </button>
-          <h3 className="text-2xl font-titolo text-rosso mb-2">
+          <h3 className="text-2xl font-semibold text-rosso mb-4">
             Preferenze account
           </h3>
           <div className="mb-4">
-            <h4 className="text-md font-titolo text-rosso">Dati Personali</h4>
-            <p className="font-testo mt-2">
+            <h4 className="text-md font-semibold text-rosso">Dati Personali</h4>
+            <p className="mt-2">
               <strong>Nome:</strong> {userName}
             </p>
-            <p className="font-testo">
+            <p>
               <strong>Cognome:</strong> {userLastName}
             </p>
-            <p className="font-testo">
+            <p>
               <strong>Email:</strong> {userEmail}
             </p>
           </div>
         </div>
       )}
 
-      <div className="mt-4 flex flex-row items-center justify-center space-x-4">
+      {/* Pulsanti */}
+      <div className="mt-4 flex flex-col md:flex-row items-center justify-center space-x-0 space-y-4 md:space-y-0 md:space-x-4">
         <Link href="/propose">
-          <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
+          <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold transition-colors duration-300 w-full md:w-auto">
             Proponi evento
           </button>
         </Link>
-        <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold">
+        <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold transition-colors duration-300 w-full md:w-auto">
           Eventi preferiti
         </button>
       </div>
 
-
-      <div className="mt-6 grid grid-cols-1 gap-4">
+      {/* Cards */}
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card, index) => (
-          <div key={index} className="overflow-hidden shadow-lg relative max-w-xs bg-bianco">
+          <div
+            key={index}
+            className="overflow-hidden shadow-lg relative bg-white "
+          >
             <div className="relative">
               <div className="clip-path-bottom">
                 <img
                   src={card.image}
                   alt={card.title}
-                  className="object-cover w-full h-[200px]"
+                  className="object-cover w-full h-[200px] "
                 />
               </div>
               <div className="absolute top-2 right-2 flex space-x-2">
@@ -166,12 +172,8 @@ const ProfilePage = () => {
                 />
               </div>
             </div>
-            <div
-              className="diagonal-line-container p-3 text-white relative"
-              style={{ backgroundColor: '#822225' }}
-            >
-              <div className="diagonal-line-top"></div>
-              <h2 className="text-[16px] font-titolo mt-4">{card.title}</h2>
+            <div className="p-4 bg-[#822225] text-white relative">
+              <h2 className="text-lg font-semibold mt-2">{card.title}</h2>
               <div className="absolute bottom-2 right-2 cursor-pointer">
                 <ArrowButton />
               </div>
