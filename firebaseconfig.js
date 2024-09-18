@@ -21,4 +21,4 @@ const auth = getAuth(app);
 // Ottieni l'istanza di Firestore
 const db = getFirestore(app); // Inizializza Firestore
 
-export { auth, db }; // Esporta sia auth che db
+export { auth, db, firebaseConfig }; // Esporta sia auth che db
