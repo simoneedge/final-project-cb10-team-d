@@ -35,7 +35,7 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
   
 
   return (
-    <div className="relative w-full h-[600px] mb-10">
+    <div className="relative w-full h-[553px] md:h-[500px] lg:h-[600px] mb-10">
       {/* Slideshow container */}
       {images.map((slide, index) => (
         <div
