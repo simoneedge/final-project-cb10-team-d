@@ -88,7 +88,7 @@ const ProfilePage = () => {
   return (
     <div className="p-4 bg-bianco min-h-screen">
       <div className="mt-4 text-center flex justify-center items-center">
-        <h2 className="text-xl font-titolo text-foreground">
+        <h2 className="text-xl font-titolo text-black">
           Ciao {userName} {userLastName}
         </h2>
         <button onClick={toggleAccordion} className="ml-2">
@@ -118,9 +118,9 @@ const ProfilePage = () => {
           <h3 className="text-2xl font-titolo text-rosso mb-2">
             Preferenze account
           </h3>
-          <div className="mb-4">
+          <div className="mb-4 text-black">
             <h4 className="text-md font-titolo text-rosso">Dati Personali</h4>
-            <p className="font-testo mt-2">
+            <p className="font-testo mt-2 ">
               <strong>Nome:</strong> {userName}
             </p>
             <p className="font-testo">
