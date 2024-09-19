@@ -217,6 +217,10 @@ const ProfilePage = () => {
       {/* Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card) => (
+          <div
+          key={card._id}
+          className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+        >
           <Card
             eventId={card.id}
             key={card.title}  // Usa il titolo come chiave univoca
@@ -234,6 +238,7 @@ const ProfilePage = () => {
               handleUpdate();  // Aggiorna anche le card
             }}
           />
+          </div>
         ))}
 
         

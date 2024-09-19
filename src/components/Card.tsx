@@ -20,6 +20,14 @@ interface CardProps {
   price: string | undefined;
   description?: string | undefined;
 }
+
+const truncateDescription = (text: string, wordLimit: number) => {
+  const words = text.split(" ");
+  return words.length > wordLimit
+    ? words.slice(0, wordLimit).join(" ") + "..."
+    : text;
+};
+
 /* cooment */
 const Card: React.FC<CardProps> = ({
   backgroundColor,
@@ -67,28 +75,34 @@ const Card: React.FC<CardProps> = ({
                 />
               </div>
             </div>
-            {/* Sezione Testo per Card Grande */}
-            <Link href={`/events/${eventId}`}>
-              <div
-                className="diagonal-line-container p-6 flex flex-col justify-between text-white relative"
-                style={{ backgroundColor }}
-              >
-                <h2 className="text-[20px] font-titolo underline-on-hover">
-                  {title ? truncateText(title, 10) : "No title"}
-                </h2>
-                <p className="text-[14px] font-sans mt-2">
-                  {description  ? description : "No description"}
-                </p>
-                <p className="text-[12px] font-sans mt-2">
-                  {dateEnd}
-                  {dateStart}
-                  {price}
-                </p>
-                <div className="absolute bottom-4 right-4 cursor-pointer">
-                  <ArrowButton />
-                </div>
-              </div>
-            </Link>
+           {/* Sezione Testo per Card Grande */}
+<Link href={`/events/${eventId}`}>
+  <div
+    className="diagonal-line-container p-6 flex flex-col justify-between text-white relative"
+    style={{ backgroundColor }}
+  >
+    <h2 className="text-[20px] font-titolo underline-on-hover">
+      {title ? truncateText(title, 10) : "No title"}
+    </h2>
+    <p className="text-[14px] font-sans mt-2">
+  {description ? truncateDescription(description, 15) : "No description"}
+</p>
+<div className="text-[12px] font-sans mt-2 flex flex-wrap items-center relative">
+  <span className="mr-2">{dateStart ? `Dal ${dateStart}` : ""}</span>
+  <span className="mr-2">{dateEnd ? `Al ${dateEnd}` : ""}</span>
+  {price ? (
+    <div className="price-circle ml-auto absolute bottom-1.5  right-2">
+      {`${price} €`}
+    </div>
+  ) : (
+    <span className="ml-auto">Prezzo non disponibile</span>
+  )}
+</div>
+    <div className="absolute bottom-4 right-4 cursor-pointer">
+      <ArrowButton />
+    </div>
+  </div>
+</Link>
           </div>
         ) : (
           // Layout per card piccole
@@ -121,11 +135,17 @@ const Card: React.FC<CardProps> = ({
                 <h2 className="h-[50px] text-[16px] font-titolo mt-4">
                   {title ? truncateText(title, 10) : "No title"}
                 </h2>
-                <p className="text-[12px] font-sans mt-2">
-                  {dateEnd}
-                  {dateStart}
-                  {price}
-                </p>
+                <div className="text-[12px] font-sans mt-2 flex flex-wrap items-center relative">
+  <span className="mr-2">{dateStart ? `Dal ${dateStart}` : ""}</span>
+  <span className="mr-2">{dateEnd ? `Al ${dateEnd}` : ""}</span>
+  {price ? (
+    <div className="price-circle ml-auto absolute bottom-1.5  right-2">
+      {`${price} €`}
+    </div>
+  ) : (
+    <span className="ml-auto">Prezzo non disponibile</span>
+  )}
+</div>
                 <div className="absolute bottom-2 right-2 cursor-pointer">
                   {link ? (
                     link // Se il Link è passato come prop, renderizzalo
