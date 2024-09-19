@@ -19,14 +19,19 @@ const fetchData = async (): Promise<{ events: IEvent[] }> => {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     return await res.json();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw new Error("Failed to fetch data.");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching data:", error.message);
+      throw Error(error.message);
+    } else {
+      throw Error("Unknown error occurred");
+    }
   }
 };
 
 export default function CulturePage() {
   const [cultures, setCultures] = useState<IEvent[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
@@ -34,9 +39,27 @@ export default function CulturePage() {
   const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = async (email: string | null) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteTitle = data.profile.events.map(
+        (event: { title: string | undefined }) => event.title
+      );
+      setFavoriteEventTitle(favoriteTitle);
+    } catch (error) {
+      console.error("Errore nel recupero dei preferiti:", error);
+    }
+  };
+
+
+  // Effetto per caricare i dati iniziali
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -44,24 +67,22 @@ export default function CulturePage() {
         const data = await fetchData();
         setCultures(data.events);
         setFilteredEvents(data.events);
-
+        // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
         const user = auth.currentUser;
 
         if (user) {
           const userEmail = user.email;
-          const response = await fetch(`/api/profiles?email=${userEmail}`);
-          const profileData = await response.json();
-          const favoriteTitles = profileData.profile.events.map((event: { title: string }) => event.title);
-          setFavoriteEventTitle(favoriteTitles);
+          await fetchFavorites(userEmail);
         }
-      } catch (error) {
-        setErrorMessage("Failed to load data.");
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setErrorMessage("Failed to load data.");
+        }
       } finally {
         setLoading(false);
       }
     };
-
     loadData();
   }, []);
 

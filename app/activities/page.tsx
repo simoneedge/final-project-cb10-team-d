@@ -12,12 +12,9 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 
-const fetchData = async (
-): Promise<{ events: IEvent[] }> => {
+const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
-    const res = await fetch(`/api/events`, {
-      cache: "no-cache",
-    });
+    const res = await fetch(`/api/events`, { cache: "no-cache", });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -244,10 +241,7 @@ export default function AttivitaPage() {
             <p className="justify-items-center">No events found...</p>
           )}
         </div>
-        {/* Controlli di paginazione */}
-
       </div>
     </div>
-
   );
 }
