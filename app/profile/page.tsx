@@ -26,6 +26,7 @@ const ProfilePage = () => {
   const [showAccordion, setShowAccordion] = useState(false);
   const router = useRouter();
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = useCallback(async (email: string | null) => {
@@ -133,6 +134,11 @@ const ProfilePage = () => {
     setShowAccordion(!showAccordion);
   };
 
+   // Funzione per mostrare la modale di conferma
+   const toggleDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+
   return (
     <div className="p-4 bg-white min-h-screen">
       {/* Sezione di Benvenuto */}
@@ -196,11 +202,11 @@ const ProfilePage = () => {
             </p>
           </div>
           <button
-            className="mt-4 border-2 border-red-600 bg-red-100 text-red-600 p-2 hover:bg-red-600 hover:text-white font-bold transition-colors duration-300 w-full"
-            onClick={handleDeleteAccount}
-          >
-            Elimina account
-          </button>
+  className="mt-4 bg-gradient-to-r from-red-500 to-red-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+  onClick={toggleDeleteModal}
+>
+  Elimina account
+</button>
         </div>
       )}
 
@@ -238,6 +244,31 @@ const ProfilePage = () => {
           />
         ))}
       </div>
+     {/* Modale di conferma eliminazione account */}
+     {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+            <h3 className="text-xl font-bold text-red-600 mb-4">Conferma eliminazione</h3>
+            <p className="text-gray-700 mb-6">
+              Sei sicuro di voler eliminare il tuo account? Questa operazione è irreversibile.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                className="bg-gray-300 text-gray-700 p-2 rounded hover:bg-gray-400"
+                onClick={toggleDeleteModal} // Chiudi la modale
+              >
+                Annulla
+              </button>
+              <button
+                className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
+                onClick={handleDeleteAccount} // Esegui l'eliminazione dell'account
+              >
+                Elimina
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
