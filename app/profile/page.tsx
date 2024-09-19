@@ -3,16 +3,19 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../../firebaseconfig"; // Assicurati di importare db
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, updateDoc  } from "firebase/firestore";
 import Link from "next/link";
-import HeartButton from "../../src/components/HeartButton";
 import ArrowButton from "../../src/components/ArrowButton";
+import Card from "@/src/components/Card";
+import { signOut } from "firebase/auth";
+import { toast } from "react-toastify";
 
 interface Card {
   id: number;
   title: string;
   image: string;
+  color: string;
 }
 
 const ProfilePage = () => {
@@ -22,6 +25,24 @@ const ProfilePage = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [showAccordion, setShowAccordion] = useState(false);
   const router = useRouter();
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+
+  // Funzione per recuperare i preferiti dell'utente
+  const fetchFavorites = useCallback(async (email: string | null) => {
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const favoriteTitle = data.profile.events.map(
+        (event: { title: string }) => event.title
+      );
+      setFavoriteEventTitle(favoriteTitle);
+    } catch (error) {
+      console.error("Errore nel recupero dei preferiti:", error);
+    }
+  }, []);
 
   // Funzione per recuperare le card
   const fetchCards = useCallback(async (email: string | null) => {
@@ -65,14 +86,41 @@ const ProfilePage = () => {
         setUserEmail(user.email);
         fetchUserData(user.uid);
         fetchCards(user.email);
+        fetchFavorites(user.email);  // Aggiungi qui la fetch dei preferiti
       } else {
         router.push("/");
       }
     });
 
     return () => unsubscribe();
-  }, [router, fetchCards]);
+  }, [router, fetchCards, fetchFavorites]);
 
+   // Funzione per eliminare (disattivare) l'account
+   const handleDeleteAccount = async () => {
+    try {
+      const user = auth.currentUser;
+  
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { active: false }); // Imposta il campo active su false
+        console.log("Account disattivato con successo.");
+  
+        // Mostra un toast per informare l'utente che l'account è stato cancellato
+        toast.success("Il tuo account è stato cancellato con successo.");
+  
+        // Effettua il logout
+        await signOut(auth);
+        toast.info("Logout effettuato con successo!");
+  
+        // Reindirizza alla homepage
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Errore durante la disattivazione dell'account:", error);
+      toast.error("Si è verificato un errore durante la disattivazione dell'account.");
+    }
+  };
+  
   // Funzione per aggiornare le card dopo l'interazione
   const handleUpdate = useCallback(async () => {
     if (userEmail) {
@@ -93,18 +141,33 @@ const ProfilePage = () => {
           Ciao {userName} {userLastName}
         </h2>
         <button onClick={toggleAccordion} className="ml-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#822225"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-6 h-6"
-          >
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
+          {showAccordion ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#822225"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-6 h-6"
+            >
+              <path d="M6 15l6-6 6 6" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#822225"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-6 h-6"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          )}
         </button>
       </div>
 
@@ -132,6 +195,12 @@ const ProfilePage = () => {
               <strong>Email:</strong> {userEmail}
             </p>
           </div>
+          <button
+            className="mt-4 border-2 border-red-600 bg-red-100 text-red-600 p-2 hover:bg-red-600 hover:text-white font-bold transition-colors duration-300 w-full"
+            onClick={handleDeleteAccount}
+          >
+            Elimina account
+          </button>
         </div>
       )}
 
@@ -149,36 +218,24 @@ const ProfilePage = () => {
 
       {/* Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {cards.map((card, index) => (
-          <div
-            key={index}
-            className="overflow-hidden shadow-lg relative bg-white "
-          >
-            <div className="relative">
-              <div className="clip-path-bottom">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="object-cover w-full h-[200px] "
-                />
-              </div>
-              <div className="absolute top-2 right-2 flex space-x-2">
-                <HeartButton
-                  onClick={handleUpdate}
-                  title={card.title}
-                  image={card.image}
-                  eventId={card.id}
-                  color="#822225"
-                />
-              </div>
-            </div>
-            <div className="p-4 bg-[#822225] text-white relative">
-              <h2 className="text-lg font-semibold mt-2">{card.title}</h2>
-              <div className="absolute bottom-2 right-2 cursor-pointer">
+        {cards.map((card) => (
+          <Card
+            eventId={card.id}
+            key={card.title}  // Usa il titolo come chiave univoca
+            backgroundColor={card.color}
+            title={card.title || "No title available"}
+            imageSrc={card.image || "default-image-url"}
+            link={
+              <Link href={`/food/${card.id}`}>
                 <ArrowButton />
-              </div>
-            </div>
-          </div>
+              </Link>
+            }
+            isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
+            onHeartClick={async () => {
+              await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
+              handleUpdate();  // Aggiorna anche le card
+            }}
+          />
         ))}
       </div>
     </div>
@@ -186,4 +243,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-

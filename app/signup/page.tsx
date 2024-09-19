@@ -46,6 +46,7 @@ export default function SignUp() {
         firstName,
         lastName,
         email,
+        active: true,
       });
 
       toast.success('Registrazione effettuata con successo!');
