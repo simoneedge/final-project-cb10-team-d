@@ -1,32 +1,51 @@
-import React from 'react';
+import React from "react";
 
 interface ButtonProps {
   label?: string;
   icon?: React.ReactNode;
   onClick?: () => void;
-  className?: string;  
+  className?: string;
+  disabled?: boolean; // Nuova prop per disabilitare il pulsante
+  loading?: boolean; // Nuova prop per mostrare lo stato di caricamento
 }
 
-const Button = ({ label, icon, onClick, className }: ButtonProps) => {
+const Button = ({
+  label,
+  icon,
+  onClick,
+  className,
+  disabled = false,
+  loading = false,
+}: ButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={className}
+      className={`${className} ${
+        disabled || loading ? "opacity-50 cursor-not-allowed" : ""
+      }`}
+      disabled={disabled || loading}
     >
-      <span>{label}</span>
-      {icon && (
-        <span className="w-5 h-5 text-rosso hover:text-bianco">
-          {icon}
+      {loading ? (
+        <span className="flex items-center">
+          <span className="mr-2">Loading...</span>
+          <span className="w-5 h-5 text-rosso">
+            {" "}
+            {/* Aggiungi un'icona di caricamento qui se lo desideri */}
+          </span>
         </span>
+      ) : (
+        <>
+          <span>{label}</span>
+          {icon && (
+            <span className="w-5 h-5 text-rosso hover:text-bianco">{icon}</span>
+          )}
+        </>
       )}
     </button>
   );
 };
 
 export default Button;
-
-
-
 
 // import React from 'react';
 
@@ -35,7 +54,7 @@ export default Button;
 //     <button className="flex items-center justify-between gap-3 px-3 py-2 border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold">
 //       <span>Salva</span>
 //       <svg
-//         className="w-5 h-5 text-rosso hover:text-bianco" 
+//         className="w-5 h-5 text-rosso hover:text-bianco"
 //         fill="currentColor"
 //         viewBox="0 0 20 20"
 //         xmlns="http://www.w3.org/2000/svg"
