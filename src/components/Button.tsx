@@ -3,10 +3,10 @@ import React from "react";
 interface ButtonProps {
   label?: string;
   icon?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
   className?: string;
-  disabled?: boolean; // Nuova prop per disabilitare il pulsante
-  loading?: boolean; // Nuova prop per mostrare lo stato di caricamento
+  disabled?: boolean;
+  loading?: boolean;
 }
 
 const Button = ({
@@ -66,4 +66,3 @@ export default Button;
 // }
 
 // export default Button;
-
