@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: "1:459360140003:web:b0c0571ad5e4e455d363d6",
 };
 
-// Inizializza Firebase
+
 const app = initializeApp(firebaseConfig);
 
 // Ottieni l'istanza di autenticazione
