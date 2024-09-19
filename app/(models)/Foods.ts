@@ -12,6 +12,7 @@ export interface IFood {
     dateEnd?: string;
     price?: string;
     location?: string;
+    reviewed?: { type: Boolean, default: false }
 }
 
 mongoose.connect(process.env.MONGODB_URI!);
@@ -28,7 +29,9 @@ const foodsSchema = new Schema({
     dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
-    color: { type: String }
+    color: { type: String },
+    reviewed: { type: Boolean }
+
 
 });
 

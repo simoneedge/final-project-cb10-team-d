@@ -175,6 +175,10 @@ const HomePage: React.FC = () => {
   ) => {
     let filtered = events;
 
+    filtered = filtered.filter(
+      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
+    );
+
     if (query !== "") {
       filtered = filtered.filter(
         (event) =>

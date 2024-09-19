@@ -29,7 +29,10 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body: ICulture = await req.json();
-        const newEvent = new Culture(body);
+        const newEvent = new Culture({
+            ...body,
+            reviewed: false  // Assicuriamoci che reviewed sia false alla creazione
+        });
 
         await newEvent.save();
         return NextResponse.json({ event: newEvent }, { status: 201 });

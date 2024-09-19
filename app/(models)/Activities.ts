@@ -12,6 +12,7 @@ export interface IActivity {
     dateEnd?: string;
     price?: string;
     location?: string;
+    reviewed?: { type: Boolean, default: false }
 }
 
 mongoose.connect(process.env.MONGODB_URI!);
@@ -28,8 +29,8 @@ const activitySchema = new Schema({
     dateEnd: { type: String },
     price: { type: String },
     location: { type: String },
-    color: { type: String }
-
+    color: { type: String },
+    reviewed: { type: Boolean }
 });
 
 const Activity = mongoose.models.Activity || mongoose.model("Activity", activitySchema);

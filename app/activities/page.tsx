@@ -143,6 +143,10 @@ export default function AttivitaPage() {
   ) => {
     let filtered = activities;
 
+    filtered = filtered.filter(
+      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
+    );
+
     // Filtro per la query di ricerca
     if (query !== "") {
       filtered = filtered.filter(

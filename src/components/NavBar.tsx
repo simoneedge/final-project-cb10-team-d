@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { auth, db } from '@/firebaseconfig'; // Importa db per Firestore
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'; // Importa getDoc da Firestore
 import LoginButton from './Login';
 import { toast } from 'react-toastify';
@@ -24,8 +24,42 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null); // Stato per nome utente
   const router = useRouter(); // Initialize useRouter
-  const pathname = usePathname();
 
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  const fetchUserRole = async (email: string | null) => {
+    if (!email) return; // Se l'email non è disponibile, non fare nulla
+    try {
+      const response = await fetch(`/api/profiles?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const role = data.profile?.role; // Assumi che il ruolo sia in data.profile.role
+      return role;
+    } catch (error) {
+      console.error("Errore nel recupero del ruolo:", error);
+    }
+  };
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+
+  const idAdminRole = async () => {
+    if (user) {
+      const role = await fetchUserRole(user.email);
+      if (role === 'admin') {
+        setIsAdmin(true); // Se il ruolo è admin, imposta lo stato isAdmin a true
+      }
+    }
+  }
+
+  useEffect(() => {
+    idAdminRole();
+  }, [user]);
+
+ const pathname = usePathname();
   // Funzione per recuperare i dati dell'utente da Firestore
   const fetchUserData = async (uid: string) => {
     try {
@@ -99,7 +133,11 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   return (
     <header className="relative bg-bianco p-4">
       <div className="hidden md:flex space-x-6 items-center">
+
         {links.map((link) => {
+          if (link.name === 'Pannello di controllo' && !isAdmin) {
+            return null; // Non mostrare il link se non è un admin
+          }
           if (link.name === 'Proponi Evento') {
             // Se l'utente è autenticato, mostra il link normalmente
             if (userEmail) {
@@ -108,9 +146,8 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                   key={link.name}
                   href={link.href}
                   onClick={() => handleClick(link.name)}
-                  className={`text-verde hover:text-verde hover:font-bold ${
-                    activeItem === link.name ? 'font-bold' : ''
-                  }`}
+                  className={`text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : ''
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -135,9 +172,8 @@ const NavBar = ({ links = [] }: NavBarProps) => {
               key={link.name}
               href={link.href}
               onClick={() => handleClick(link.name)}
-              className={`text-verde hover:text-verde hover:font-bold ${
-                activeItem === link.name ? 'font-bold' : ''
-              }`}
+              className={`text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : ''
+                }`}
             >
               {link.name}
             </Link>
@@ -159,7 +195,6 @@ const NavBar = ({ links = [] }: NavBarProps) => {
           <LoginButton />
         )}
       </div>
-
       {/* Mobile Menu Toggle */}
       <div className="md:hidden flex items-center">
         <button onClick={toggleMenu} className="text-verde focus:outline-none">
@@ -189,76 +224,74 @@ const NavBar = ({ links = [] }: NavBarProps) => {
         </button>
       </div>
       {/* Mobile Menu */}
-        <div
-          className={`fixed top-50px right-0 w-full h-80 bg-bianco z-50 transform transition-transform duration-300 ${
-            isOpen ? 'translate-x-0' : 'translate-x-full'
+      <div
+        className={`fixed top-50px right-0 w-full h-80 bg-bianco z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
+      >
+        <button
+          onClick={toggleMenu}
+          className="p-4 text-verde focus:outline-none absolute top-4 right-4"
         >
-          <button
-            onClick={toggleMenu}
-            className="p-4 text-verde focus:outline-none absolute top-4 right-4"
-          >
-          </button>
-          <div className="flex flex-col items-center space-y-4 p-6 text-center h-auto">
-            {/* Cambia h-full a h-auto */}
-            {links.map((link) => {
-              if (link.name === 'Proponi Evento') {
-                if (userEmail) {
-                  return (
-                    <Link
-                      key={link.name}
-                      href={link.href}
-                      onClick={() => handleClick(link.name)}
-                      className={`block text-verde hover:text-verde hover:font-bold ${
-                        activeItem === link.name ? 'font-bold' : 'font-normal'
+        </button>
+        <div className="flex flex-col items-center space-y-4 p-6 text-center h-auto">
+          {/* Cambia h-full a h-auto */}
+          {links.map((link) => {
+            if (link.name === 'Proponi Evento') {
+              if (userEmail) {
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => handleClick(link.name)}
+                    className={`block text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : 'font-normal'
                       } py-2`}
-                    >
-                      {link.name}
-                    </Link>
-                  );
-                } else {
-                  return (
-                    <LoginButton
-                      key={`login-${link.name}`}
-                      buttonLabel="Proponi evento"
-                      redirectTo="/propose"
-                      onLoginSuccess={() => handleLoginSuccess(links[4]?.name)}
-                      buttonClassName="text-verde hover:text-verde hover:font-bold"
-                    />
-                  );
-                }
+                  >
+                    {link.name}
+                  </Link>
+                );
+              } else {
+                return (
+                  <LoginButton
+                    key={`login-${link.name}`}
+                    buttonLabel="Proponi evento"
+                    redirectTo="/propose"
+                    onLoginSuccess={() => handleLoginSuccess(links[4]?.name)}
+                    buttonClassName="text-verde hover:text-verde hover:font-bold"
+                  />
+                );
               }
+            }
 
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => handleClick(link.name)}
-                  className={`text-verde hover:text-verde hover:font-bold ${
-                    activeItem === link.name ? 'font-bold' : ''
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                onClick={() => handleClick(link.name)}
+                className={`text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : ''
                   }`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-            {userName ? (
-              <>
-                <Link href="/profile">
-                  <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
-                    {userName.charAt(0).toUpperCase()}
-                  </div>
-                </Link>
-                <button onClick={handleLogout} className="text-verde ml-2">
-                  LOGOUT
-                </button>
-              </>
-            ) : (
-              <LoginButton />
-            )}
-          </div>
+              >
+                {link.name}
+              </Link>
+            );
+          })}
+          {userName ? (
+            <>
+              <Link href="/profile">
+                <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+                  {userName.charAt(0).toUpperCase()}
+                </div>
+              </Link>
+              <button onClick={handleLogout} className="text-verde ml-2">
+                LOGOUT
+              </button>
+            </>
+          ) : (
+            <LoginButton />
+          )}
+
         </div>
-      
+      </div>
+
     </header>
   );
 };

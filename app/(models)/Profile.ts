@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IProfile {
     mail: string;
     events: IEvent[];
+    role?: string; // Cambia qui
 }
 
 export interface IEvent {
@@ -22,7 +23,8 @@ const eventSchema = new Schema({
 
 const profileSchema = new Schema({
     mail: { type: String, required: true },
-    events: { type: [eventSchema], default: [] }
+    events: { type: [eventSchema], default: [] },
+    role: { type: String }
 });
 
 const Profile = mongoose.models.Profile || mongoose.model<IProfile>("Profile", profileSchema);

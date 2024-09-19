@@ -25,7 +25,6 @@ const fetchData = async (
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    console.log("Fetched foods:", data.foods); // Log di debug
     return data;
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -146,6 +145,10 @@ export default function FoodPage() {
     endNextWeek?: number
   ) => {
     let filtered = foods;
+
+    filtered = filtered.filter(
+      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
+    );
 
     // Filtro per la query di ricerca
     if (query !== "") {
