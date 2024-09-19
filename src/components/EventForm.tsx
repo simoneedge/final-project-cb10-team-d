@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 interface EventFormProps {
   formData: {
@@ -14,12 +14,21 @@ interface EventFormProps {
     location: string;
     category: string;
   };
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => void;
   onTagChange: (tags: string[]) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
-const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps) => {
+const EventForm = ({
+  formData,
+  onChange,
+  onTagChange,
+  onSubmit,
+}: EventFormProps) => {
   const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedTag = e.target.value;
     const isChecked = e.target.checked;
@@ -27,7 +36,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
     if (isChecked) {
       onTagChange([...formData.tag, selectedTag]);
     } else {
-      onTagChange(formData.tag.filter(tag => tag !== selectedTag));
+      onTagChange(formData.tag.filter((tag) => tag !== selectedTag));
     }
   };
 
@@ -35,8 +44,8 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
   const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // i mesi partono da 0
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // i mesi partono da 0
+    const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
@@ -44,7 +53,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
 
   // Funzione per convertire la data da yyyy-mm-dd a dd-mm-yyyy
   const formatDate = (dateString: string) => {
-    const [year, month, day] = dateString.split('-');
+    const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
   };
 
@@ -61,12 +70,15 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
 
     // Invia il form con le date formattate
     onSubmit(e);
-    console.log('Dati inviati:', formattedData); //debug
+    console.log("Dati inviati:", formattedData); //debug
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 text-verde">
-      <form className="bg-white p-6 shadow-lg w-full max-w-xl space-y-8" onSubmit={handleSubmit}>
+      <form
+        className="bg-white p-6 shadow-lg w-full max-w-xl space-y-8"
+        onSubmit={handleSubmit}
+      >
         <select
           name="category"
           className="border p-2"
@@ -109,10 +121,30 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
         ></textarea>
 
         <fieldset className="border p-4">
-          <legend className="text-xl font-titolo mb-4 text-rosso">Seleziona uno o più tag:</legend>
+          <legend className="text-xl font-titolo mb-4 text-rosso">
+            Seleziona uno o più tag:
+          </legend>
           <div className="flex flex-wrap gap-4">
-            {["concerti", "festival", "arte", "moda", "mostra", "workshop", "teatro", "spettacolo", "ristorante", "fiera", "sagra", "tradizione", 'famiglie', 'ragazzi'].map((tag) => (
-              <label key={tag} className="inline-flex items-center w-1/2 md:w-1/5">
+            {[
+              "concerti",
+              "festival",
+              "arte",
+              "moda",
+              "mostra",
+              "workshop",
+              "teatro",
+              "spettacolo",
+              "ristorante",
+              "fiera",
+              "sagra",
+              "tradizione",
+              "famiglie",
+              "ragazzi",
+            ].map((tag) => (
+              <label
+                key={tag}
+                className="inline-flex items-center w-1/2 md:w-1/5"
+              >
                 <input
                   type="checkbox"
                   value={tag}
@@ -157,12 +189,7 @@ const EventForm = ({ formData, onChange, onTagChange, onSubmit }: EventFormProps
           onChange={onChange}
           required
         />
-        <button
-          type="submit"
-          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
-        >
-          Crea Evento
-        </button>
+        <button onClick={handleSubmit}>Crea Evento</button>
       </form>
     </div>
   );
