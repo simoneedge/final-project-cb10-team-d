@@ -12,6 +12,10 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 
+<<<<<<< HEAD
+=======
+// Funzione per recuperare i dati delle culture
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
 const fetchData = async (
 ): Promise<{ events: IEvent[] }> => {
   try {
@@ -26,16 +30,21 @@ const fetchData = async (
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error fetching data:", error.message);
-      throw Error(error.message);
+      throw new Error(error.message);
     } else {
-      throw Error("Unknown error occurred");
+      throw new Error("Unknown error occurred");
     }
   }
 };
 
+<<<<<<< HEAD
 
 export default function FoodPage() {
   const [foods, setFoods] = useState<IEvent[]>([]);
+=======
+export default function CulturePage() {
+  const [foods, setFoods] = useState<IFood[]>([]);
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -65,17 +74,31 @@ export default function FoodPage() {
     }
   };
 
+<<<<<<< HEAD
 
+=======
+  // Stato per la paginazione
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 10;
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
+<<<<<<< HEAD
         const data = await fetchData();
         setFoods(data.events);
         setFilteredEvents(data.events);
         // Recupera i preferiti se l'utente è autenticato
+=======
+        const data = await fetchData(currentPage, limit);
+        setFoods(data.foods);
+        setFilteredEvents(data.foods);
+        setTotalPages(data.totalPages);
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
         const auth = getAuth();
         const user = auth.currentUser;
 
@@ -140,12 +163,16 @@ export default function FoodPage() {
     let filtered = foods;
 
     filtered = filtered.filter(
-      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
+      (event) =>
+        Boolean(event.reviewed) === true || event.reviewed === undefined
     );
+<<<<<<< HEAD
     filtered = filtered.filter(
       (event) => event.color === '#822225'
     )
 
+=======
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
     // Filtro per la query di ricerca
     if (query !== "") {
       filtered = filtered.filter(
@@ -191,6 +218,28 @@ export default function FoodPage() {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [foods, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
+<<<<<<< HEAD
+=======
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setIsFree(false);
+    setToday(0);
+    setStartNextWeek(undefined);
+    setEndNextWeek(undefined);
+    setFilteredEvents(foods); // Reset events
+  };
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
@@ -198,14 +247,17 @@ export default function FoodPage() {
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <Filter
+            query={searchQuery}
             onSearch={handleSearch}
             isFree={isFree}
             setIsFree={setIsFree}
             onTodayClick={handleTodayClick}
             onTomorrowClick={handleTomorrowClick}
             onNextWeekClick={handleNextWeekClick}
+            onResetFilters={handleResetFilters}
           />
         </div>
+<<<<<<< HEAD
         <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
           {loading ? (
@@ -244,6 +296,66 @@ export default function FoodPage() {
           )}
         </div>
 
+=======
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((food, index) => (
+                <div
+                  key={food._id || index}
+                  className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+                >
+                  <Card
+                    eventId={food._id}
+                    key={food._id || index}
+                    backgroundColor="#822225"
+                    title={food.title || "No title available"}
+                    imageSrc={food.image || "default-image-url"}
+                    link={
+                      <Link href={`/foods/${food._id}`}>
+                        <ArrowButton />
+                      </Link>
+                    }
+                    isLiked={
+                      food.title
+                        ? favoriteEventTitle.includes(food.title)
+                        : false
+                    }
+                    onHeartClick={() =>
+                      fetchFavorites(getAuth().currentUser?.email || "")
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="justify-items-center">No events found...</p>
+            )}
+          </div>
+        )}
+
+        <div className="pagination-controls flex justify-center m-10">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="mr-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
+          >
+            Previous
+          </button>
+          <span className="text-center px-4 py-2 text-gray-700 font-medium">
+            {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="ml-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
+          >
+            Next
+          </button>
+        </div>
+>>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
       </div>
     </div>
   );

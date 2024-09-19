@@ -1,26 +1,25 @@
-import React, { useState } from 'react';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import React, { ChangeEvent } from "react";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 interface SearchProps {
+  query: string;
   onSearch: (query: string) => void;
+  onReset: () => void; // Funzione per gestire il reset del campo di ricerca
 }
 
-function Search({ onSearch }: SearchProps) {
-  const [query, setQuery] = useState(''); // Stato locale per l'input
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+function Search({ query, onSearch, onReset }: SearchProps) {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value); // Esegui la ricerca quando l'input cambia
   };
 
   return (
-    <div className="flex items-center border-2 border-rosso border-gray-300 p-5 bg-white h-10 w-full md:w-96 mr-20">
+    <div className="flex items-center border-2 border-rosso p-5 bg-white h-10 w-full md:w-96 mr-20">
       <input
         type="text"
         placeholder="Cerca..."
         value={query}
         onChange={handleChange}
-        className="flex-1 border-none outline-none p-2 text-sm h-full"
+        className="flex-1 border-none outline-none p-2 text-sm h-full text-black"
       />
       <button className="bg-transparent border-none cursor-pointer p-2">
         <i className="fas fa-search text-gray-600 text-xs"></i>
