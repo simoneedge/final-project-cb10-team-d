@@ -30,12 +30,15 @@ const Card: React.FC<CardProps> = ({
 
   const sizeClasses =
     size === "large" ? "max-w-md h-[300px]" : "max-w-xs h-[200px]";
+    const dynamicBackgroundColor = eventId === 1 
+    ? "#FFD700" // Usa il colore oro per l'id 1
+    : backgroundColor;
 
   return (
     <div
-     className={`overflow-hidden shadow-lg relative cursor-pointer ${size === "large" ? "max-w-md" : "max-w-xs"
-        }`}
-    >
+  className={`overflow-hidden shadow-lg relative cursor-pointer ${sizeClasses}`}
+  style={{ backgroundColor: dynamicBackgroundColor, minHeight: "300px" }} // Imposta una min-height per garantire spazio
+>
       <div className="relative">
         <div className="clip-path-bottom">
           <img
