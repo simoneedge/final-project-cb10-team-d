@@ -15,6 +15,10 @@ interface CardProps {
   eventId: number; // Passa l'ID dell'evento come prop
   onHeartClick?: () => void;
   isLiked?: boolean; // Nuova prop per gestire lo stato del cuoricino
+  dateEnd: string | undefined;
+  dateStart: string | undefined;
+  price: string | undefined;
+  description?: string | undefined;
 }
 /* cooment */
 const Card: React.FC<CardProps> = ({
@@ -25,7 +29,11 @@ const Card: React.FC<CardProps> = ({
   link,
   eventId,
   isLiked = false,
-  onHeartClick
+  onHeartClick,
+  dateEnd,
+  dateStart,
+  price,
+  description,
 }) => {
 
   const sizeClasses =
@@ -69,7 +77,12 @@ const Card: React.FC<CardProps> = ({
                   {title ? truncateText(title, 10) : "No title"}
                 </h2>
                 <p className="text-[14px] font-sans mt-2">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
+                  {description  ? description : "No description"}
+                </p>
+                <p className="text-[12px] font-sans mt-2">
+                  {dateEnd}
+                  {dateStart}
+                  {price}
                 </p>
                 <div className="absolute bottom-4 right-4 cursor-pointer">
                   <ArrowButton />
@@ -108,6 +121,11 @@ const Card: React.FC<CardProps> = ({
                 <h2 className="h-[50px] text-[16px] font-titolo mt-4">
                   {title ? truncateText(title, 10) : "No title"}
                 </h2>
+                <p className="text-[12px] font-sans mt-2">
+                  {dateEnd}
+                  {dateStart}
+                  {price}
+                </p>
                 <div className="absolute bottom-2 right-2 cursor-pointer">
                   {link ? (
                     link // Se il Link è passato come prop, renderizzalo
