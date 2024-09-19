@@ -15,7 +15,7 @@ interface CardProps {
   onHeartClick?: () => void;
   isLiked?: boolean; // Nuova prop per gestire lo stato del cuoricino
 }
-
+/* cooment */
 const Card: React.FC<CardProps> = ({
   backgroundColor,
   title,
