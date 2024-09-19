@@ -261,6 +261,10 @@ const HomePage: React.FC = () => {
                   <Card
                     isLiked={favoriteEventTitle.includes(event.title)}
                     eventId={event._id}
+                    dateEnd={event.dateEnd}
+                    dateStart={event.dateStart}
+                    price={event.price}
+                    description={event.description}
                     backgroundColor={event.color || "#4E614E"}
                     title={event.title || "Default Title"}
                     imageSrc={

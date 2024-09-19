@@ -229,45 +229,38 @@ export default function CulturePage() {
             onResetFilters={handleResetFilters}
           />
         </div>
-        {loading ? (
-          <Loading />
-        ) : (
-          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
-            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((culture, index) => (
-                <div
-                  key={culture._id || index}
-                  className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
-                >
-                  <Card
-                    eventId={culture._id}
-                    key={culture._id || index}
-                    backgroundColor="#4E614E"
-                    title={culture.title || "No title available"}
-                    imageSrc={culture.image || "default-image-url"}
-                    link={
-                      <Link href={`/culture/${culture._id}`}>
-                        <ArrowButton />
-                      </Link>
-                    }
-                    isLiked={
-                      culture.title
-                        ? favoriteEventTitle.includes(culture.title)
-                        : false
-                    }
-                    onHeartClick={() =>
-                      fetchFavorites(getAuth().currentUser?.email || "")
-                    }
-                  />
-                </div>
-              ))
-            ) : (
-              <p className="justify-items-center">No events found...</p>
-            )}
-          </div>
-        )}
-
+        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          {loading ? (
+            <Loading />
+          ) : filteredEvents.length > 0 ? (
+            filteredEvents.map((culture, index) => (
+              <Card
+                eventId={culture._id}
+                key={culture._id || index}
+                backgroundColor="#4E614E"
+                title={culture.title || "No title available"}
+                imageSrc={culture.image || "default-image-url"}
+                link={
+                  <Link href={`/culture/${culture._id}`}>
+                    <ArrowButton />
+                  </Link>
+                }
+                isLiked={
+                  culture.title
+                    ? favoriteEventTitle.includes(culture.title)
+                    : false
+                }
+                onHeartClick={() =>
+                  fetchFavorites(getAuth().currentUser?.email || "")
+                }
+              />
+            ))
+          ) : (
+            <p className="justify-items-center">No events found...</p>
+          )}
+        </div>
+        {/* Controlli di paginazione */}
         <div className="pagination-controls flex justify-center m-10">
           <button
             onClick={handlePreviousPage}
