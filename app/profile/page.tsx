@@ -229,7 +229,7 @@ const ProfilePage = () => {
                 title={card.title || "No title available"}
                 imageSrc={card.image || "default-image-url"}
                 link={
-                  <Link href={`/food/${card.id}`}>
+                  <Link href={`/events/${card.id}`}>
                     <ArrowButton />
                   </Link>
                 }
