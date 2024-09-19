@@ -29,7 +29,10 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const body: IFood = await req.json();
-        const newEvent = new Food(body);
+        const newEvent = new Food({
+            ...body,
+            reviewed: false  // Assicuriamoci che reviewed sia false alla creazione
+        });
 
         await newEvent.save();
         return NextResponse.json({ event: newEvent }, { status: 201 });

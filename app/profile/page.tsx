@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "../../firebaseconfig"; // Assicurati di importare db
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, updateDoc  } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import ArrowButton from "../../src/components/ArrowButton";
 import Card from "@/src/components/Card";
@@ -95,23 +95,23 @@ const ProfilePage = () => {
     return () => unsubscribe();
   }, [router, fetchCards, fetchFavorites]);
 
-   // Funzione per eliminare (disattivare) l'account
-   const handleDeleteAccount = async () => {
+  // Funzione per eliminare (disattivare) l'account
+  const handleDeleteAccount = async () => {
     try {
       const user = auth.currentUser;
-  
+
       if (user) {
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, { active: false }); // Imposta il campo active su false
         console.log("Account disattivato con successo.");
-  
+
         // Mostra un toast per informare l'utente che l'account è stato cancellato
         toast.success("Il tuo account è stato cancellato con successo.");
-  
+
         // Effettua il logout
         await signOut(auth);
         toast.info("Logout effettuato con successo!");
-  
+
         // Reindirizza alla homepage
         router.push("/");
       }
@@ -120,7 +120,7 @@ const ProfilePage = () => {
       toast.error("Si è verificato un errore durante la disattivazione dell'account.");
     }
   };
-  
+
   // Funzione per aggiornare le card dopo l'interazione
   const handleUpdate = useCallback(async () => {
     if (userEmail) {
@@ -226,7 +226,7 @@ const ProfilePage = () => {
             title={card.title || "No title available"}
             imageSrc={card.image || "default-image-url"}
             link={
-              <Link href={`/food/${card.id}`}>
+              <Link href={`/events/${card.id}`}>
                 <ArrowButton />
               </Link>
             }
