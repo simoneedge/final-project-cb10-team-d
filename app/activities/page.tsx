@@ -236,31 +236,6 @@ export default function CulturePage() {
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((activity, index) => (
               <div
-                  key={activity._id || index}
-                  className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
-                >
-              <Card
-                eventId={activity._id}
-                key={activity._id || index}
-                backgroundColor="#F2B85A"
-                title={activity.title || "No title available"}
-                imageSrc={activity.image || "default-image-url"}
-                link={
-                  <Link href={`/activities/${activity._id}`}>
-                    <ArrowButton />
-                  </Link>
-                }
-                isLiked={
-                  activity.title
-                    ? favoriteEventTitle.includes(activity.title)
-                    : false
-                }
-                onHeartClick={() =>
-                  fetchFavorites(getAuth().currentUser?.email || "")
-                }
-              />
-              </div>
-              <div
                 key={activity._id || index}
                 className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
               >

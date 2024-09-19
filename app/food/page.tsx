@@ -229,41 +229,6 @@ export default function CulturePage() {
             onResetFilters={handleResetFilters}
           />
         </div>
-        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          {loading ? (
-            <Loading />
-          ) : filteredEvents.length > 0 ? (
-            filteredEvents.map((food, index) => (
-              <div
-                key={food._id || index}
-                className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
-              >
-                <Card
-                  eventId={food._id}
-                  key={food._id || index}
-                  backgroundColor="#822225"
-                  title={food.title || "No title available"}
-                  imageSrc={food.image || "default-image-url"}
-                  link={
-                    <Link href={`/food/${food._id}`}>
-                      <ArrowButton />
-                    </Link>
-                  }
-                  isLiked={
-                    food.title ? favoriteEventTitle.includes(food.title) : false
-                  }
-                  onHeartClick={() =>
-                    fetchFavorites(getAuth().currentUser?.email || "")
-                  }
-                />
-              </div>
-            ))
-          ) : (
-            <p className="justify-items-center">No events found...</p>
-          )}
-        </div>
-        {/* Controlli di paginazione */}
         {loading ? (
           <Loading />
         ) : (
