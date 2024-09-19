@@ -74,7 +74,7 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
     >
       <svg
         onClick={handleFavoriteClick}
-        className={`w-6 h-6 transition-colors duration-300 ${liked ? 'text-[#8D3639]' : 'text-gray-400'}`} // Cambia il colore tra rosso e grigio
+        className={`w-6 h-6 transition-colors duration-300 ${liked ? 'text-[#8D3639]' : 'text-white'}`} // Cambia il colore tra rosso e grigio
         fill="currentColor"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"

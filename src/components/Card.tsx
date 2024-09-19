@@ -4,6 +4,7 @@ import React from "react";
 import ArrowButton from "./ArrowButton";
 import HeartButton from "./HeartButton";
 import { truncateText } from "@/data/troncateText";
+import Link from "next/link";
 
 interface CardProps {
   backgroundColor: string;
@@ -32,7 +33,7 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <div
-      className={`overflow-hidden shadow-lg relative ${size === "large" ? "max-w-md" : "max-w-xs"
+     className={`overflow-hidden shadow-lg relative cursor-pointer ${size === "large" ? "max-w-md" : "max-w-xs"
         }`}
     >
       <div className="relative">
@@ -54,6 +55,7 @@ const Card: React.FC<CardProps> = ({
           />
         </div>
       </div>
+      <Link href={`/events/${eventId}`}>
       <div
         className="diagonal-line-container p-3 text-white relative"
         style={{ backgroundColor }}
@@ -70,6 +72,7 @@ const Card: React.FC<CardProps> = ({
           )}
         </div>
       </div>
+      </Link>
     </div>
   );
 };
