@@ -1,6 +1,6 @@
 "use client";
 import { getDayOfYear } from "@/data/getDayOfYear";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Button from "@/src/components/Button";
 import Card from "@/src/components/Card";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
@@ -37,11 +37,6 @@ const getData = async (
   }
 };
 
-const getRandomSlides = (items: IEvent[], count: number): IEvent[] => {
-  const shuffled = [...items].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-};
-
 const HomePage: React.FC = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -49,23 +44,17 @@ const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
-  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(
-    undefined
-  );
+  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
-  const [slideshowImages, setSlideshowImages] = useState<
-    { src: string; title: string }[]
-  >([]);
+  const [slideshowImages, setSlideshowImages] = useState<{ src: string; title: string; link: string }[]>([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
-  // Stato per la paginazione
-  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
-  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
-  const limit = 12; // Numero di eventi per pagina
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 12;
 
-  // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string | null) => {
     try {
       const response = await fetch(`/api/profiles?email=${email}`);
@@ -105,7 +94,6 @@ const HomePage: React.FC = () => {
         setFilteredEvents(data.events);
         setTotalPages(data.totalPages);
 
-        // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
         const user = auth.currentUser;
 
@@ -125,15 +113,18 @@ const HomePage: React.FC = () => {
     fetchData();
   }, [currentPage]);
 
+
+  //slideshow
   useEffect(() => {
-    const randomSlides = getRandomSlides(events, 5);
-    const images = randomSlides.map((event) => ({
-      src:
-        event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
-      title: event.title || "Default Title",
-    }));
-    setSlideshowImages(images);
-  }, [events]); // Solo quando 'events' cambia
+    if (events.length > 0) {
+      const images = events.slice(0, 5).map((event) => ({
+        src: event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
+        title: event.title || "Default Title",
+        link: `/events/${event._id}`,
+      }));
+      setSlideshowImages(images);
+    }
+  }, [events]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -228,12 +219,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  /*   const randomSlides = getRandomSlides(events, 5);
-    const slideshowImages = randomSlides.map(event => ({
-      src: event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
-      title: event.title || 'Default Title',
-    })); */
-
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <Slideshow images={slideshowImages} />
@@ -250,38 +235,24 @@ const HomePage: React.FC = () => {
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
         {loading ? (
-          <Loading /> // Mostra l'animazione di caricamento
+          <Loading />
         ) : (
           <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start w-full">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${(index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"
-                    } w-full md:w-auto flex justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`} // Mantieni 'flex justify-center' qui
+                  className={`${(index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"} w-full md:w-auto flex justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`}
                 >
                   <Card
-                    isLiked={
-                      event.title
-                        ? favoriteEventTitle.includes(event.title)
-                        : false
-                    }
+                    isLiked={event.title ? favoriteEventTitle.includes(event.title) : false}
                     eventId={event._id}
                     backgroundColor={event.color || "#4E614E"}
                     title={event.title || "Pasta di mandorle"}
-                    imageSrc={
-                      event.image ||
-                      "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-                    }
+                    imageSrc={event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"}
                     size={(index + 1) % 4 === 0 ? "large" : "small"}
-                    onHeartClick={() =>
-                      fetchFavorites(getAuth().currentUser?.email || "")
-                    }
-                    link={
-                      <Link href={`/events/${event._id}`}>
-                        <ArrowButton />
-                      </Link>
-                    }
+                    onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || "")}
+                    link={<Link href={`/events/${event._id}`}><ArrowButton /></Link>}
                   />
                 </div>
               ))
@@ -291,12 +262,10 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </main>
-      {/* Controlli di paginazione */}
-
       <div className="pagination-controls flex justify-center m-10">
         <Button
           onClick={handlePreviousPage}
-          label="Previous"
+          label="Precedente"
           className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
           disabled={currentPage === 1}
         />
@@ -305,7 +274,7 @@ const HomePage: React.FC = () => {
         </span>
         <Button
           onClick={handleNextPage}
-          label="Next"
+          label="Successivo"
           className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
           disabled={currentPage === totalPages}
         />
