@@ -146,13 +146,41 @@ body {
   animation-delay: 0.4s;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .card-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; /* Assicurati che il container si estenda su tutta la larghezza */
-    padding: 0; /* Rimuovi eventuali padding */
-    margin: 0; /* Rimuovi eventuali margini */
+    width: 100%; 
+    padding: 0; 
+    margin: 0; 
   }
+} */
+
+
+/* Intercetta tutti gli iPad (portrait e landscape) */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+    .card-container2 {
+      flex-direction: column; 
+      gap: 2rem;
+      padding: 1rem; 
+    }
+  
+    .card-container2 .flex-wrap {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .card-container2 button {
+      width: 100%; 
+    }
+  
+    .card-container2 .mt-4 {
+      margin-top: 1rem; 
+    }
 }
+

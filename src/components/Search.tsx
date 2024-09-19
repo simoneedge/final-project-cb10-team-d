@@ -14,7 +14,7 @@ function Search({ onSearch }: SearchProps) {
   };
 
   return (
-    <div className="flex items-center border-2 border-rosso border-gray-300 p-5 bg-white h-10 w-full md:w-96 mr-20">
+    <div className="flex items-center border-2 border-rosso border-gray-300 p-5 bg-white h-10 w-full  mr-20">
       <input
         type="text"
         placeholder="Cerca..."
