@@ -15,11 +15,10 @@ import Slideshow from "@/src/components/Slideshow";
 import { User } from "firebase/auth";
 
 const getData = async (
-  page: number,
-  limit: number
-): Promise<{ events: IEvent[]; totalPages: number }> => {
+
+): Promise<{ events: IEvent[] }> => {
   try {
-    const res = await fetch(`/api/events?page=${page}&limit=${limit}`, {
+    const res = await fetch(`/api/events`, {
       cache: "no-cache",
     });
     if (!res.ok) {
@@ -60,10 +59,7 @@ const HomePage: React.FC = () => {
   >([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
-  // Stato per la paginazione
-  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
-  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
-  const limit = 12; // Numero di eventi per pagina
+
 
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string | null) => {
@@ -100,10 +96,9 @@ const HomePage: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await getData(currentPage, limit);
+        const data = await getData();
         setEvents(data.events);
         setFilteredEvents(data.events);
-        setTotalPages(data.totalPages);
 
         // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
@@ -123,7 +118,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchData();
-  }, [currentPage]);
+  }, []);
 
   useEffect(() => {
     const randomSlides = getRandomSlides(events, 5);
@@ -220,17 +215,7 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   /*   const randomSlides = getRandomSlides(events, 5);
     const slideshowImages = randomSlides.map(event => ({
@@ -301,23 +286,7 @@ const HomePage: React.FC = () => {
       </main>
       {/* Controlli di paginazione */}
 
-      <div className="pagination-controls flex justify-center m-10">
-        <Button
-          onClick={handlePreviousPage}
-          label="Previous"
-          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
-          disabled={currentPage === 1}
-        />
-        <span className="text-center px-4 py-2 text-gray-700 font-medium">
-          {currentPage} of {totalPages}
-        </span>
-        <Button
-          onClick={handleNextPage}
-          label="Next"
-          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
-          disabled={currentPage === totalPages}
-        />
-      </div>
+
       <ScrollToTopButton />
     </div>
   );

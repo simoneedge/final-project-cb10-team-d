@@ -2,7 +2,7 @@
 
 import Card from "@/src/components/Card";
 import React, { useEffect, useState } from "react";
-import { IFood } from "../(models)/Foods";
+import { IEvent } from "../(models)/Activities";
 import Link from "next/link";
 import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
@@ -12,13 +12,10 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 
-// Funzione per recuperare i dati dei cibi
 const fetchData = async (
-  page: number,
-  limit: number
-): Promise<{ foods: IFood[]; totalPages: number }> => {
+): Promise<{ events: IEvent[] }> => {
   try {
-    const res = await fetch(`/api/foods?page=${page}&limit=${limit}`, {
+    const res = await fetch(`/api/events`, {
       cache: "no-cache",
     });
     if (!res.ok) {
@@ -36,10 +33,11 @@ const fetchData = async (
   }
 };
 
+
 export default function FoodPage() {
-  const [foods, setFoods] = useState<IFood[]>([]);
+  const [foods, setFoods] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [filteredEvents, setFilteredEvents] = useState<IFood[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
@@ -67,21 +65,16 @@ export default function FoodPage() {
     }
   };
 
-  // Stato per la paginazione
-  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
-  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
-  const limit = 10; // Numero di eventi per pagina
+
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        const data = await fetchData(currentPage, limit);
-        setFoods(data.foods);
-        setFilteredEvents(data.foods);
-        setTotalPages(data.totalPages);
-
+        const data = await fetchData();
+        setFoods(data.events);
+        setFilteredEvents(data.events);
         // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
         const user = auth.currentUser;
@@ -100,7 +93,7 @@ export default function FoodPage() {
     };
 
     loadData();
-  }, [currentPage]);
+  }, []);
 
   // Funzione per gestire la ricerca
   const handleSearch = (query: string) => {
@@ -149,6 +142,9 @@ export default function FoodPage() {
     filtered = filtered.filter(
       (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
     );
+    filtered = filtered.filter(
+      (event) => event.color === '#822225'
+    )
 
     // Filtro per la query di ricerca
     if (query !== "") {
@@ -195,17 +191,6 @@ export default function FoodPage() {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [foods, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
@@ -228,53 +213,37 @@ export default function FoodPage() {
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((food, index) => (
               <div
-                  key={food._id || index}
-                  className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
-                >
-              <Card
-                eventId={food._id}
                 key={food._id || index}
-                backgroundColor="#822225"
-                title={food.title || "No title available"}
-                imageSrc={food.image || "default-image-url"}
-                link={
-                  <Link href={`/food/${food._id}`}>
-                    <ArrowButton />
-                  </Link>
-                }
-                isLiked={
-                  food.title ? favoriteEventTitle.includes(food.title) : false
-                }
-                onHeartClick={() =>
-                  fetchFavorites(getAuth().currentUser?.email || "")
-                }
-              />
+                className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+              >
+                <Card
+                  dateEnd={food.dateEnd}
+                  dateStart={food.dateStart}
+                  price={food.price}
+                  eventId={food._id}
+                  key={food._id || index}
+                  backgroundColor="#822225"
+                  title={food.title || "No title available"}
+                  imageSrc={food.image || "default-image-url"}
+                  link={
+                    <Link href={`/events/${food._id}`}>
+                      <ArrowButton />
+                    </Link>
+                  }
+                  isLiked={
+                    food.title ? favoriteEventTitle.includes(food.title) : false
+                  }
+                  onHeartClick={() =>
+                    fetchFavorites(getAuth().currentUser?.email || "")
+                  }
+                />
               </div>
             ))
           ) : (
             <p className="justify-items-center">No events found...</p>
           )}
         </div>
-        {/* Controlli di paginazione */}
-        <div className="pagination-controls flex justify-center m-10">
-          <button
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            className="mr-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
-          >
-            Previous
-          </button>
-          <span className="text-center px-4 py-2 text-gray-700 font-medium">
-            {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="ml-4 w-32 px-4 py-2 bg-gray-700 text-white rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:opacity-50 text-center"
-          >
-            Next
-          </button>
-        </div>
+
       </div>
     </div>
   );

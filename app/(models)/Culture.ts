@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-export interface ICulture {
+export interface IEvent {
     color: string;
     _id: number;
     title?: string;
@@ -12,13 +12,13 @@ export interface ICulture {
     dateEnd?: string;
     price?: string;
     location?: string;
-    reviewed?: { type: Boolean, default: false }
+    reviewed?: boolean;
 }
 
 mongoose.connect(process.env.MONGODB_URI!);
 mongoose.Promise = global.Promise;
 
-const cultureSchema = new Schema({
+const eventSchema = new Schema({
     /*     _id: { type: String, required: true }, */
     title: { type: String, required: true },
     longTitle: { type: String },
@@ -31,10 +31,10 @@ const cultureSchema = new Schema({
     location: { type: String },
     color: { type: String },
     reviewed: { type: Boolean }
-
-
 });
 
-const Culture = mongoose.models.Culture || mongoose.model("Culture", cultureSchema);
+const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);
 
-export default Culture;
+
+
+export default Event;
