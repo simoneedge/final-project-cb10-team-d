@@ -14,10 +14,7 @@ import Loading from "@/src/components/Loading";
 import Slideshow from "@/src/components/Slideshow";
 import { User } from "firebase/auth";
 
-const getData = async (
-  page: number,
-  limit: number
-): Promise<{ events: IEvent[]; totalPages: number }> => {
+const fetchEvents = async (page: number, limit: number) => {
   try {
     const res = await fetch(`/api/events?page=${page}&limit=${limit}`, {
       cache: "no-cache",
@@ -28,12 +25,11 @@ const getData = async (
     const data = await res.json();
     return data;
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("Error fetching data:", error.message);
-      throw Error(error.message);
-    } else {
-      throw Error("Unknown error occurred");
-    }
+    console.error(
+      "Error fetching data:",
+      error instanceof Error ? error.message : "Unknown error occurred"
+    );
+    throw error;
   }
 };
 
@@ -61,11 +57,10 @@ const HomePage: React.FC = () => {
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
   // Stato per la paginazione
-  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
-  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
-  const limit = 12; // Numero di eventi per pagina
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 12;
 
-  // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string | null) => {
     try {
       const response = await fetch(`/api/profiles?email=${email}`);
@@ -78,19 +73,14 @@ const HomePage: React.FC = () => {
       );
       setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
-      console.error("Errore nel recupero dei preferiti:", error);
+      console.error("Error fetching favorites:", error);
     }
   };
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
-      if (currentUser) {
-        setUser(currentUser);
-        console.log(user);
-      } else {
-        setUser(null);
-      }
+      setUser(currentUser);
     });
 
     return () => unsubscribe();
@@ -100,23 +90,22 @@ const HomePage: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await getData(currentPage, limit);
+        const data = await fetchEvents(currentPage, limit);
         setEvents(data.events);
         setFilteredEvents(data.events);
         setTotalPages(data.totalPages);
 
-        // Recupera i preferiti se l'utente è autenticato
+        // Stampa gli eventi nella console
+        console.log("Fetched Events:", data.events);
+
         const auth = getAuth();
         const user = auth.currentUser;
 
         if (user) {
-          const userEmail = user.email;
-          await fetchFavorites(userEmail);
+          await fetchFavorites(user.email);
         }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setErrorMessage("Failed to load data.");
-        }
+      } catch (error) {
+        setErrorMessage("Failed to load data.");
       } finally {
         setLoading(false);
       }
@@ -133,7 +122,7 @@ const HomePage: React.FC = () => {
       title: event.title || "Default Title",
     }));
     setSlideshowImages(images);
-  }, [events]); // Solo quando 'events' cambia
+  }, [events]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -176,7 +165,8 @@ const HomePage: React.FC = () => {
     let filtered = events;
 
     filtered = filtered.filter(
-      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
+      (event) =>
+        Boolean(event.reviewed) === true || event.reviewed === undefined
     );
 
     if (query !== "") {
@@ -232,47 +222,47 @@ const HomePage: React.FC = () => {
     }
   };
 
-  /*   const randomSlides = getRandomSlides(events, 5);
-    const slideshowImages = randomSlides.map(event => ({
-      src: event.image || 'https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg',
-      title: event.title || 'Default Title',
-    })); */
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setIsFree(false);
+    setToday(0);
+    setStartNextWeek(undefined);
+    setEndNextWeek(undefined);
+    setFilteredEvents(events); // Reset events
+  };
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
       <Slideshow images={slideshowImages} />
       <Filter
+        query={searchQuery} // Passa la query al Filter
         onSearch={handleSearch}
         isFree={isFree}
         setIsFree={setIsFree}
         onTodayClick={handleTodayClick}
         onTomorrowClick={handleTomorrowClick}
         onNextWeekClick={handleNextWeekClick}
+        onResetFilters={handleResetFilters}
       />
       <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
-        <Button />
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
         {loading ? (
-          <Loading /> // Mostra l'animazione di caricamento
+          <Loading />
         ) : (
           <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start w-full">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${(index + 1) % 4 === 0 ? "col-span-3 flex" : "col-span-1"
-                    } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`} // Mantieni 'flex justify-center' qui
+                  className={`${
+                    (index + 1) % 4 === 0 ? "col-span-3 flex" : "col-span-1"
+                  } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`}
                 >
                   <Card
-                    isLiked={
-                      event.title
-                        ? favoriteEventTitle.includes(event.title)
-                        : false
-                    }
+                    isLiked={favoriteEventTitle.includes(event.title)}
                     eventId={event._id}
                     backgroundColor={event.color || "#4E614E"}
-                    title={event.title || "Pasta di mandorle"}
+                    title={event.title || "Default Title"}
                     imageSrc={
                       event.image ||
                       "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
@@ -296,12 +286,11 @@ const HomePage: React.FC = () => {
         )}
       </main>
       {/* Controlli di paginazione */}
-
       <div className="pagination-controls flex justify-center m-10">
         <Button
           onClick={handlePreviousPage}
           label="Previous"
-          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
+          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300 disabled:opacity-50"
           disabled={currentPage === 1}
         />
         <span className="text-center px-4 py-2 text-gray-700 font-medium">
@@ -310,7 +299,7 @@ const HomePage: React.FC = () => {
         <Button
           onClick={handleNextPage}
           label="Next"
-          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300  disabled:opacity-50"
+          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300 disabled:opacity-50"
           disabled={currentPage === totalPages}
         />
       </div>

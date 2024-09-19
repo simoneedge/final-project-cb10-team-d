@@ -12,6 +12,7 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 
+// Funzione per recuperare i dati delle culture
 const fetchData = async (
   page: number,
   limit: number
@@ -28,14 +29,14 @@ const fetchData = async (
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error fetching data:", error.message);
-      throw Error(error.message);
+      throw new Error(error.message);
     } else {
-      throw Error("Unknown error occurred");
+      throw new Error("Unknown error occurred");
     }
   }
 };
 
-export default function AttivitaPage() {
+export default function CulturePage() {
   const [activities, setActivities] = useState<IActivity[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IActivity[]>([]);
@@ -58,7 +59,7 @@ export default function AttivitaPage() {
       }
       const data = await response.json();
       const favoriteTitle = data.profile.events.map(
-        (event: { title: string | undefined }) => event.title
+        (event: { title: string }) => event.title
       );
       setFavoriteEventTitle(favoriteTitle);
     } catch (error) {
@@ -67,9 +68,9 @@ export default function AttivitaPage() {
   };
 
   // Stato per la paginazione
-  const [currentPage, setCurrentPage] = useState<number>(1); // Pagina corrente
-  const [totalPages, setTotalPages] = useState<number>(1); // Numero di pagine totali
-  const limit = 12; // Numero di eventi per pagina
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 10;
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
@@ -80,7 +81,6 @@ export default function AttivitaPage() {
         setActivities(data.activities);
         setFilteredEvents(data.activities);
         setTotalPages(data.totalPages);
-        // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
         const user = auth.currentUser;
 
@@ -96,6 +96,7 @@ export default function AttivitaPage() {
         setLoading(false);
       }
     };
+
     loadData();
   }, [currentPage]);
 
@@ -144,9 +145,9 @@ export default function AttivitaPage() {
     let filtered = activities;
 
     filtered = filtered.filter(
-      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
+      (event) =>
+        Boolean(event.reviewed) === true || event.reviewed === undefined
     );
-
     // Filtro per la query di ricerca
     if (query !== "") {
       filtered = filtered.filter(
@@ -203,19 +204,29 @@ export default function AttivitaPage() {
       setCurrentPage(currentPage - 1);
     }
   };
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setIsFree(false);
+    setToday(0);
+    setStartNextWeek(undefined);
+    setEndNextWeek(undefined);
+    setFilteredEvents(activities); // Reset events
+  };
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
-      <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
+      <CategoryBanner label="Activity" backgroundColor={"bg-giallo"} />
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <Filter
+            query={searchQuery}
             onSearch={handleSearch}
             isFree={isFree}
             setIsFree={setIsFree}
             onTodayClick={handleTodayClick}
             onTomorrowClick={handleTomorrowClick}
             onNextWeekClick={handleNextWeekClick}
+            onResetFilters={handleResetFilters}
           />
         </div>
         <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
@@ -224,26 +235,31 @@ export default function AttivitaPage() {
             <Loading />
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((activity, index) => (
-              <Card
-                eventId={activity._id}
+              <div
                 key={activity._id || index}
-                backgroundColor="#F2B85A"
-                title={activity.title || "No title available"}
-                imageSrc={activity.image || "default-image-url"}
-                link={
-                  <Link href={`/activities/${activity._id}`}>
-                    <ArrowButton />
-                  </Link>
-                }
-                isLiked={
-                  activity.title
-                    ? favoriteEventTitle.includes(activity.title)
-                    : false
-                }
-                onHeartClick={() =>
-                  fetchFavorites(getAuth().currentUser?.email || "")
-                }
-              />
+                className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+              >
+                <Card
+                  eventId={activity._id}
+                  key={activity._id || index}
+                  backgroundColor="#F2B85A"
+                  title={activity.title || "No title available"}
+                  imageSrc={activity.image || "default-image-url"}
+                  link={
+                    <Link href={`/activities/${activity._id}`}>
+                      <ArrowButton />
+                    </Link>
+                  }
+                  isLiked={
+                    activity.title
+                      ? favoriteEventTitle.includes(activity.title)
+                      : false
+                  }
+                  onHeartClick={() =>
+                    fetchFavorites(getAuth().currentUser?.email || "")
+                  }
+                />
+              </div>
             ))
           ) : (
             <p className="justify-items-center">No events found...</p>
