@@ -4,6 +4,7 @@ import Button from "@/src/components/Button"; // Importa il componente Button
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Modal from "@/src/components/Modal";
 
 // Funzione per ottenere immagini da Unsplash
 const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
@@ -47,6 +48,7 @@ export default function ProposePage() {
   const [isGeneratingArticle, setIsGeneratingArticle] =
     useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   // Gestione del cambio di valore nei campi del form
   const handleChange = (
@@ -107,6 +109,7 @@ export default function ProposePage() {
         toast.success("Evento creato con successo!", {
           className: "bg-green-500 text-white p-2 rounded-lg",
         });
+        setModalVisible(true); // Mostra la modale
       } else {
         toast.error("Errore nella creazione dell'evento.", {
           className: "bg-red-500 text-white p-2 rounded-lg",
@@ -186,7 +189,7 @@ export default function ProposePage() {
             loading={loading}
           />
         </div>
-
+        <Modal isVisible={modalVisible} onClose={() => setModalVisible(false)} />
         <div className="mt-8 font-titolo">
           {loading && !article ? (
             <div className="p-4 bg-white rounded shadow-md">

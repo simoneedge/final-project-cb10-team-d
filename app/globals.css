@@ -156,3 +156,17 @@ body {
     margin: 0; /* Rimuovi eventuali margini */
   }
 }
+
+.price-circle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px; /* Diametro del cerchio */
+  height: 40px; /* Diametro del cerchio */
+  border-radius: 50%; /* Rende il contenitore rotondo */
+  background-color: #822225; /* Colore rosso */
+  color: white; /* Colore del testo */
+  font-weight: bold; /* Spessore del testo */
+  font-size: 12px; /* Dimensione del testo */
+  text-align: center;
+}

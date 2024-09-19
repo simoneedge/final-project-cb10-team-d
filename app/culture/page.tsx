@@ -224,6 +224,10 @@ export default function CulturePage() {
             <Loading />
           ) : filteredEvents.length > 0 ? (
             filteredEvents.map((culture, index) => (
+              <div
+                  key={culture._id || index}
+                  className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+                >
               <Card
                 eventId={culture._id}
                 key={culture._id || index}
@@ -244,6 +248,7 @@ export default function CulturePage() {
                   fetchFavorites(getAuth().currentUser?.email || "")
                 }
               />
+              </div>
             ))
           ) : (
             <p className="justify-items-center">No events found...</p>

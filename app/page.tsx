@@ -271,6 +271,10 @@ const HomePage: React.FC = () => {
                         : false
                     }
                     eventId={event._id}
+                    dateEnd={event.dateEnd}
+                    dateStart={event.dateStart}
+                    price={event.price}
+                    description={event.description}
                     backgroundColor={event.color || "#4E614E"}
                     title={event.title || "Pasta di mandorle"}
                     imageSrc={
