@@ -180,12 +180,6 @@ const ProfilePage = () => {
       {/* Accordion delle Preferenze */}
       {showAccordion && (
         <div className="mt-4 border-2 border-rosso p-4 bg-gray-100 text-gray-900 relative shadow-md max-w-lg mx-auto">
-          <button
-            className="absolute top-2 right-2 text-red-600"
-            onClick={toggleAccordion}
-          >
-            &times;
-          </button>
           <h3 className="text-2xl font-semibold text-rosso mb-4">
             Preferenze account
           </h3>
@@ -217,32 +211,36 @@ const ProfilePage = () => {
             Proponi evento
           </button>
         </Link>
-        <button className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold transition-colors duration-300 w-full md:w-auto">
-          Eventi preferiti
-        </button>
+      
       </div>
-
+      <h3 className="mt-6 text-2xl font-bold text-rosso">Eventi Preferiti</h3>
       {/* Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {cards.map((card) => (
-          <Card
-            eventId={card.id}
-            key={card.title}  // Usa il titolo come chiave univoca
-            backgroundColor={card.color}
-            title={card.title || "No title available"}
-            imageSrc={card.image || "default-image-url"}
-            link={
-              <Link href={`/food/${card.id}`}>
-                <ArrowButton />
-              </Link>
-            }
-            isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
-            onHeartClick={async () => {
-              await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
-              handleUpdate();  // Aggiorna anche le card
-            }}
-          />
-        ))}
+        {favoriteEventTitle.length === 0 ? ( // Controlla se non ci sono eventi preferiti
+          <p className="text-center text-gray-600 col-span-3">Non hai ancora eventi preferiti.</p>
+        ) : (
+          cards
+            .filter((card) => favoriteEventTitle.includes(card.title)) // Filtra solo gli eventi preferiti
+            .map((card) => (
+              <Card
+                eventId={card.id}
+                key={card.title} // Usa il titolo come chiave univoca
+                backgroundColor={card.color}
+                title={card.title || "No title available"}
+                imageSrc={card.image || "default-image-url"}
+                link={
+                  <Link href={`/food/${card.id}`}>
+                    <ArrowButton />
+                  </Link>
+                }
+                isLiked={favoriteEventTitle.includes(card.title)} // Usa il titolo per controllare se è piaciuto
+                onHeartClick={async () => {
+                  await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
+                  handleUpdate(); // Aggiorna anche le card
+                }}
+              />
+            ))
+        )}
       </div>
      {/* Modale di conferma eliminazione account */}
      {showDeleteModal && (
