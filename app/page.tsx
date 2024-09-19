@@ -14,13 +14,8 @@ import Loading from "@/src/components/Loading";
 import Slideshow from "@/src/components/Slideshow";
 import { User } from "firebase/auth";
 
-<<<<<<< HEAD
-const getData = async (
 
-): Promise<{ events: IEvent[] }> => {
-=======
-const fetchEvents = async (page: number, limit: number) => {
->>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
+const fetchEvents = async () => {
   try {
     const res = await fetch(`/api/events`, {
       cache: "no-cache",
@@ -57,19 +52,8 @@ const HomePage: React.FC = () => {
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
-  const [slideshowImages, setSlideshowImages] = useState<
-    { src: string; title: string }[]
-  >([]);
+  const [slideshowImages, setSlideshowImages] = useState<{ src: string; title: string }[]>([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
-
-<<<<<<< HEAD
-
-=======
-  // Stato per la paginazione
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const limit = 12;
->>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
 
   const fetchFavorites = async (email: string | null) => {
     try {
@@ -100,11 +84,7 @@ const HomePage: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-<<<<<<< HEAD
-        const data = await getData();
-=======
-        const data = await fetchEvents(currentPage, limit);
->>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
+        const data = await fetchEvents();
         setEvents(data.events);
         setFilteredEvents(data.events);
 
@@ -257,9 +237,8 @@ const HomePage: React.FC = () => {
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${
-                    (index + 1) % 4 === 0 ? "col-span-3 flex" : "col-span-1"
-                  } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`}
+                  className={`${(index + 1) % 4 === 0 ? "col-span-3 flex" : "col-span-1"
+                    } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`}
                 >
                   <Card
                     isLiked={favoriteEventTitle.includes(event.title)}
@@ -293,30 +272,8 @@ const HomePage: React.FC = () => {
         )}
       </main>
       {/* Controlli di paginazione */}
-<<<<<<< HEAD
-
-
-=======
-      <div className="pagination-controls flex justify-center m-10">
-        <Button
-          onClick={handlePreviousPage}
-          label="Previous"
-          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300 disabled:opacity-50"
-          disabled={currentPage === 1}
-        />
-        <span className="text-center px-4 py-2 text-gray-700 font-medium">
-          {currentPage} of {totalPages}
-        </span>
-        <Button
-          onClick={handleNextPage}
-          label="Next"
-          className="flex items-center justify-center ml-4 w-28 px-4 py-2 text-center border-2 border-rosso text-rosso bg-bianco hover:bg-rosso hover:text-bianco font-bold disabled:bg-gray-300 disabled:opacity-50"
-          disabled={currentPage === totalPages}
-        />
-      </div>
->>>>>>> 6ec421450b1ef9c659fafa3f7868906d7efb83fe
       <ScrollToTopButton />
-    </div>
+    </div >
   );
 };
 
