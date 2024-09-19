@@ -56,7 +56,6 @@ export default function ProposePage() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    console.log('sono il nome', e.target.value);
     if (e.target.name === 'category') {
       if (e.target.value === 'foods') {
         setColor('#822225')

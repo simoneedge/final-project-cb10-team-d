@@ -59,7 +59,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     idAdminRole();
   }, [user]);
 
- const pathname = usePathname();
+  const pathname = usePathname();
   // Funzione per recuperare i dati dell'utente da Firestore
   const fetchUserData = async (uid: string) => {
     try {

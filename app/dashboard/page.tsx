@@ -18,7 +18,6 @@ function Dashboard() {
 
             // Filtra le card con reviewed = false
             const filteredCards = data.events.filter((event: IEvent) => event.reviewed === false);
-            console.log(typeof filteredCards[0]._id)
             setCards(filteredCards);
         } catch (error: any) {
             setErrorMessage(error.message);

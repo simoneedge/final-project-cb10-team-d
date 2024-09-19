@@ -134,8 +134,8 @@ const ProfilePage = () => {
     setShowAccordion(!showAccordion);
   };
 
-   // Funzione per mostrare la modale di conferma
-   const toggleDeleteModal = () => {
+  // Funzione per mostrare la modale di conferma
+  const toggleDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
@@ -196,11 +196,11 @@ const ProfilePage = () => {
             </p>
           </div>
           <button
-  className="mt-4 bg-gradient-to-r from-red-500 to-red-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
-  onClick={toggleDeleteModal}
->
-  Elimina account
-</button>
+            className="mt-4 bg-gradient-to-r from-red-500 to-red-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+            onClick={toggleDeleteModal}
+          >
+            Elimina account
+          </button>
         </div>
       )}
 
@@ -211,40 +211,40 @@ const ProfilePage = () => {
             Proponi evento
           </button>
         </Link>
-      
+
       </div>
       <h3 className="mt-6 text-2xl font-bold text-rosso">Eventi Preferiti</h3>
       {/* Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {cards.map((card) => (
+        {cards.map((card, index) => (
           <div
-          key={card._id}
-          className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
-        >
-          <Card
-            eventId={card.id}
-            key={card.title}  // Usa il titolo come chiave univoca
-            backgroundColor={card.color}
-            title={card.title || "No title available"}
-            imageSrc={card.image || "default-image-url"}
-            link={
-              <Link href={`/events/${card.id}`}>
-                <ArrowButton />
-              </Link>
-            }
-            isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
-            onHeartClick={async () => {
-              await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
-              handleUpdate();  // Aggiorna anche le card
-            }}
-          />
+            key={index}
+            className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+          >
+            <Card
+              eventId={card.id}
+              key={card.title}  // Usa il titolo come chiave univoca
+              backgroundColor={card.color}
+              title={card.title || "No title available"}
+              imageSrc={card.image || "default-image-url"}
+              link={
+                <Link href={`/events/${card.id}`}>
+                  <ArrowButton />
+                </Link>
+              }
+              isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
+              onHeartClick={async () => {
+                await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
+                handleUpdate();  // Aggiorna anche le card
+              }}
+            />
           </div>
         ))}
 
-        
+
       </div>
-     {/* Modale di conferma eliminazione account */}
-     {showDeleteModal && (
+      {/* Modale di conferma eliminazione account */}
+      {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <h3 className="text-xl font-bold text-red-600 mb-4">Conferma eliminazione</h3>
