@@ -87,7 +87,6 @@ export default function ProposePage() {
     const finalFormData = {
       ...formattedData,
       image: imageUrl || formData.image,
-      //color,
       reviewed: false,
     };
 
