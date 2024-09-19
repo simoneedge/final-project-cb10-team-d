@@ -40,158 +40,212 @@ const EventForm = ({
     }
   };
 
-  // Funzione per ottenere la data odierna in formato yyyy-mm-dd (usata per il campo min)
-  const getTodayDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // i mesi partono da 0
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  const todayDate = new Date().toISOString().split("T")[0]; // Ottiene la data di oggi
 
-  const todayDate = getTodayDate();
-
-  // Funzione per convertire la data da yyyy-mm-dd a dd-mm-yyyy
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
   };
 
-  // Modifica il comportamento della submit per formattare le date
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Converte le date prima di inviarle
+    // Formatta le date prima di inviarle
     const formattedData = {
       ...formData,
       dateStart: formatDate(formData.dateStart),
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    // Invia il form con le date formattate
     onSubmit(e);
-    console.log("Dati inviati:", formattedData); //debug
+    console.log("Dati inviati:", formattedData); // Debug
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 text-verde">
-      <form
-        className="bg-white p-6 shadow-lg w-full max-w-xl space-y-8"
-        onSubmit={handleSubmit}
-      >
+    <form
+      className="bg-white text-black p-6 shadow-lg w-full max-w-xl space-y-8 rounded-md "
+      onSubmit={handleSubmit}
+    >
+      {/* Selezione Categoria */}
+      <div>
+        <label
+          htmlFor="category"
+          className="text-black font-semibold font-titolo"
+        >
+          Categoria
+        </label>
         <select
           name="category"
-          className="border p-2"
+          id="category"
+          className="border p-2 w-full bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
           value={formData.category}
           onChange={onChange}
           required
         >
-          <option value="">Seleziona Categoria</option>
+          <option value="" disabled>
+            Seleziona Categoria
+          </option>
           <option value="cultures">Cultura</option>
           <option value="foods">Foods</option>
           <option value="activities">Attività</option>
         </select>
-        <div className="grid grid-cols-2 gap-4">
+      </div>
+
+      {/* Titolo e Luogo */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="title"
+            className="text-black font-semibold font-titolo"
+          >
+            Titolo
+          </label>
           <input
             type="text"
             name="title"
+            id="title"
             placeholder="Titolo"
-            className="border p-2 w-full"
+            className="border p-2 w-full bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
             value={formData.title}
             onChange={onChange}
             required
           />
+        </div>
+        <div>
+          <label
+            htmlFor="location"
+            className="text-black font-semibold font-titolo"
+          >
+            Luogo
+          </label>
           <input
             type="text"
             name="location"
+            id="location"
             placeholder="Luogo"
-            className="border p-2 w-full"
+            className="border p-2 w-full bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
             value={formData.location}
             onChange={onChange}
             required
           />
         </div>
+      </div>
+
+      {/* Descrizione */}
+      <div>
+        <label
+          htmlFor="description"
+          className="text-black font-semibold font-titolo"
+        >
+          Descrizione
+        </label>
         <textarea
           name="description"
+          id="description"
           placeholder="Descrizione"
-          className="w-full border p-2"
+          className="w-full border p-2 bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
           value={formData.description}
           onChange={onChange}
           required
         ></textarea>
+      </div>
 
-        <fieldset className="border p-4">
-          <legend className="text-xl font-titolo mb-4 text-rosso">
-            Seleziona uno o più tag:
-          </legend>
-          <div className="flex flex-wrap gap-4">
-            {[
-              "concerti",
-              "festival",
-              "arte",
-              "moda",
-              "mostra",
-              "workshop",
-              "teatro",
-              "spettacolo",
-              "ristorante",
-              "fiera",
-              "sagra",
-              "tradizione",
-              "famiglie",
-              "ragazzi",
-            ].map((tag) => (
-              <label
-                key={tag}
-                className="inline-flex items-center w-1/2 md:w-1/5"
-              >
-                <input
-                  type="checkbox"
-                  value={tag}
-                  checked={formData.tag.includes(tag)}
-                  onChange={handleTagChange}
-                  className="mr-2"
-                />
-                <span>{tag.charAt(0).toUpperCase() + tag.slice(1)}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+      {/* Tag */}
+      <fieldset className="border p-4 text-black border-rosso ">
+        <legend className="text-xl font-bold mb-4 text-black font-titolo">
+          Tag:
+        </legend>
+        <div className="flex flex-wrap gap-4  ">
+          {[
+            "concerti",
+            "festival",
+            "arte",
+            "moda",
+            "mostra",
+            "workshop",
+            "teatro",
+            "spettacolo",
+            "ristorante",
+            "fiera",
+            "sagra",
+            "tradizione",
+            "famiglie",
+            "ragazzi",
+          ].map((tag) => (
+            <label
+              key={tag}
+              className="inline-flex items-center w-1/2 md:w-1/5 text-black "
+            >
+              <input
+                type="checkbox"
+                value={tag}
+                checked={formData.tag.includes(tag)}
+                onChange={handleTagChange}
+                className="mr-2 accent-rosso"
+              />
+              <span>{tag.charAt(0).toUpperCase() + tag.slice(1)}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
-        <div className="grid grid-cols-2 gap-4">
+      {/* Date Inizio e Fine */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="dateStart"
+            className="text-black font-semibold font-titolo"
+          >
+            Data Inizio
+          </label>
           <input
             type="date"
             name="dateStart"
-            placeholder="Data inizio"
-            className="border p-2 w-full"
+            id="dateStart"
+            className="border p-2 w-full bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
             value={formData.dateStart}
             onChange={onChange}
-            min={todayDate} // Imposta la data minima
-            required
-          />
-          <input
-            type="date"
-            name="dateEnd"
-            placeholder="Data fine"
-            className="border p-2 w-full"
-            value={formData.dateEnd}
-            onChange={onChange}
-            min={todayDate} // Imposta la data minima
+            min={todayDate}
             required
           />
         </div>
+        <div>
+          <label
+            htmlFor="dateEnd"
+            className="text-black font-semibold font-titolo"
+          >
+            Data Fine
+          </label>
+          <input
+            type="date"
+            name="dateEnd"
+            id="dateEnd"
+            className="border p-2 w-full bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
+            value={formData.dateEnd}
+            onChange={onChange}
+            min={todayDate}
+            required
+          />
+        </div>
+      </div>
+
+      {/* Prezzo */}
+      <div>
+        <label htmlFor="price" className="text-black font-semibold font-titolo">
+          Prezzo
+        </label>
         <input
           type="text"
           name="price"
+          id="price"
           placeholder="Prezzo"
-          className="w-full border p-2"
+          className="w-full border p-2 bg-transparent text-black border-rosso focus:outline-none focus:ring-2 focus:ring-rosso focus:border-rosso transition-all"
           value={formData.price}
           onChange={onChange}
           required
         />
-        <button onClick={handleSubmit}>Crea Evento</button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
 

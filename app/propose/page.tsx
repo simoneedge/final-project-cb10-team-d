@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Funzione per ottenere immagini da Unsplash
 const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
   const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_KEY;
   const query = keywords.join("+");
@@ -13,17 +14,16 @@ const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    if (data.results && data.results.length > 0) {
-      return data.results[0].urls.regular;
-    } else {
-      return "";
-    }
+    return data.results && data.results.length > 0
+      ? data.results[0].urls.regular
+      : "";
   } catch (error) {
     console.error("Errore nella fetch di Unsplash", error);
     return "";
   }
 };
 
+// Funzione per formattare la data
 const formatDate = (date: string) => {
   const [year, month, day] = date.split("-");
   return `${day}-${month}-${year}`;
@@ -48,6 +48,7 @@ export default function ProposePage() {
     useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Gestione del cambio di valore nei campi del form
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -60,6 +61,7 @@ export default function ProposePage() {
     }));
   };
 
+  // Gestione del cambio nei tag
   const handleTagChange = (tags: string[]) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -67,24 +69,9 @@ export default function ProposePage() {
     }));
   };
 
+  // Funzione per inviare i dati e creare l'evento
   const handleEventSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Determina il colore in base alla categoria selezionata
-    let color = "";
-    switch (formData.category) {
-      case "cultures":
-        color = "#4E614E";
-        break;
-      case "foods":
-        color = "#822225";
-        break;
-      case "activities":
-        color = "#F2B85A";
-        break;
-      default:
-        color = ""; // Valore predefinito
-    }
 
     const formattedData = {
       ...formData,
@@ -107,26 +94,17 @@ export default function ProposePage() {
       const [responseCategory, responseEvents] = await Promise.all([
         fetch(`/api/${formData.category}`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(finalFormData),
         }),
         fetch("/api/events", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(finalFormData),
         }),
       ]);
 
       if (responseCategory.ok && responseEvents.ok) {
-        const dataCategory = await responseCategory.json();
-        const dataEvents = await responseEvents.json();
-        console.log("Event created in category:", dataCategory);
-        console.log("Event created in events:", dataEvents);
-
         toast.success("Evento creato con successo!", {
           className: "bg-green-500 text-white p-2 rounded-lg",
         });
@@ -134,19 +112,17 @@ export default function ProposePage() {
         toast.error("Errore nella creazione dell'evento.", {
           className: "bg-red-500 text-white p-2 rounded-lg",
         });
-        console.error("Failed to create event in one or both APIs");
       }
     } catch (error) {
       toast.error("Errore nella creazione dell'evento.", {
         className: "bg-red-500 text-white p-2 rounded-lg",
       });
-
-      console.error("Error creating event", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Funzione per generare l'articolo
   const handleGenerateArticle = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -161,9 +137,7 @@ export default function ProposePage() {
     try {
       const response = await fetch("/api/getArticles", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formattedData),
       });
 
@@ -180,7 +154,6 @@ export default function ProposePage() {
       toast.error("Errore nella generazione dell'articolo.", {
         className: "bg-red-500 text-white p-2 rounded-lg",
       });
-      console.error("Error generating article", error);
     } finally {
       setIsGeneratingArticle(false);
       setLoading(false);
@@ -188,16 +161,16 @@ export default function ProposePage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 relative">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 relative ">
       <div className="p-8 w-full max-w-2xl">
-        <h1 className="text-4xl font-bold mb-6 text-red-600 text-center">
+        <h1 className="text-4xl font-bold mb-6 text-rosso text-center font-titolo">
           Proponi Evento
         </h1>
         <EventForm
           formData={formData}
           onChange={handleChange}
           onTagChange={handleTagChange}
-          onSubmit={handleEventSubmit}
+          onSubmit={handleEventSubmit} // Submit per creare evento
         />
         <div className="mt-6 flex gap-4 justify-center">
           <Button
@@ -215,25 +188,19 @@ export default function ProposePage() {
           />
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 font-titolo">
           {loading && !article ? (
             <div className="p-4 bg-white rounded shadow-md">
               <p className="text-gray-500">Generazione articolo in corso...</p>
-              {/* Aggiungi qui uno skeleton loader se desideri */}
             </div>
           ) : article ? (
             <div className="p-6 bg-white rounded shadow-md border border-gray-300">
-              {/* Titolo dell'articolo */}
               <h1 className="text-4xl font-bold mb-4 text-gray-900">
                 {formData.title}
               </h1>
-
-              {/* Data di pubblicazione */}
               <p className="text-sm text-gray-600 mb-4">
                 {new Date().toLocaleDateString("it-IT")}
               </p>
-
-              {/* Immagine di copertura (da Unsplash) */}
               {formData.image && (
                 <img
                   src={formData.image}
@@ -241,8 +208,6 @@ export default function ProposePage() {
                   className="w-full h-auto mb-4 rounded-lg shadow-lg"
                 />
               )}
-
-              {/* Contenuto dell'articolo */}
               <div className="text-gray-700">
                 <p>{article}</p>
               </div>

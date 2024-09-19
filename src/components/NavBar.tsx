@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter, usePathname } from 'next/navigation';
 import { auth, db } from '@/firebaseconfig'; // Importa db per Firestore
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'; // Importa getDoc da Firestore
@@ -24,6 +24,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null); // Stato per nome utente
   const router = useRouter(); // Initialize useRouter
+
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const fetchUserRole = async (email: string | null) => {
@@ -58,6 +59,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     idAdminRole();
   }, [user]);
 
+ const pathname = usePathname();
   // Funzione per recuperare i dati dell'utente da Firestore
   const fetchUserData = async (uid: string) => {
     try {
@@ -72,6 +74,21 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       console.error('Errore nel recupero dei dati utente:', error);
     }
   };
+
+  useEffect(() => {
+    // Se sei su /profile, non selezionare nessun elemento
+    if (pathname === "/profile") {
+      setActiveItem(null);
+    } else {
+      // Controlla se l'item corrente è già attivo prima di aggiornarlo
+      if (activeItem !== links.find((link) => link.href === pathname)?.name) {
+        const currentLink = links.find((link) => link.href === pathname);
+        if (currentLink) {
+          setActiveItem(currentLink.name);
+        }
+      }
+    }
+  }, [pathname, activeItem, links]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

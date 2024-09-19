@@ -261,8 +261,8 @@ const HomePage: React.FC = () => {
               filteredEvents.map((event, index) => (
                 <div
                   key={event._id || index}
-                  className={`${(index + 1) % 4 === 0 ? "col-span-3" : "col-span-1"
-                    } w-full md:w-auto flex justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`} // Mantieni 'flex justify-center' qui
+                  className={`${(index + 1) % 4 === 0 ? "col-span-3 flex" : "col-span-1"
+                    } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`} // Mantieni 'flex justify-center' qui
                 >
                   <Card
                     isLiked={
