@@ -229,7 +229,7 @@ const HomePage: React.FC = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
+          <div className="card-container grid grid-cols-1 md:grid-cols-3 sm:flex-row gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
                 <div
