@@ -45,10 +45,11 @@ export default function ProposePage() {
 
   const [article, setArticle] = useState<string>(""); // Stato per l'articolo generato
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isGeneratingArticle, setIsGeneratingArticle] = useState<boolean>(false);
+  const [isGeneratingArticle, setIsGeneratingArticle] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [color, setColor] = useState<string>('');
+  const [color, setColor] = useState<string>("");
 
   // Gestione del cambio di valore nei campi del form
   const handleChange = (
@@ -56,13 +57,13 @@ export default function ProposePage() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    if (e.target.name === 'category') {
-      if (e.target.value === 'foods') {
-        setColor('#822225')
-      } else if (e.target.value === 'activities') {
-        setColor('#F2B85A')
-      } else if (e.target.value === 'cultures') {
-        setColor('#4E614E')
+    if (e.target.name === "category") {
+      if (e.target.value === "foods") {
+        setColor("#822225");
+      } else if (e.target.value === "activities") {
+        setColor("#F2B85A");
+      } else if (e.target.value === "cultures") {
+        setColor("#4E614E");
       }
     }
 
@@ -91,7 +92,7 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    const keywords = [formData.location, formData.title, formData.location,];
+    const keywords = [formData.location, formData.title, formData.location];
     const imageUrl = await fetchUnsplashImage(keywords);
 
     const finalFormData = {
@@ -104,7 +105,6 @@ export default function ProposePage() {
     setIsSubmitting(true);
     try {
       const [responseEvents] = await Promise.all([
-
         fetch("/api/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,6 +128,7 @@ export default function ProposePage() {
       });
     } finally {
       setIsSubmitting(false);
+      resetForm();
     }
   };
 
@@ -169,6 +170,25 @@ export default function ProposePage() {
     }
   };
 
+  const handleModalClose = () => {
+    setModalVisible(false);
+    window.location.href = "/"; // Reindirizza alla homepage
+  };
+  //io ho anche bisogno che al submit, o campi nel formo vengono resettati
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      image: "",
+      tag: [],
+      description: "",
+      dateStart: "",
+      dateEnd: "",
+      price: "",
+      location: "",
+      category: "",
+    });
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 relative ">
       <div className="p-8 w-full max-w-2xl">
@@ -196,7 +216,7 @@ export default function ProposePage() {
             loading={loading}
           />
         </div>
-        <Modal isVisible={modalVisible} onClose={() => setModalVisible(false)} />
+        <Modal isVisible={modalVisible} onClose={handleModalClose} />
         <div className="mt-8 font-titolo">
           {loading && !article ? (
             <div className="p-4 bg-white rounded shadow-md">
