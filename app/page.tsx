@@ -1,7 +1,6 @@
 "use client";
 import { getDayOfYear } from "@/data/getDayOfYear";
 import { useEffect, useState } from "react";
-import Button from "@/src/components/Button";
 import Card from "@/src/components/Card";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
 import { IEvent } from "./(models)/Event";
@@ -75,6 +74,7 @@ const HomePage: React.FC = () => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
       setUser(currentUser);
+      console.log(user)
     });
 
     return () => unsubscribe();

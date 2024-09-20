@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { auth, db } from '@/firebaseconfig'; // Importa db per Firestore
+import { db } from '@/firebaseconfig'; // Importa db per Firestore
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore'; // Importa getDoc da Firestore
 import LoginButton from './Login';

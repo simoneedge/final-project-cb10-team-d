@@ -17,14 +17,14 @@ interface LoginButtonProps {
   buttonLabel?: string;
   buttonClassName?: string;
   redirectTo?: string;
-  onLoginSuccess?: () => void; // Aggiungi il tipo esplicito
+  /* onLoginSuccess?: () => void;  */// Aggiungi il tipo esplicito
 }
 
 const LoginButton: React.FC<LoginButtonProps> = ({
   buttonLabel = "ACCEDI",
   buttonClassName = "text-rosso hover:font-bold",
   redirectTo = "/", // Valore di default per il redirect dopo il login
-  onLoginSuccess, // Aggiungi questa nuova props
+  /* onLoginSuccess, */ // Aggiungi questa nuova props
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -56,14 +56,14 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       // Effettua il login con Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-  
+
       // Recupera i dati utente da Firestore
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
-  
+
       if (userDoc.exists()) {
         const userData = userDoc.data();
-  
+
         // Verifica se l'utente è attivo
         if (!userData.active) {
           // Effettua il logout immediatamente se l'account è disattivato
@@ -74,7 +74,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
           });
           return; // Blocca il proseguimento del login
         }
-  
+
         // Se l'utente è attivo, consenti l'accesso e mostra un toast di successo
         setIsModalOpen(false);
         toast.success("Login effettuato con successo!", {
