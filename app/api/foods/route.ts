@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+/* import { NextResponse } from "next/server";
 import Food, { IFood } from '../../(models)/Foods'
 
 
@@ -41,4 +41,4 @@ export async function POST(req: Request) {
         console.log(error)
         return NextResponse.json({ error: 'Failed to create event', details: error }, { status: 500 });
     }
-}
+} */

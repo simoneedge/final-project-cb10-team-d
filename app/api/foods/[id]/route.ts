@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+/* import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import Food, { IFood } from "@/app/(models)/Foods";
 
@@ -29,4 +29,4 @@ export async function GET(
         console.error("Errore nella richiesta:", error);
         return NextResponse.json({ error: "Errore del server" }, { status: 500 });
     }
-}
+} */
