@@ -132,7 +132,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
 
   return (
     <header className="relative bg-bianco p-4">
-      <div className="hidden md:flex space-x-6 items-center">
+      <div className="hidden md:flex gap-5 items-center">
 
         {links.map((link) => {
           if (link.name === 'Pannello di controllo' && !isAdmin) {
