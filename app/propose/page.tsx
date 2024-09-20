@@ -83,7 +83,7 @@ export default function ProposePage() {
   };
 
   // Funzione per inviare i dati e creare l'evento
-  const handleEventSubmit = async (e: React.FormEvent) => {
+  const handleEventSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     const formattedData = {
@@ -201,10 +201,10 @@ export default function ProposePage() {
           onTagChange={handleTagChange}
           onSubmit={handleEventSubmit} // Submit per creare evento
         />
-        <div className="mt-6 flex gap-4 justify-center">
+        <div className="mt-6 flex gap-4 justify-center">npm
           <Button
             label="Crea Evento"
-            onClick={handleEventSubmit}
+            onClick={(e) => handleEventSubmit(e)}
             className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
             disabled={isSubmitting}
           />

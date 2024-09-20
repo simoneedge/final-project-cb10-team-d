@@ -1,5 +1,5 @@
-/* import { NextResponse } from "next/server";
-import Food, { IFood } from '../../(models)/Foods'
+import { NextResponse } from "next/server";
+import Event, { IEvent } from "@/app/(models)/Event";
 
 
 export async function GET(req: Request) {
@@ -9,11 +9,11 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit; // Calcola quanti documenti saltare
 
     try {
-        const foods: IFood[] = await Food.find()
+        const foods: IEvent[] = await Event.find()
             .limit(limit)
             .skip(skip);
         // Conta il numero totale di attività
-        const totalFoods = await Food.countDocuments();
+        const totalFoods = await Event.countDocuments();
 
         return NextResponse.json({
             foods,
@@ -28,8 +28,8 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const body: IFood = await req.json();
-        const newEvent = new Food({
+        const body: IEvent = await req.json();
+        const newEvent = new Event({
             ...body,
             reviewed: false  // Assicuriamoci che reviewed sia false alla creazione
         });
@@ -41,4 +41,4 @@ export async function POST(req: Request) {
         console.log(error)
         return NextResponse.json({ error: 'Failed to create event', details: error }, { status: 500 });
     }
-} */
+} 

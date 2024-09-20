@@ -3,7 +3,7 @@ import React from "react";
 interface ButtonProps {
   label?: string;
   icon?: React.ReactNode;
-  onClick?: () => void | Promise<void>;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   disabled?: boolean;
   loading?: boolean;
@@ -20,9 +20,8 @@ const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`${className} ${
-        disabled || loading ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+      className={`${className} ${disabled || loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       disabled={disabled || loading}
     >
       {loading ? (

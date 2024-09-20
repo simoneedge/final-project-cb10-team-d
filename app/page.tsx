@@ -241,7 +241,7 @@ const HomePage: React.FC = () => {
                     } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`}
                 >
                   <Card
-                    isLiked={favoriteEventTitle.includes(event.title)}
+                    isLiked={favoriteEventTitle.includes(event.title ?? '')}
                     eventId={event._id}
                     dateEnd={event.dateEnd}
                     dateStart={event.dateStart}
