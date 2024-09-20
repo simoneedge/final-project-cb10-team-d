@@ -39,7 +39,7 @@ Dettagli aggiuntivi da includere nell'articolo: ${description}.
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = await genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
     const output = result.response?.candidates?.[0]?.content?.parts?.[0]?.text;
 
