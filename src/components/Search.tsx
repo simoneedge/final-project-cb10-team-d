@@ -7,7 +7,7 @@ interface SearchProps {
   onReset: () => void; // Funzione per gestire il reset del campo di ricerca
 }
 
-function Search({ query, onSearch, onReset }: SearchProps) {
+function Search({ query, onSearch}: SearchProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value); // Esegui la ricerca quando l'input cambia
   };
