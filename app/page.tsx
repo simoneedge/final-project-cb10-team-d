@@ -213,36 +213,41 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
-      <Slideshow images={slideshowImages} />
-      <Filter
-        query={searchQuery} // Passa la query al Filter
-        onSearch={handleSearch}
-        isFree={isFree}
-        setIsFree={setIsFree}
-        onTodayClick={handleTodayClick}
-        onTomorrowClick={handleTomorrowClick}
-        onNextWeekClick={handleNextWeekClick}
-        onResetFilters={handleResetFilters}
-      />
-      <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        {loading ? (
-          <Loading />
-        ) : (
-          <div className="card-container grid grid-cols-1 md:grid-cols-3 sm:flex-row gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
-            {filteredEvents.length > 0 ? (
-              filteredEvents.map((event, index) => (
+    <Slideshow images={slideshowImages} />
+    <Filter
+      query={searchQuery} // Passa la query al Filter
+      onSearch={handleSearch}
+      isFree={isFree}
+      setIsFree={setIsFree}
+      onTodayClick={handleTodayClick}
+      onTomorrowClick={handleTomorrowClick}
+      onNextWeekClick={handleNextWeekClick}
+      onResetFilters={handleResetFilters}
+    />
+  
+    <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+  
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="card-container grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event, index) => {
+              const isFourthCard = (index + 1) % 4 === 0;
+  
+              return (
                 <div
                   key={event._id || index}
-                  className={`${(index + 1) % 4 === 0 ? "col-span-3 flex" : "col-span-1"
-                    } w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow`}
+                  className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${
+                    isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
+                  }`}
                 >
                   <Card
                     isLiked={favoriteEventTitle.includes(event.title ?? '')}
                     eventId={event._id}
                     dateEnd={event.dateEnd}
                     dateStart={event.dateStart}
-                    //price={event.price}
                     description={event.description}
                     backgroundColor={event.color || "#4E614E"}
                     title={event.title || "Default Title"}
@@ -250,7 +255,7 @@ const HomePage: React.FC = () => {
                       event.image ||
                       "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
                     }
-                    size={(index + 1) % 4 === 0 ? "large" : "small"}
+                    size={isFourthCard && window.innerWidth >= 1024 ? "large" : "small"} // Size "large" solo per desktop
                     onHeartClick={() =>
                       fetchFavorites(getAuth().currentUser?.email || "")
                     }
@@ -261,16 +266,21 @@ const HomePage: React.FC = () => {
                     }
                   />
                 </div>
-              ))
-            ) : (
-              <p className="justify-items-center">No events found...</p>
-            )}
-          </div>
-        )}
-      </main>
-      {/* Controlli di paginazione */}
-      <ScrollToTopButton />
-    </div >
+              );
+            })
+          ) : (
+            <p className="justify-items-center">No events found...</p>
+          )}
+        </div>
+      )}
+    </main>
+  
+    {/* Controlli di paginazione */}
+    <ScrollToTopButton />
+  </div>
+  
+  
+  
   );
 };
 

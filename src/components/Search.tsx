@@ -13,7 +13,7 @@ function Search({ query, onSearch, onReset }: SearchProps) {
   };
 
   return (
-    <div className="flex items-center border-2 border-rosso p-5 bg-white h-10 w-full md:w-96 ">
+    <div className="flex items-center border-2 border-rosso p-5 bg-white h-10 w-full">
       <input
         type="text"
         placeholder="Cerca..."
