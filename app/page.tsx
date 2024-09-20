@@ -232,7 +232,7 @@ const HomePage: React.FC = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start w-full">
+          <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-10">
             {filteredEvents.length > 0 ? (
               filteredEvents.map((event, index) => (
                 <div
@@ -245,7 +245,7 @@ const HomePage: React.FC = () => {
                     eventId={event._id}
                     dateEnd={event.dateEnd}
                     dateStart={event.dateStart}
-                    price={event.price}
+                    //price={event.price}
                     description={event.description}
                     backgroundColor={event.color || "#4E614E"}
                     title={event.title || "Default Title"}

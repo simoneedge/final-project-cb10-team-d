@@ -14,7 +14,7 @@ export default function RootLayout({ children }: LayoutProps) {
     <html lang="en">
       <body>
         <Header />
-        <main>{children}</main>
+        <main className="h-100%">{children}</main>
         <Footer />
         {/* Configurazione di ToastContainer per le notifiche */}
         <ToastContainer

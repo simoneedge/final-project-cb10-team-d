@@ -2,7 +2,7 @@
 
 import Card from "@/src/components/Card";
 import React, { useEffect, useState } from "react";
-import { IEvent } from "../(models)/Activities";
+import { IEvent } from "../(models)/Event";
 import Link from "next/link";
 import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
@@ -187,7 +187,6 @@ export default function CulturePage() {
                 <Card
                   dateEnd={culture.dateEnd}
                   dateStart={culture.dateStart}
-                  price={culture.price}
                   eventId={culture._id}
                   backgroundColor="#4E614E"
                   title={culture.title || "No title available"}

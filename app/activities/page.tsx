@@ -2,7 +2,7 @@
 
 import Card from "@/src/components/Card";
 import React, { useEffect, useState } from "react";
-import { IEvent } from "../(models)/Activities";
+import { IEvent } from "../(models)/Event";
 import Link from "next/link";
 import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
@@ -199,8 +199,9 @@ export default function AttivitaPage() {
             setIsFree={setIsFree}
             onTodayClick={handleTodayClick}
             onTomorrowClick={handleTomorrowClick}
-            onNextWeekClick={handleNextWeekClick}
-          />
+            onNextWeekClick={handleNextWeekClick} query={""} onResetFilters={function (): void {
+              throw new Error("Function not implemented.");
+            } }          />
         </div>
         <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
@@ -215,7 +216,6 @@ export default function AttivitaPage() {
                 <Card
                   dateEnd={activity.dateEnd}
                   dateStart={activity.dateStart}
-                  price={activity.price}
                   eventId={activity._id}
                   key={activity._id || index}
                   backgroundColor="#F2B85A"
