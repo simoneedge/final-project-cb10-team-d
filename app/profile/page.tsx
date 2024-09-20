@@ -16,6 +16,8 @@ interface Card {
   title: string;
   image: string;
   color: string;
+  dateEnd?: string | undefined;
+  dateStart?: string | undefined;
 }
 
 const ProfilePage = () => {
@@ -139,9 +141,9 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="p-4 bg-white min-h-screen">
+    <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
       {/* Sezione di Benvenuto */}
-      <div className="mt-4 text-center flex justify-center items-center">
+      <div className="mt-8 text-center flex justify-center items-center">
         <h2 className="text-2xl font-bold text-gray-800">
           Ciao {userName} {userLastName}
         </h2>
@@ -212,13 +214,13 @@ const ProfilePage = () => {
         </Link>
 
       </div>
-      <h3 className="mt-6 text-2xl font-bold text-rosso">Eventi Preferiti</h3>
+      <h3 className="mt-8 mb-8 text-2xl font-bold text-rosso">Eventi Preferiti</h3>
       {/* Cards */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {cards.map((card, index) => (
           <div
             key={index}
-            className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
+            className="col-span-1 transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
           >
             <Card
               eventId={card.id}
@@ -231,6 +233,8 @@ const ProfilePage = () => {
                   <ArrowButton />
                 </Link>
               }
+              dateStart = {card.dateStart}
+              dateEnd = {card.dateEnd}
               isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
               onHeartClick={async () => {
                 await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click

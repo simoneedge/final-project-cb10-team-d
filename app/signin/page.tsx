@@ -28,7 +28,9 @@ export default function SignIn() {
         try {
             await signInWithEmailAndPassword(auth, email, password);
 
-            toast.success('Login effettuato con successo!');
+            toast.success("Login effettuato con successo!", {
+                className: "bg-green-500 text-white p-2 rounded-lg",
+              });
 
             // Reindirizza alla home 
             setTimeout(() => {
