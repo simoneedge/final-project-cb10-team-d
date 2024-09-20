@@ -214,7 +214,7 @@ const ProfilePage = () => {
         </Link>
 
       </div>
-      <h3 className="mt-8 mb-8 text-2xl font-bold text-rosso">Eventi Preferiti</h3>
+      <h3 className="mt-8 mb-8 text-3xl font-titolo text-rosso">Eventi Preferiti</h3>
       {/* Cards */}
       <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {cards.map((card, index) => (

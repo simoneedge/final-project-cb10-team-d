@@ -32,7 +32,7 @@ function Filter({
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-6 p-4 bg-gray-50 shadow-md mb-10 mt-10">
+    <div className="flex flex-col md:flex-row items-center gap-6 p-4 mb-10 mt-10">
       {/* Campo di ricerca */}
       <div className="w-full md:w-auto flex-1">
         <Search

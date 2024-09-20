@@ -183,12 +183,12 @@ const NavBar = ({ links = [] }: NavBarProps) => {
         {userName ? (
           <>
             <Link href="/profile">
-              <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+              <div className="flex items-center justify-center w-8 h-8 bg-verde text-white rounded-full cursor-pointer">
                 {userName.charAt(0).toUpperCase()}
               </div>
             </Link>
-            <button onClick={handleLogout} className="text-verde ml-2">
-              LOGOUT
+            <button onClick={handleLogout} className="text-rosso ml-2">
+              ESCI
             </button>
           </>
         ) : (
