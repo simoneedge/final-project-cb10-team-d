@@ -192,7 +192,7 @@ export default function ProposePage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 relative ">
       <div className="p-8 w-full max-w-2xl">
-        <h1 className="text-4xl font-bold mb-6 text-rosso text-center font-titolo">
+        <h1 className="text-4xl mb-6 text-rosso text-left font-titolo">
           Proponi Evento
         </h1>
         <EventForm
