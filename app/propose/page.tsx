@@ -201,9 +201,9 @@ export default function ProposePage() {
           onTagChange={handleTagChange}
           onSubmit={handleEventSubmit} // Submit per creare evento
         />
-        <div className="mt-6 flex gap-4 justify-center">npm
+        <div className="mt-6 flex gap-4 justify-center">
           <Button
-            label="Crea Evento"
+            label="Proponi Evento"
             onClick={(e) => handleEventSubmit(e)}
             className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
             disabled={isSubmitting}
