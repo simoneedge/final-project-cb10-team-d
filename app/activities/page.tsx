@@ -188,60 +188,58 @@ export default function AttivitaPage() {
   }, [activities, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
 
+  function handleResetFilters(): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
-      <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <Filter
-            onSearch={handleSearch}
-            isFree={isFree}
-            setIsFree={setIsFree}
-            onTodayClick={handleTodayClick}
-            onTomorrowClick={handleTomorrowClick}
-            onNextWeekClick={handleNextWeekClick} query={""} onResetFilters={function (): void {
-              throw new Error("Function not implemented.");
-            } }          />
-        </div>
-        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          {loading ? (
-            <Loading />
-          ) : filteredEvents.length > 0 ? (
-            filteredEvents.map((activity, index) => (
-              <div
-                key={activity._id || index}
-                className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow" // Mantieni 'flex justify-center' qui
-              >
-                <Card
-                  dateEnd={activity.dateEnd}
-                  dateStart={activity.dateStart}
-                  eventId={activity._id}
-                  key={activity._id || index}
-                  backgroundColor="#F2B85A"
-                  title={activity.title || "No title available"}
-                  imageSrc={activity.image || "default-image-url"}
-                  link={
-                    <Link href={`/events/${activity._id}`}>
-                      <ArrowButton />
-                    </Link>
-                  }
-                  isLiked={
-                    activity.title
-                      ? favoriteEventTitle.includes(activity.title)
-                      : false
-                  }
-                  onHeartClick={() =>
-                    fetchFavorites(getAuth().currentUser?.email || "")
-                  }
-                />
-              </div>
-            ))
-          ) : (
-            <p className="justify-items-center">No events found...</p>
-          )}
-        </div>
+    <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <Filter
+          query={searchQuery}
+          onSearch={handleSearch}
+          isFree={isFree}
+          setIsFree={setIsFree}
+          onTodayClick={handleTodayClick}
+          onTomorrowClick={handleTomorrowClick}
+          onNextWeekClick={handleNextWeekClick}
+          onResetFilters={handleResetFilters}
+        />
+      </div>
+      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        {loading ? (
+          <Loading />
+        ) : filteredEvents.length > 0 ? (
+          filteredEvents.map((activity, index) => (
+            <div
+              key={activity._id || index}
+              className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow"
+            >
+              <Card
+                dateEnd={activity.dateEnd}
+                dateStart={activity.dateStart}
+                eventId={activity._id}
+                backgroundColor="#F2B85A"
+                title={activity.title || "No title available"}
+                imageSrc={activity.image || "default-image-url"}
+                link={
+                  <Link href={`/events/${activity._id}`}>
+                    <ArrowButton />
+                  </Link>
+                }
+                isLiked={activity.title ? favoriteEventTitle.includes(activity.title) : false}
+                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || "")}
+              />
+            </div>
+          ))
+        ) : (
+          <p className="justify-items-center">No events found...</p>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 }

@@ -117,7 +117,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           )}
           {event?.dateStart && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-rosso mr-1">
                 Data inizio:
               </strong>
               {event?.dateStart}
@@ -125,7 +125,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           )}
           {event?.dateEnd && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
+              <strong className="text-xl font-titolo mb-4 text-rosso mr-1">
                 Data fine:
               </strong>
               {event?.dateEnd}
