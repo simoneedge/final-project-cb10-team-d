@@ -29,39 +29,50 @@ const Footer = () => {
 
         {/* Sezione delle icone dei social media */}
         <div className="flex space-x-4">
-          <Image
-            src="/instagram.svg"
-            alt="Instagram Icon"
-            width={30}
-            height={30}
-            className="cursor-pointer"
-            style={{
-              filter:
-                "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
-            }}
-          />
-          <Image
-            src="/fb.svg"
-            alt="Facebook Icon"
-            width={30}
-            height={30}
-            className="cursor-pointer"
-            style={{
-              filter:
-                "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
-            }}
-          />
-          <Image
-            src="/youtube.svg"
-            alt="YouTube Icon"
-            width={30}
-            height={30}
-            className="cursor-pointer"
-            style={{
-              filter:
-                "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
-            }}
-          />
+          {/* Icona Instagram */}
+          <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/instagram.svg"
+              alt="Instagram Icon"
+              width={30}
+              height={30}
+              className="cursor-pointer"
+              style={{
+                filter:
+                  "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
+              }}
+            />
+          </a>
+
+          {/* Icona Facebook */}
+          <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/fb.svg"
+              alt="Facebook Icon"
+              width={30}
+              height={30}
+              className="cursor-pointer"
+              style={{
+                filter:
+                  "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
+              }}
+            />
+          </a>
+
+          {/* Icona YouTube */}
+          <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/youtube.svg"
+              alt="YouTube Icon"
+              width={30}
+              height={30}
+              className="cursor-pointer"
+              style={{
+                filter:
+                  "invert(11%) sepia(82%) saturate(748%) hue-rotate(-10deg) brightness(60%) contrast(140%)",
+              }}
+            />
+          </a>
         </div>
       </div>
     </footer>
