@@ -43,20 +43,20 @@ const EventForm = ({
 
   const todayDate = new Date().toISOString().split("T")[0]; // Ottiene la data di oggi
 
-  const formatDate = (dateString: string) => {
-    const [year, month, day] = dateString.split("-");
-    return `${day}-${month}-${year}`;
-  };
+  // const formatDate = (dateString: string) => {
+  //   const [year, month, day] = dateString.split("-");
+  //   return `${day}-${month}-${year}`;
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Formatta le date prima di inviarle
-    const formattedData = {
-      ...formData,
-      dateStart: formatDate(formData.dateStart),
-      dateEnd: formatDate(formData.dateEnd),
-    };
+    // const formattedData = {
+    //   ...formData,
+    //   dateStart: formatDate(formData.dateStart),
+    //   dateEnd: formatDate(formData.dateEnd),
+    // };
 
     onSubmit(e);
     toast.success("Dati inviati!")
