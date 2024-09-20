@@ -156,7 +156,7 @@ export default function SignUp() {
                       id="confirm-password"
                       value={confirmPass}
                       onChange={(e) => setConfirmPass(e.target.value)}
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                      className="px-1.5 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                       placeholder="Confirm Password"
                     />
                   </div>
@@ -170,9 +170,8 @@ export default function SignUp() {
               </button>
               <button
                 type="submit"
-                className={`border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold ${
-                  formValidation ? 'opacity-100 cursor-not-allowed' : ''
-                }`}
+                className={`border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold ${formValidation ? 'opacity-100 cursor-not-allowed' : ''
+                  }`}
                 disabled={formValidation}
               >
                 Sign Up
