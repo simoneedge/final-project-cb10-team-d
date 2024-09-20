@@ -28,7 +28,6 @@ const SwitchBox = (props: SwitchBoxProps) => {
           }`}
         />
       </div>
-      <button onClick={handleReset}>Reset</button>
     </div>
   );
 };

@@ -2,7 +2,7 @@
 
 import Card from "@/src/components/Card";
 import React, { useEffect, useState } from "react";
-import { IEvent } from "../(models)/Activities";
+import { IEvent } from "../(models)/Event";
 import Link from "next/link";
 import ArrowButton from "@/src/components/ArrowButton";
 import { getDayOfYear } from "@/data/getDayOfYear";
@@ -229,7 +229,6 @@ export default function FoodPage() {
                 <Card
                   dateEnd={food.dateEnd}
                   dateStart={food.dateStart}
-                  price={food.price}
                   eventId={food._id}
                   key={food._id || index}
                   backgroundColor="#822225"

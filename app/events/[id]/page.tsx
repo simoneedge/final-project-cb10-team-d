@@ -88,7 +88,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       )}
 
       {/* Rettangolo rosso con titolo */}
-      <div className="bg-rosso w-full py-4 mb-4">
+      <div className="w-full py-4 mb-4" style={{ backgroundColor: event.color }}>
         <div className="max-w-5xl mx-auto px-5">
           <h1 className="text-white text-4xl font-titolo font-bold text-left">
             {event?.title}
