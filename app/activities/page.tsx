@@ -197,7 +197,7 @@ export default function AttivitaPage() {
     <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
       <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
 
-      <div className="flex items-center mb-4">
+      
         <Filter
           query={searchQuery}
           onSearch={handleSearch}
@@ -208,7 +208,7 @@ export default function AttivitaPage() {
           onNextWeekClick={handleNextWeekClick}
           onResetFilters={handleResetFilters}
         />
-      </div>
+      
       <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {loading ? (
