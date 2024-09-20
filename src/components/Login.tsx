@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Importa useRouter per gestire il redirect
+import { useRouter } from "next/navigation";
 import {
   signInWithEmailAndPassword,
   signOut,
@@ -56,14 +56,14 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       // Effettua il login con Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-  
+
       // Recupera i dati utente da Firestore
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
-  
+
       if (userDoc.exists()) {
         const userData = userDoc.data();
-  
+
         // Verifica se l'utente è attivo
         if (!userData.active) {
           // Effettua il logout immediatamente se l'account è disattivato
@@ -74,12 +74,17 @@ const LoginButton: React.FC<LoginButtonProps> = ({
           });
           return; // Blocca il proseguimento del login
         }
-  
+
         // Se l'utente è attivo, consenti l'accesso e mostra un toast di successo
         setIsModalOpen(false);
         toast.success("Login effettuato con successo!", {
           className: "custom-toast-success",
         });
+
+        if (onLoginSuccess) { // Chiama la funzione se è definita
+          onLoginSuccess(); // Esegui onLoginSuccess
+        }
+
         router.push(redirectTo); // Effettua il redirect alla pagina specificata
       } else {
         setLoading(false);
@@ -88,7 +93,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
         });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setLoading(false);
       toast.error("Errore di accesso, riprova.", {
         className: "custom-toast-error",
@@ -117,7 +122,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white p-6  shadow-lg max-w-sm w-full relative rounded-none">
+          <div className="bg-white p-6 shadow-lg max-w-sm w-full relative rounded-none">
             <h2 className="font-titolo text-2xl text-rosso font-semibold mb-4">
               Fai il login
             </h2>
@@ -143,7 +148,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border border-gray-300 p-2 focus:ring-2  text-gray-600 focus:ring-verde"
+                className="border border-gray-300 p-2 focus:ring-2 text-gray-600 focus:ring-verde"
               />
               <button
                 type="submit"

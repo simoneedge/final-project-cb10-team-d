@@ -19,8 +19,12 @@ function Dashboard() {
             // Filtra le card con reviewed = false
             const filteredCards = data.events.filter((event: IEvent) => event.reviewed === false);
             setCards(filteredCards);
-        } catch (error: any) {
-            setErrorMessage(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            } else {
+                setErrorMessage('Unknown error occurred');
+            }
         } finally {
             setLoading(false);
         }
@@ -42,8 +46,10 @@ function Dashboard() {
 
             // Rimuovi l'evento dalla lista una volta pubblicato
             setCards(prevCards => prevCards.filter(event => String(event._id) !== String(eventId)));
-        } catch (error: any) {
-            setErrorMessage(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            }
         }
     };
 
@@ -59,8 +65,10 @@ function Dashboard() {
 
             // Rimuovi l'evento dalla lista una volta rimosso
             setCards(prevCards => prevCards.filter(event => String(event._id) !== String(eventId)));
-        } catch (error: any) {
-            setErrorMessage(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setErrorMessage(error.message);
+            }
         }
     };
 

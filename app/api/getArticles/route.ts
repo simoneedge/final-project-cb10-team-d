@@ -48,10 +48,10 @@ Dettagli aggiuntivi da includere nell'articolo: ${description}.
     } else {
       throw new Error("Nessun articolo generato.");
     }
-  } catch (error: any) {
-    console.error("Errore API:", error.message || error);
+  } catch (error: unknown) {
+    console.error("Errore API:", (error as Error).message || error);
     return NextResponse.json(
-      { ok: false, message: error.message || "Errore interno del server." },
+      { ok: false, message: (error as Error).message || "Errore interno del server." },
       { status: 500 }
     );
   }

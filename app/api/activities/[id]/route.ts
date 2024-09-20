@@ -1,6 +1,6 @@
-/* import mongoose from "mongoose";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
-import Activity, { IActivity } from "@/app/(models)/Activities";
+import Event, { IEvent } from "@/app/(models)/Event";
 
 export async function GET(
     req: NextRequest,
@@ -15,7 +15,7 @@ export async function GET(
             return NextResponse.json({ error: "ID non valido" }, { status: 400 });
         }
 
-        const event: IActivity | null = await Activity.findById(id);
+        const event: IEvent | null = await Event.findById(id);
 
         if (!event) {
             return NextResponse.json(
@@ -29,4 +29,4 @@ export async function GET(
         console.error("Errore nella richiesta:", error);
         return NextResponse.json({ error: "Errore del server" }, { status: 500 });
     }
-} */
+} 

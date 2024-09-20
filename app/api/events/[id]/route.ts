@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import Event, { IEvent } from "@/app/(models)/Event";
 import { NextRequest, NextResponse } from "next/server";
-import { NextApiRequest } from "next";
 
+// GET: Recupera un evento specifico per ID
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -32,10 +32,9 @@ export async function GET(
   }
 }
 
-
-
+// PUT: Aggiorna un evento specifico impostando 'reviewed' su true
 export async function PUT(
-  req: NextApiRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -47,10 +46,10 @@ export async function PUT(
       return NextResponse.json({ error: "ID non valido" }, { status: 400 });
     }
 
-    // Aggiorna l'evento impostando reviewed su true
+    // Aggiorna l'evento impostando 'reviewed' su true
     const result = await Event.updateOne({ _id: id }, { reviewed: true });
 
-    if (result.modifiedCount === 0) { // Usa modifiedCount invece di nModified
+    if (result.modifiedCount === 0) { // Usa modifiedCount per controllare se l'evento è stato aggiornato
       return NextResponse.json({ error: "Evento non trovato" }, { status: 404 });
     }
 
@@ -61,8 +60,9 @@ export async function PUT(
   }
 }
 
+// DELETE: Elimina un evento specifico per ID
 export async function DELETE(
-  req: NextApiRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

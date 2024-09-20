@@ -21,6 +21,9 @@ function Search({ query, onSearch, onReset }: SearchProps) {
         onChange={handleChange}
         className="flex-1 border-none outline-none p-2 text-sm h-full text-black"
       />
+      <button className="bg-transparent border-none cursor-pointer p-2" onClick={onReset}>
+        <i className="fas fa-times text-gray-600 text-xs"></i> {/* Icona per il reset */}
+      </button>
       <button className="bg-transparent border-none cursor-pointer p-2">
         <i className="fas fa-search text-gray-600 text-xs"></i>
       </button>

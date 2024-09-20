@@ -1,5 +1,5 @@
-/* import { NextResponse } from "next/server";
-import Activity, { IActivity } from '../../(models)/Activities'
+import { NextResponse } from "next/server";
+import Event, { IEvent } from "@/app/(models)/Event";
 
 
 export async function GET(req: Request) {
@@ -9,11 +9,11 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit; // Calcola quanti documenti saltare
 
     try {
-        const activities: IActivity[] = await Activity.find()
+        const activities: IEvent[] = await Event.find()
             .limit(limit)
             .skip(skip);
 
-        const totalActivities = await Activity.countDocuments();
+        const totalActivities = await Event.countDocuments();
 
         return NextResponse.json({
             activities,
@@ -28,8 +28,8 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const body: IActivity = await req.json();
-        const newEvent = new Activity({
+        const body: IEvent = await req.json();
+        const newEvent = new Event({
             ...body,
             reviewed: false  // Assicuriamoci che reviewed sia false alla creazione
         });
@@ -42,4 +42,3 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Failed to create event', details: error }, { status: 500 });
     }
 }
- */
