@@ -103,8 +103,8 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 
   const handleLogout = () => {
     signOut(auth);
-    toast.info("Logout effettuato con successo!", {
-      className: "custom-toast-info",
+    toast.success("Logout effettuato con successo!", {
+      className: "bg-green-500 text-white p-2 rounded-lg",
     });
   };
 

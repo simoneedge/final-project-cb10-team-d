@@ -11,6 +11,7 @@ import { formattedDate } from "@/data/formattDate";
 import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
+import ScrollToTopButton from "@/src/components/ScrollToTopButton";
 
 const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
@@ -193,10 +194,10 @@ export default function AttivitaPage() {
   }
 
   return (
-    <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative">
-    <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
+      <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
+
+      <div className="flex items-center mb-4">
         <Filter
           query={searchQuery}
           onSearch={handleSearch}
@@ -208,7 +209,7 @@ export default function AttivitaPage() {
           onResetFilters={handleResetFilters}
         />
       </div>
-      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 justify-items-center items-start">
+      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {loading ? (
           <Loading />
@@ -239,7 +240,8 @@ export default function AttivitaPage() {
           <p className="justify-items-center">No events found...</p>
         )}
       </div>
+      <ScrollToTopButton />
     </div>
-  </div>
-);
+
+  );
 }
