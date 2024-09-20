@@ -131,7 +131,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   };
 
   return (
-    <header className="relative bg-bianco p-4">
+    <header className="relative bg-bianco p-4 ">
       <div className="hidden md:flex gap-5 items-center">
 
         {links.map((link) => {
@@ -225,7 +225,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       </div>
       {/* Mobile Menu */}
       <div
-        className={`fixed top-50px right-0 w-full h-80 bg-bianco z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-28 right-0 w-full h-90 bg-bianco z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
       >
         <button
