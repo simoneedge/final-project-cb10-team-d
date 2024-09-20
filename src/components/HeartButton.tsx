@@ -47,7 +47,6 @@ const HeartButton: React.FC<HeartButtonProps> = ({ eventId, color, title, image,
 
       if (res.ok) {
         const data = await res.json();
-        console.log(data);
         setLiked(!liked);
 
         // Notifica ProfilePage per aggiornare le card

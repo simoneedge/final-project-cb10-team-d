@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "Profile not found" }, { status: 404 });
         }
         // Restituisci il profilo trovato
-        console.log('Profile object:', profile.toObject());
         return NextResponse.json({ profile }, { status: 200 });
 
     } catch (error) {

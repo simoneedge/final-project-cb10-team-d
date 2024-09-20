@@ -88,9 +88,6 @@ const HomePage: React.FC = () => {
         setEvents(data.events);
         setFilteredEvents(data.events);
 
-        // Stampa gli eventi nella console
-        console.log("Fetched Events:", data.events);
-
         const auth = getAuth();
         const user = auth.currentUser;
 

@@ -73,7 +73,7 @@ const ProfilePage = () => {
         setUserName(userData.firstName);
         setUserLastName(userData.lastName);
       } else {
-        console.log("No user data found!");
+        toast.error("No user data found!");
       }
     } catch (error) {
       console.error("Errore nel recupero dei dati utente:", error);
@@ -104,7 +104,6 @@ const ProfilePage = () => {
       if (user) {
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, { active: false }); // Imposta il campo active su false
-        console.log("Account disattivato con successo.");
 
         // Mostra un toast per informare l'utente che l'account è stato cancellato
         toast.success("Il tuo account è stato cancellato con successo.");

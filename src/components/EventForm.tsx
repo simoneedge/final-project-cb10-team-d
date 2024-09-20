@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { toast } from "react-toastify";
 
 interface EventFormProps {
   formData: {
@@ -58,7 +59,7 @@ const EventForm = ({
     };
 
     onSubmit(e);
-    console.log("Dati inviati:", formattedData); // Debug
+    toast.success("Dati inviati!")
   };
 
   return (

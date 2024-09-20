@@ -68,7 +68,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
         const userData = userDoc.data();
         setUserName(userData.firstName); // Imposta il nome
       } else {
-        console.log('No user data found!');
+        toast.error('Impossibile recuperare i dati utente');
       }
     } catch (error) {
       console.error('Errore nel recupero dei dati utente:', error);
