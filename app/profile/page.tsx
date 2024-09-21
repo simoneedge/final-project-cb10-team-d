@@ -26,6 +26,9 @@ const ProfilePage = () => {
   const [userLastName, setUserLastName] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [showAccordion, setShowAccordion] = useState(false);
+  const [editMode, setEditMode] = useState(false); // Stato per la modalità di modifica
+  const [newFirstName, setNewFirstName] = useState<string | null>(null);
+  const [newLastName, setNewLastName] = useState<string | null>(null);
   const router = useRouter();
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -74,6 +77,8 @@ const ProfilePage = () => {
         const userData = userDoc.data();
         setUserName(userData.firstName);
         setUserLastName(userData.lastName);
+        setNewFirstName(userData.firstName); 
+        setNewLastName(userData.lastName); 
       } else {
         toast.error("No user data found!");
       }
@@ -130,6 +135,31 @@ const ProfilePage = () => {
     }
   }, [userEmail, fetchCards]);
 
+   // Funzione per aggiornare i dati utente
+  const handleSaveChanges = async () => {
+    try {
+      const user = auth.currentUser;
+
+      if (user && newFirstName && newLastName) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { firstName: newFirstName, lastName: newLastName });
+
+        // Aggiorna lo stato con i nuovi dati
+        setUserName(newFirstName);
+        setUserLastName(newLastName);
+
+        // Mostra un toast di successo
+        toast.success("Dati aggiornati con successo!");
+
+        // Esce dalla modalità di modifica
+        setEditMode(false);
+      }
+    } catch (error) {
+      console.error("Errore durante l'aggiornamento dei dati:", error);
+      toast.error("Si è verificato un errore durante l'aggiornamento dei dati.");
+    }
+  };
+
   // Funzione per mostrare o nascondere l'accordion
   const toggleAccordion = () => {
     setShowAccordion(!showAccordion);
@@ -178,7 +208,6 @@ const ProfilePage = () => {
         </button>
       </div>
 
-      {/* Accordion delle Preferenze */}
       {showAccordion && (
         <div className="mt-4 border-2 border-rosso p-4 bg-gray-100 text-gray-900 relative shadow-md max-w-lg mx-auto">
           <h3 className="text-2xl font-semibold text-rosso mb-4">
@@ -186,15 +215,58 @@ const ProfilePage = () => {
           </h3>
           <div className="mb-4">
             <h4 className="text-md font-semibold text-rosso">Dati Personali</h4>
-            <p className="mt-2">
-              <strong>Nome:</strong> {userName}
-            </p>
-            <p>
-              <strong>Cognome:</strong> {userLastName}
-            </p>
-            <p>
-              <strong>Email:</strong> {userEmail}
-            </p>
+            {editMode ? (
+              <>
+                <div className="mt-2">
+                  <label className="font-semibold text-gray-700">Nome:</label>
+                  <input
+                    type="text"
+                    value={newFirstName || ""}
+                    onChange={(e) => setNewFirstName(e.target.value)}
+                    className="border rounded w-full p-2 mt-1"
+                  />
+                </div>
+                <div className="mt-2">
+                  <label className="font-semibold text-gray-700">Cognome:</label>
+                  <input
+                    type="text"
+                    value={newLastName || ""}
+                    onChange={(e) => setNewLastName(e.target.value)}
+                    className="border rounded w-full p-2 mt-1"
+                  />
+                </div>
+                <button
+                  className="mt-4 bg-gradient-to-r from-green-500 to-green-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-green-600 hover:to-green-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+                  onClick={handleSaveChanges}
+                >
+                  Salva modifiche
+                </button>
+                <button
+                  className="mt-4 bg-gradient-to-r from-gray-500 to-gray-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-gray-600 hover:to-gray-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+                  onClick={() => setEditMode(false)}
+                >
+                  Annulla
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="mt-2">
+                  <strong>Nome:</strong> {userName}
+                </p>
+                <p>
+                  <strong>Cognome:</strong> {userLastName}
+                </p>
+                <p>
+                  <strong>Email:</strong> {userEmail}
+                </p>
+                <button
+                  className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-blue-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+                  onClick={() => setEditMode(true)}
+                >
+                  Modifica dati
+                </button>
+              </>
+            )}
           </div>
           <button
             className="mt-4 bg-gradient-to-r from-red-500 to-red-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
@@ -204,7 +276,7 @@ const ProfilePage = () => {
           </button>
         </div>
       )}
-
+      
       {/* Pulsanti */}
       <div className="mt-4 flex flex-col md:flex-row items-center justify-center space-x-0 space-y-4 md:space-y-0 md:space-x-4">
         <Link href="/propose">
