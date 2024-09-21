@@ -6,11 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
 
-interface IFormattedArticleProps {
-  article: string;
-  setTitles: (titles: string[]) => void;
-  setParagraphs: (paragraphs: string[]) => void;
-}
+
 
 function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void) {
   if (article) {

@@ -13,7 +13,7 @@ export interface IEvent {
     price?: string;
     location?: string;
     reviewed?: boolean;
-    article?: { type: String },
+    article?: { type: string },
     arrayImageArticle?: string[]
 }
 
