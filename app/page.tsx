@@ -56,7 +56,6 @@ const HomePage: React.FC = () => {
     { src: string; title: string }[]
   >([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState<boolean>(false);
 
   const ITEMS_PER_PAGE = 12; // Numero di eventi da visualizzare inizialmente
 
@@ -220,16 +219,11 @@ const HomePage: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState<number>(ITEMS_PER_PAGE); // Inizia mostrando i primi 12 eventi
 
   const handleShowMore = () => {
-    setShowAll(true);
     // Incrementa il conteggio degli eventi visibili
     const newCount = visibleCount + ITEMS_PER_PAGE;
     setVisibleCount((prevCount) => prevCount + ITEMS_PER_PAGE);
 
-    setVisibleEvents(events.slice(0, newCount));
-
-    if (newCount >= events.length) {
-      setShowAll(false);
-    }
+    setVisibleEvents(filteredEvents.slice(0, newCount));
   };
 
   return (
