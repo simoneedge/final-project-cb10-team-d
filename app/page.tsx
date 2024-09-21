@@ -52,7 +52,9 @@ const HomePage: React.FC = () => {
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
-  const [slideshowImages, setSlideshowImages] = useState<{ src: string; title: string }[]>([]);
+  const [slideshowImages, setSlideshowImages] = useState<
+    { src: string; title: string }[]
+  >([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
   const [showAll, setShowAll] = useState<boolean>(false);
 
@@ -78,7 +80,7 @@ const HomePage: React.FC = () => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
       setUser(currentUser);
-      console.log(user)
+      console.log(user);
     });
 
     return () => unsubscribe();
@@ -248,11 +250,12 @@ const HomePage: React.FC = () => {
                 return (
                   <div
                     key={event._id || index}
-                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
-                      }`}
+                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${
+                      isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
+                    }`}
                   >
                     <Card
-                      isLiked={favoriteEventTitle.includes(event.title ?? '')}
+                      isLiked={favoriteEventTitle.includes(event.title ?? "")}
                       eventId={event._id}
                       dateEnd={event.dateEnd}
                       dateStart={event.dateStart}
@@ -263,7 +266,11 @@ const HomePage: React.FC = () => {
                         event.image ||
                         "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
                       }
-                      size={isFourthCard && window.innerWidth >= 1024 ? "large" : "small"}
+                      size={
+                        isFourthCard && window.innerWidth >= 1024
+                          ? "large"
+                          : "small"
+                      }
                       link={
                         <Link href={`/events/${event._id}`}>
                           <ArrowButton />
@@ -274,20 +281,21 @@ const HomePage: React.FC = () => {
                 );
               })
             ) : (
-              <p className="justify-items-center">No events found...</p>
+              <div className="flex justify-center items-center ">
+                <p className="text-center text-gray-600 text-xl ">
+                  Nessun evento disponibile...
+                </p>
+              </div>
             )}
           </div>
         )}
-
       </main>
       {!showAll && filteredEvents.length > ITEMS_PER_PAGE && (
         <Button
-          label={'Vedi altro'}
+          label={"Vedi altro"}
           onClick={handleShowMore}
           className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold mb-20"
-        >
-
-        </Button>
+        ></Button>
       )}
 
       <ScrollToTopButton />

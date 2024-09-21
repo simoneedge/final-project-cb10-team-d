@@ -235,8 +235,8 @@ export default function AttivitaPage() {
             </div>
           ))
         ) : (
-          <div className="flex justify-center text-center">
-            <p className="text-center text-gray-800 text-xl font-bold flex justify-center items-center h-64">
+          <div className="flex justify-center items-center ">
+            <p className="text-center text-gray-600 text-xl ">
               Nessun evento disponibile...
             </p>
           </div>
