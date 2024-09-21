@@ -98,8 +98,8 @@ export default function SignUp() {
           return; 
         }
       } else {
-        setError('Si è verificato un errore sconosciuto.');
-        toast.error('Si è verificato un errore sconosciuto.');
+        setError('Si &egrave; verificato un errore sconosciuto.');
+        toast.error('Si &egrave; verificato un errore sconosciuto.');
         return; 
       }
     }
@@ -167,7 +167,7 @@ export default function SignUp() {
                       placeholder="Email"
                     />
                     {!isEmailValid(email) && email.trim() && (
-                      <p className="text-red-600 text-sm mt-1">Inserisci un'email valida.</p>
+                      <p className="text-red-600 text-sm mt-1">Inserisci un&apos;email valida.</p>
                     )}
                   </div>
                 </div>
