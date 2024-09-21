@@ -56,8 +56,8 @@ const HomePage: React.FC = () => {
     { src: string; title: string }[]
   >([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
-
-  const ITEMS_PER_PAGE = 12; // Numero di eventi da visualizzare inizialmente
+  const [showAll, setShowAll] = useState<boolean>(false);
+  const ITEMS_PER_PAGE = 12;
 
   const fetchFavorites = async (email: string | null) => {
     try {
@@ -198,8 +198,8 @@ const HomePage: React.FC = () => {
       });
     }
 
-    setFilteredEvents(filtered);
-    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
+    setFilteredEvents(events);
+    setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
   };
 
   useEffect(() => {
@@ -216,14 +216,9 @@ const HomePage: React.FC = () => {
     setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Reset eventi
   };
 
-  const [visibleCount, setVisibleCount] = useState<number>(ITEMS_PER_PAGE); // Inizia mostrando i primi 12 eventi
-
   const handleShowMore = () => {
-    // Incrementa il conteggio degli eventi visibili
-    const newCount = visibleCount + ITEMS_PER_PAGE;
-    setVisibleCount((prevCount) => prevCount + ITEMS_PER_PAGE);
-
-    setVisibleEvents(filteredEvents.slice(0, newCount));
+    setShowAll(true);
+    setVisibleEvents(events); // Mostra tutti gli eventi
   };
 
   return (
@@ -294,7 +289,7 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </main>
-      {visibleCount < events.length && (
+      {!showAll && visibleEvents.length < filteredEvents.length && (
         <Button
           label={"Vedi altro"}
           onClick={handleShowMore}
