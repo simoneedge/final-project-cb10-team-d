@@ -15,7 +15,7 @@ import ScrollToTopButton from "@/src/components/ScrollToTopButton";
 
 const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
-    const res = await fetch(`/api/events`, { cache: "no-cache", });
+    const res = await fetch(`/api/events`, { cache: "no-cache" });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -61,8 +61,6 @@ export default function AttivitaPage() {
       console.error("Errore nel recupero dei preferiti:", error);
     }
   };
-
-
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
@@ -126,6 +124,7 @@ export default function AttivitaPage() {
   };
 
   // Funzione per applicare i filtri agli eventi
+
   const applyFilters = (
     query: string,
     isFree: boolean,
@@ -134,14 +133,6 @@ export default function AttivitaPage() {
     endNextWeek?: number
   ) => {
     let filtered = activities;
-
-    filtered = filtered.filter(
-      (event) => Boolean(event.reviewed) === true || event.reviewed === undefined
-    );
-
-    filtered = filtered.filter(
-      (event) => event.color === '#F2B85A'
-    )
 
     // Filtro per la query di ricerca
     if (query !== "") {
@@ -158,8 +149,6 @@ export default function AttivitaPage() {
     // Filtro per eventi gratuiti
     if (isFree) {
       filtered = filtered.filter((event) => event.price === "0");
-    } else {
-      filtered = filtered.filter((event) => event.price !== "0");
     }
 
     // Filtro per il giorno specifico
@@ -188,27 +177,30 @@ export default function AttivitaPage() {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [activities, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
-
-  function handleResetFilters(): void {
-    throw new Error("Function not implemented.");
-  }
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setIsFree(false);
+    setToday(0);
+    setStartNextWeek(undefined);
+    setEndNextWeek(undefined);
+    setFilteredEvents(activities);
+  };
 
   return (
     <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
       <CategoryBanner label="Attività" backgroundColor={"bg-giallo"} />
 
-      
-        <Filter
-          query={searchQuery}
-          onSearch={handleSearch}
-          isFree={isFree}
-          setIsFree={setIsFree}
-          onTodayClick={handleTodayClick}
-          onTomorrowClick={handleTomorrowClick}
-          onNextWeekClick={handleNextWeekClick}
-          onResetFilters={handleResetFilters}
-        />
-      
+      <Filter
+        query={searchQuery}
+        onSearch={handleSearch}
+        isFree={isFree}
+        setIsFree={setIsFree}
+        onTodayClick={handleTodayClick}
+        onTomorrowClick={handleTomorrowClick}
+        onNextWeekClick={handleNextWeekClick}
+        onResetFilters={handleResetFilters}
+      />
+
       <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {loading ? (
@@ -231,17 +223,26 @@ export default function AttivitaPage() {
                     <ArrowButton />
                   </Link>
                 }
-                isLiked={activity.title ? favoriteEventTitle.includes(activity.title) : false}
-                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || "")}
+                isLiked={
+                  activity.title
+                    ? favoriteEventTitle.includes(activity.title)
+                    : false
+                }
+                onHeartClick={() =>
+                  fetchFavorites(getAuth().currentUser?.email || "")
+                }
               />
             </div>
           ))
         ) : (
-          <p className="justify-items-center">No events found...</p>
+          <div className="flex justify-center text-center">
+            <p className="text-center text-gray-800 text-xl font-bold flex justify-center items-center h-64">
+              Nessun evento disponibile...
+            </p>
+          </div>
         )}
       </div>
       <ScrollToTopButton />
     </div>
-
   );
 }

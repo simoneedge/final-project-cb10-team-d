@@ -37,7 +37,9 @@ export default function CulturePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
-  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(undefined);
+  const [startNextWeek, setStartNextWeek] = useState<number | undefined>(
+    undefined
+  );
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
@@ -58,7 +60,6 @@ export default function CulturePage() {
       console.error("Errore nel recupero dei preferiti:", error);
     }
   };
-
 
   // Effetto per caricare i dati iniziali
   useEffect(() => {
@@ -96,7 +97,9 @@ export default function CulturePage() {
           (event) =>
             event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             event.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.tag?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+            event.tag?.some((tag) =>
+              tag.toLowerCase().includes(searchQuery.toLowerCase())
+            )
         );
       }
 
@@ -106,7 +109,9 @@ export default function CulturePage() {
 
       if (today) {
         filtered = filtered.filter((event) => {
-          const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
           const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
           return today >= startEvent && today <= endEvent;
         });
@@ -114,7 +119,9 @@ export default function CulturePage() {
 
       if (startNextWeek !== undefined && endNextWeek !== undefined) {
         filtered = filtered.filter((event) => {
-          const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
           const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
           return startEvent <= endNextWeek && endEvent >= startNextWeek;
         });
@@ -162,52 +169,60 @@ export default function CulturePage() {
   return (
     <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
       <CategoryBanner label="Cultura" backgroundColor={"bg-verde"} />
-      
-        
-          <Filter
-            query={searchQuery}
-            onSearch={handleSearch}
-            isFree={isFree}
-            setIsFree={setIsFree}
-            onTodayClick={handleTodayClick}
-            onTomorrowClick={handleTomorrowClick}
-            onNextWeekClick={handleNextWeekClick}
-            onResetFilters={handleResetFilters}
-          />
-       
-        <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-          {loading ? (
-            <Loading />
-          ) : filteredEvents.length > 0 ? (
-            filteredEvents.map((culture, index) => (
-              <div
-                key={culture._id || index}
-                className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow"
-              >
-                <Card
-                  dateEnd={culture.dateEnd}
-                  dateStart={culture.dateStart}
-                  eventId={culture._id}
-                  backgroundColor="#4E614E"
-                  title={culture.title || "No title available"}
-                  imageSrc={culture.image || "default-image-url"}
-                  link={
-                    <Link href={`/events/${culture._id}`}>
-                      <ArrowButton />
-                    </Link>
-                  }
-                  isLiked={culture.title ? favoriteEventTitle.includes(culture.title) : false}
-                  onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || "")}
-                />
-              </div>
-            ))
-          ) : (
-            <p className="justify-items-center">No events found...</p>
-          )}
-        </div>
-        <ScrollToTopButton />
-      </div>
 
+      <Filter
+        query={searchQuery}
+        onSearch={handleSearch}
+        isFree={isFree}
+        setIsFree={setIsFree}
+        onTodayClick={handleTodayClick}
+        onTomorrowClick={handleTomorrowClick}
+        onNextWeekClick={handleNextWeekClick}
+        onResetFilters={handleResetFilters}
+      />
+
+      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        {loading ? (
+          <Loading />
+        ) : filteredEvents.length > 0 ? (
+          filteredEvents.map((culture, index) => (
+            <div
+              key={culture._id || index}
+              className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow"
+            >
+              <Card
+                dateEnd={culture.dateEnd}
+                dateStart={culture.dateStart}
+                eventId={culture._id}
+                backgroundColor="#4E614E"
+                title={culture.title || "No title available"}
+                imageSrc={culture.image || "default-image-url"}
+                link={
+                  <Link href={`/events/${culture._id}`}>
+                    <ArrowButton />
+                  </Link>
+                }
+                isLiked={
+                  culture.title
+                    ? favoriteEventTitle.includes(culture.title)
+                    : false
+                }
+                onHeartClick={() =>
+                  fetchFavorites(getAuth().currentUser?.email || "")
+                }
+              />
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center text-center">
+            <p className="text-center text-gray-800 text-xl font-bold flex justify-center items-center h-64">
+              Nessun evento disponibile...
+            </p>
+          </div>
+        )}
+      </div>
+      <ScrollToTopButton />
+    </div>
   );
 }
