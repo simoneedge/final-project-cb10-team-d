@@ -28,6 +28,8 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Previene la richiesta GET predefinita del form
+    e.stopPropagation(); // Ferma l'eventuale propagazione dell'evento
+    
     setError(null); // Resetta l'errore all'inizio del submit
 
     if (formValidation) {
@@ -57,11 +59,22 @@ export default function SignUp() {
       }, 2000);
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message);
-        toast.error(error.message); // Mostra l'errore tramite toast
+        if (error.message.includes('auth/email-already-in-use')) {
+          setError('Email non utilizzabile. Prova a effettuare il login.');
+          toast.error('Email non utilizzabile. Prova a effettuare il login.');
+          return; // Aggiungi un return qui per evitare doppi trigger
+
+        } else {
+          setError(error.message);
+          toast.error(error.message);
+          return; // Aggiungi un return qui per evitare doppi trigger
+
+        }
       } else {
         setError('An unknown error occurred.');
         toast.error('An unknown error occurred.');
+        return; // Aggiungi un return qui per evitare doppi trigger
+
       }
     }
   };
@@ -179,7 +192,7 @@ export default function SignUp() {
             </div>
           </div>
         </form>
-        <ToastContainer />
+        <ToastContainer containerId="toastSignUp"/>
       </div>
     </div>
   );
