@@ -198,7 +198,7 @@ const HomePage: React.FC = () => {
       });
     }
 
-    setFilteredEvents(events);
+    setFilteredEvents(filtered);
     setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
   };
 
