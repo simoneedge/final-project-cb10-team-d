@@ -12,7 +12,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Loading from "@/src/components/Loading";
 import Slideshow from "@/src/components/Slideshow";
 import { User } from "firebase/auth";
-
+import Button from "@/src/components/Button";
 
 const fetchEvents = async () => {
   try {
@@ -42,6 +42,7 @@ const HomePage: React.FC = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
+  const [visibleEvents, setVisibleEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
@@ -53,6 +54,9 @@ const HomePage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [slideshowImages, setSlideshowImages] = useState<{ src: string; title: string }[]>([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState<boolean>(false);
+
+  const ITEMS_PER_PAGE = 12; // Numero di eventi da visualizzare inizialmente
 
   const fetchFavorites = async (email: string | null) => {
     try {
@@ -194,13 +198,12 @@ const HomePage: React.FC = () => {
     }
 
     setFilteredEvents(filtered);
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
   };
 
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
   }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
-
-
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -208,79 +211,87 @@ const HomePage: React.FC = () => {
     setToday(0);
     setStartNextWeek(undefined);
     setEndNextWeek(undefined);
-    setFilteredEvents(events); // Reset events
+    setFilteredEvents(events);
+    setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Reset eventi
+  };
+
+  const handleShowMore = () => {
+    setShowAll(true);
+    setVisibleEvents(filteredEvents); // Mostra tutti gli eventi
   };
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen bg-gray-100 relative text-verde">
-    <Slideshow images={slideshowImages} />
-    <Filter
-      query={searchQuery} // Passa la query al Filter
-      onSearch={handleSearch}
-      isFree={isFree}
-      setIsFree={setIsFree}
-      onTodayClick={handleTodayClick}
-      onTomorrowClick={handleTomorrowClick}
-      onNextWeekClick={handleNextWeekClick}
-      onResetFilters={handleResetFilters}
-    />
-  
-    <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-  
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="card-container grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event, index) => {
-              const isFourthCard = (index + 1) % 4 === 0;
-  
-              return (
-                <div
-                  key={event._id || index}
-                  className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${
-                    isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
-                  }`}
-                >
-                  <Card
-                    isLiked={favoriteEventTitle.includes(event.title ?? '')}
-                    eventId={event._id}
-                    dateEnd={event.dateEnd}
-                    dateStart={event.dateStart}
-                    description={event.description}
-                    backgroundColor={event.color || "#4E614E"}
-                    title={event.title || "Default Title"}
-                    imageSrc={
-                      event.image ||
-                      "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
-                    }
-                    size={isFourthCard && window.innerWidth >= 1024 ? "large" : "small"} // Size "large" solo per desktop
-                    onHeartClick={() =>
-                      fetchFavorites(getAuth().currentUser?.email || "")
-                    }
-                    link={
-                      <Link href={`/events/${event._id}`}>
-                        <ArrowButton />
-                      </Link>
-                    }
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <p className="justify-items-center">No events found...</p>
-          )}
-        </div>
+      <Slideshow images={slideshowImages} />
+      <Filter
+        query={searchQuery}
+        onSearch={handleSearch}
+        isFree={isFree}
+        setIsFree={setIsFree}
+        onTodayClick={handleTodayClick}
+        onTomorrowClick={handleTomorrowClick}
+        onNextWeekClick={handleNextWeekClick}
+        onResetFilters={handleResetFilters}
+      />
+
+      <main className="flex flex-col items-center justify-center flex-grow space-y-4 text-verde">
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="card-container grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
+            {visibleEvents.length > 0 ? (
+              visibleEvents.map((event, index) => {
+                const isFourthCard = (index + 1) % 4 === 0;
+
+                return (
+                  <div
+                    key={event._id || index}
+                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
+                      }`}
+                  >
+                    <Card
+                      isLiked={favoriteEventTitle.includes(event.title ?? '')}
+                      eventId={event._id}
+                      dateEnd={event.dateEnd}
+                      dateStart={event.dateStart}
+                      description={event.description}
+                      backgroundColor={event.color || "#4E614E"}
+                      title={event.title || "Default Title"}
+                      imageSrc={
+                        event.image ||
+                        "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
+                      }
+                      size={isFourthCard && window.innerWidth >= 1024 ? "large" : "small"}
+                      link={
+                        <Link href={`/events/${event._id}`}>
+                          <ArrowButton />
+                        </Link>
+                      }
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <p className="justify-items-center">No events found...</p>
+            )}
+          </div>
+        )}
+
+      </main>
+      {!showAll && filteredEvents.length > ITEMS_PER_PAGE && (
+        <Button
+          label={'Vedi altro'}
+          onClick={handleShowMore}
+          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold mb-20"
+        >
+
+        </Button>
       )}
-    </main>
-  
-    {/* Controlli di paginazione */}
-    <ScrollToTopButton />
-  </div>
-  
-  
-  
+
+      <ScrollToTopButton />
+    </div>
   );
 };
 
