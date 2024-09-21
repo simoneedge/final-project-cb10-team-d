@@ -13,8 +13,7 @@ import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
 
-const fetchData = async (
-): Promise<{ events: IEvent[] }> => {
+const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
     const res = await fetch(`/api/events`, {
       cache: "no-cache",
@@ -33,7 +32,6 @@ const fetchData = async (
     }
   }
 };
-
 
 export default function FoodPage() {
   const [foods, setFoods] = useState<IEvent[]>([]);
@@ -143,9 +141,7 @@ export default function FoodPage() {
       (event) =>
         Boolean(event.reviewed) === true || event.reviewed === undefined
     );
-    filtered = filtered.filter(
-      (event) => event.color === '#822225'
-    )
+    filtered = filtered.filter((event) => event.color === "#822225");
 
     // Filtro per la query di ricerca
     if (query !== "") {
@@ -203,20 +199,19 @@ export default function FoodPage() {
 
   return (
     <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
-    <CategoryBanner label="Food" backgroundColor={"bg-rosso"} />
-    
-      
-        <Filter
-          query={searchQuery}
-          onSearch={handleSearch}
-          isFree={isFree}
-          setIsFree={setIsFree}
-          onTodayClick={handleTodayClick}
-          onTomorrowClick={handleTomorrowClick}
-          onNextWeekClick={handleNextWeekClick}
-          onResetFilters={handleResetFilters}
-        />
-      
+      <CategoryBanner label="Food" backgroundColor={"bg-rosso"} />
+
+      <Filter
+        query={searchQuery}
+        onSearch={handleSearch}
+        isFree={isFree}
+        setIsFree={setIsFree}
+        onTodayClick={handleTodayClick}
+        onTomorrowClick={handleTomorrowClick}
+        onNextWeekClick={handleNextWeekClick}
+        onResetFilters={handleResetFilters}
+      />
+
       <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {loading ? (
@@ -239,17 +234,24 @@ export default function FoodPage() {
                     <ArrowButton />
                   </Link>
                 }
-                isLiked={food.title ? favoriteEventTitle.includes(food.title) : false}
-                onHeartClick={() => fetchFavorites(getAuth().currentUser?.email || "")}
+                isLiked={
+                  food.title ? favoriteEventTitle.includes(food.title) : false
+                }
+                onHeartClick={() =>
+                  fetchFavorites(getAuth().currentUser?.email || "")
+                }
               />
             </div>
           ))
         ) : (
-          <p className="justify-items-center">No events found...</p>
+          <div className="flex justify-center text-center">
+            <p className="text-center text-gray-800 text-xl font-bold flex justify-center items-center h-64">
+              Nessun evento disponibile...
+            </p>
+          </div>
         )}
       </div>
       <ScrollToTopButton />
     </div>
- 
-);
+  );
 }
