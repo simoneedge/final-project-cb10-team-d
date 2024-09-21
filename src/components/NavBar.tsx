@@ -106,24 +106,24 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     return () => unsubscribe();
   }, [router, links]);
 
-   // Funzione che ascolta l'evento e aggiorna lo stato
-useEffect(() => {
-  // Listener per l'evento personalizzato
-  const updateUserName = (event: Event) => {
-    // Esegui il cast di 'event' a 'CustomEvent'
-    const customEvent = event as CustomEvent<{ newName: string }>;
-    setUserName(customEvent.detail.newName);
-  };
+  // Funzione che ascolta l'evento e aggiorna lo stato
+  useEffect(() => {
+    // Listener per l'evento personalizzato
+    const updateUserName = (event: Event) => {
+      // Esegui il cast di 'event' a 'CustomEvent'
+      const customEvent = event as CustomEvent<{ newName: string }>;
+      setUserName(customEvent.detail.newName);
+    };
 
-  
-  window.addEventListener('userNameUpdated', updateUserName as EventListener);
 
- 
-  return () => {
-    window.removeEventListener('userNameUpdated', updateUserName as EventListener);
-  };
-}, []);
-  
+    window.addEventListener('userNameUpdated', updateUserName as EventListener);
+
+
+    return () => {
+      window.removeEventListener('userNameUpdated', updateUserName as EventListener);
+    };
+  }, []);
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -254,6 +254,9 @@ useEffect(() => {
         <div className="flex flex-col items-center space-y-4 p-6 text-center h-auto">
           {/* Cambia h-full a h-auto */}
           {links.map((link) => {
+            if (link.name === 'Pannello di controllo' && !isAdmin) {
+              return null; // Non mostrare il link se non è un admin
+            }
             if (link.name === 'Proponi Evento') {
               if (userEmail) {
                 return (
