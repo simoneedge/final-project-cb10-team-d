@@ -217,9 +217,19 @@ const HomePage: React.FC = () => {
     setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Reset eventi
   };
 
+  const [visibleCount, setVisibleCount] = useState<number>(ITEMS_PER_PAGE); // Inizia mostrando i primi 12 eventi
+
   const handleShowMore = () => {
     setShowAll(true);
-    setVisibleEvents(filteredEvents); // Mostra tutti gli eventi
+    // Incrementa il conteggio degli eventi visibili
+    const newCount = visibleCount + ITEMS_PER_PAGE;
+    setVisibleCount((prevCount) => prevCount + ITEMS_PER_PAGE);
+
+    setVisibleEvents(events.slice(0, newCount));
+
+    if (newCount >= events.length) {
+      setShowAll(false);
+    }
   };
 
   return (
@@ -290,12 +300,12 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </main>
-      {!showAll && filteredEvents.length > ITEMS_PER_PAGE && (
+      {visibleCount < events.length && (
         <Button
           label={"Vedi altro"}
           onClick={handleShowMore}
           className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold mb-20"
-        ></Button>
+        />
       )}
 
       <ScrollToTopButton />

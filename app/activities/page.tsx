@@ -12,6 +12,7 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
+import Button from "@/src/components/Button";
 
 const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
@@ -35,6 +36,7 @@ export default function AttivitaPage() {
   const [activities, setActivities] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
+  const [visibleEvents, setVisibleEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
@@ -44,6 +46,9 @@ export default function AttivitaPage() {
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState<boolean>(false);
+
+  const ITEMS_PER_PAGE = 12; // Numero di eventi da visualizzare inizialmente
 
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string | null) => {
@@ -122,6 +127,10 @@ export default function AttivitaPage() {
     setEndNextWeek(nextSunday);
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
+  const handleShowMore = () => {
+    setShowAll(true);
+    setVisibleEvents(filteredEvents); // Mostra tutti gli eventi
+  };
 
   // Funzione per applicare i filtri agli eventi
 
@@ -133,6 +142,11 @@ export default function AttivitaPage() {
     endNextWeek?: number
   ) => {
     let filtered = activities;
+    filtered = filtered.filter(
+      (event) =>
+        Boolean(event.reviewed) === true || event.reviewed === undefined
+    );
+    filtered = filtered.filter((event) => event.color === "#F2B85A");
 
     // Filtro per la query di ricerca
     if (query !== "") {
@@ -149,6 +163,8 @@ export default function AttivitaPage() {
     // Filtro per eventi gratuiti
     if (isFree) {
       filtered = filtered.filter((event) => event.price === "0");
+    } else {
+      filtered = filtered.filter((event) => event.price !== "0");
     }
 
     // Filtro per il giorno specifico
@@ -170,6 +186,7 @@ export default function AttivitaPage() {
     }
 
     setFilteredEvents(filtered);
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
   };
 
   // Applica i filtri quando gli stati cambiano
@@ -183,7 +200,9 @@ export default function AttivitaPage() {
     setToday(0);
     setStartNextWeek(undefined);
     setEndNextWeek(undefined);
-    setFilteredEvents(activities);
+    const filtered = activities.filter((event) => event.color === "#F2B85A");
+    setFilteredEvents(filtered);
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Reset eventi
   };
 
   return (
@@ -206,7 +225,7 @@ export default function AttivitaPage() {
         {loading ? (
           <Loading />
         ) : filteredEvents.length > 0 ? (
-          filteredEvents.map((activity, index) => (
+          visibleEvents.map((activity, index) => (
             <div
               key={activity._id || index}
               className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow"
@@ -242,6 +261,13 @@ export default function AttivitaPage() {
           </div>
         )}
       </div>
+      {!showAll && filteredEvents.length > ITEMS_PER_PAGE && (
+        <Button
+          label={"Vedi altro"}
+          onClick={handleShowMore}
+          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold mb-20"
+        ></Button>
+      )}
       <ScrollToTopButton />
     </div>
   );
