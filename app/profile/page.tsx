@@ -136,29 +136,32 @@ const ProfilePage = () => {
   }, [userEmail, fetchCards]);
 
    // Funzione per aggiornare i dati utente
-  const handleSaveChanges = async () => {
-    try {
-      const user = auth.currentUser;
+const handleSaveChanges = async () => {
+  try {
+    const user = auth.currentUser;
 
-      if (user && newFirstName && newLastName) {
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, { firstName: newFirstName, lastName: newLastName });
+    if (user && newFirstName && newLastName) {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, { firstName: newFirstName, lastName: newLastName });
 
-        // Aggiorna lo stato con i nuovi dati
-        setUserName(newFirstName);
-        setUserLastName(newLastName);
+      // Aggiorna lo stato con i nuovi dati
+      setUserName(newFirstName);
+      setUserLastName(newLastName);
 
-        // Mostra un toast di successo
-        toast.success("Dati aggiornati con successo!");
+      // Triggera l'evento per aggiornare la navbar
+      window.dispatchEvent(new CustomEvent('userNameUpdated', { detail: { newName: newFirstName } }));
 
-        // Esce dalla modalità di modifica
-        setEditMode(false);
-      }
-    } catch (error) {
-      console.error("Errore durante l'aggiornamento dei dati:", error);
-      toast.error("Si è verificato un errore durante l'aggiornamento dei dati.");
+      // Mostra un toast di successo
+      toast.success("Dati aggiornati con successo!");
+
+      // Esce dalla modalità di modifica
+      setEditMode(false);
     }
-  };
+  } catch (error) {
+    console.error("Errore durante l'aggiornamento dei dati:", error);
+    toast.error("Si è verificato un errore durante l'aggiornamento dei dati.");
+  }
+};
 
   // Funzione per mostrare o nascondere l'accordion
   const toggleAccordion = () => {
@@ -276,7 +279,7 @@ const ProfilePage = () => {
           </button>
         </div>
       )}
-      
+
       {/* Pulsanti */}
       <div className="mt-4 flex flex-col md:flex-row items-center justify-center space-x-0 space-y-4 md:space-y-0 md:space-x-4">
         <Link href="/propose">

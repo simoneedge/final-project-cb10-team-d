@@ -106,6 +106,19 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     return () => unsubscribe();
   }, [router, links]);
 
+   // Aggiungi un listener per aggiornare il nome utente quando viene modificato
+   useEffect(() => {
+    const updateUserName = (event: any) => {
+      setUserName(event.detail.newName);
+    };
+
+    window.addEventListener('userNameUpdated', updateUserName);
+
+    return () => {
+      window.removeEventListener('userNameUpdated', updateUserName);
+    };
+  }, []);
+  
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
