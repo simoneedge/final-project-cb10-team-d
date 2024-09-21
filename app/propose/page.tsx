@@ -243,7 +243,7 @@ export default function ProposePage() {
             </div>
           ) : null}
         </div>
-        <ToastContainer />
+        <ToastContainer containerId="toastPropose"/>
       </div>
     </div>
   );
