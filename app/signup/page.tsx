@@ -17,7 +17,6 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formValidation =
     !firstName.trim() ||
@@ -30,16 +29,12 @@ export default function SignUp() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Previene la richiesta GET predefinita del form
     e.stopPropagation(); // Ferma l'eventuale propagazione dell'evento
-    if (isSubmitting) return; // Evita doppi submit
-
-    setIsSubmitting(true); // Imposta il flag di submit
+    
     setError(null); // Resetta l'errore all'inizio del submit
 
     if (formValidation) {
       setError('Please fill out all fields correctly.');
       toast.error('Please fill out all fields correctly.');
-      setIsSubmitting(false); // Resetta il flag
-
       return;
     }
 
@@ -60,15 +55,13 @@ export default function SignUp() {
 
       // Reindirizza alla home "/" dopo 2 secondi
       setTimeout(() => {
-        setIsSubmitting(false); // Resetta il flag prima di reindirizzare
-
         router.push('/');
       }, 2000);
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('auth/email-already-in-use')) {
-          setError('Email già registrata. Prova a effettuare il login.');
-          toast.error('Email già registrata. Prova a effettuare il login.');
+          setError('Email non utilizzabile. Prova a effettuare il login.');
+          toast.error('Email non utilizzabile. Prova a effettuare il login.');
           return; // Aggiungi un return qui per evitare doppi trigger
 
         } else {
@@ -83,8 +76,6 @@ export default function SignUp() {
         return; // Aggiungi un return qui per evitare doppi trigger
 
       }
-      setIsSubmitting(false); // Resetta il flag
-
     }
   };
 
