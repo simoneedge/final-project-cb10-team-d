@@ -17,7 +17,7 @@ export async function POST(req: Request) {
         const body: IEvent = await req.json();
 
         // Estrai i dati necessari dal body, incluso l'articolo
-        const { title, image, tag, description, dateStart, dateEnd, price, location, color, article } = body;
+        const { title, image, tag, description, dateStart, dateEnd, price, location, color, article, arrayImageArticle } = body;
 
         // Creazione di un nuovo evento con i dati ricevuti, incluso l'articolo
         const newEvent = new Event({
@@ -31,7 +31,8 @@ export async function POST(req: Request) {
             location,
             color,
             article,  // Aggiungi l'articolo nel documento
-            reviewed: false  // Assicuriamoci che reviewed sia false alla creazione
+            reviewed: false,  // Assicuriamoci che reviewed sia false alla creazione
+            arrayImageArticle
         });
         console.log(newEvent)
 

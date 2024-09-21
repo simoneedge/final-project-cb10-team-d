@@ -14,7 +14,28 @@ interface Event {
   price?: string;
   location?: string;
   color: string;
-  article: string;
+  article?: string;
+  arrayImageArticle?: string[];
+}
+
+function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void) {
+  if (article) {
+    const lines = article.split("\n");
+    const titles: string[] = [];
+    const paragraphs: string[] = [];
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith("##")) {
+        titles.push(trimmedLine.replace("##", "").trim());
+      } else if (trimmedLine.length > 0) {
+        paragraphs.push(trimmedLine);
+      }
+    }
+
+    setTitles(titles);
+    setParagraphs(paragraphs);
+  }
 }
 
 const getData = async (id: string) => {
@@ -24,68 +45,27 @@ const getData = async (id: string) => {
     });
 
     if (!res.ok) {
-      throw new Error(`
-        Errore nella richiesta: ${res.status} ${res.statusText}
-      `);
+      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
     }
 
     const data = await res.json();
     return data.event; // Assicurati di accedere all'evento specifico
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(
-        error.message || "Errore sconosciuto durante il fetch dei dati"
-      );
+      throw new Error(error.message || "Errore sconosciuto durante il fetch dei dati");
     } else {
       throw new Error("Errore sconosciuto durante il fetch dei dati");
     }
   }
 };
 
-interface IFormattedArticleProps {
-  article: string;
-  setTitles: (titles: string[]) => void;
-  setParagraphs: (paragraphs: string[]) => void;
-}
-
-function formatArticle(props: IFormattedArticleProps) {
-  const { article, setTitles, setParagraphs } = props;
-
-  if (article) {
-    const lines = article.split("\n");
-
-    const titles: string[] = [];
-    const paragraphs: string[] = [];
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-
-      // Se la linea inizia con ##, è un titolo di sezione
-      if (line.startsWith("##")) {
-        const title = line.replace("##", "").trim();
-        titles.push(title);
-
-        // Altrimenti, se la linea non è vuota, è un paragrafo
-      } else if (line.length > 0) {
-        paragraphs.push(line);
-      }
-    }
-
-    // Aggiorna gli stati con i titoli e i paragrafi estratti
-    setTitles(titles);
-    setParagraphs(paragraphs);
-  }
-}
-
 const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Stato di caricamento
+  const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Stati per titoli e paragrafi dell'articolo
-  const [titles, setTitles] = useState<string[]>([]);
-  const [paragraphs, setParagraphs] = useState<string[]>([]);
+  const [titles, setTitles] = useState<string[]>([]); // Stato per i titoli
+  const [paragraphs, setParagraphs] = useState<string[]>([]); // Stato per i paragrafi
 
   const goBack = () => {
     window.history.back();
@@ -93,19 +73,12 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const fetchEvent = async () => {
-      setLoading(true); // Inizia il caricamento
+      setLoading(true);
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
-        console.log(fetchedEvent);
-
-        // Chiama formatArticle se l'articolo è presente
-        if (fetchedEvent.article) {
-          formatArticle({
-            article: fetchedEvent.article,
-            setTitles,
-            setParagraphs,
-          });
+        if (fetchedEvent?.article) {
+          formatArticle(fetchedEvent.article, setTitles, setParagraphs); // Chiamata a formatArticle
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -114,7 +87,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           setErrorMessage("Errore sconosciuto");
         }
       } finally {
-        setLoading(false); // Termina il caricamento
+        setLoading(false);
       }
     };
 
@@ -142,10 +115,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
       {/* Rettangolo colorato con titolo */}
       {event ? (
-        <div
-          className="w-full py-4 mb-4"
-          style={{ backgroundColor: event.color }}
-        >
+        <div className="w-full py-4 mb-4" style={{ backgroundColor: event.color }}>
           <div className="max-w-5xl mx-auto px-5">
             <h1 className="text-white text-4xl font-titolo font-bold text-left">
               {event.title}
@@ -164,42 +134,32 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         <div className="mt-4">
           {event?.tag && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
-                Tag:{" "}
-              </strong>
-              {event?.tag?.join(", ")}
+              <strong className="text-xl font-titolo mb-4 text-rosso">Tag: </strong>
+              {event.tag.join(", ")}
             </p>
           )}
           {event?.dateStart && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso mr-1">
-                Data inizio:
-              </strong>
-              {event?.dateStart}
+              <strong className="text-xl font-titolo mb-4 text-rosso mr-1">Data inizio:</strong>
+              {event.dateStart}
             </p>
           )}
           {event?.dateEnd && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso mr-1">
-                Data fine:
-              </strong>
-              {event?.dateEnd}
+              <strong className="text-xl font-titolo mb-4 text-rosso mr-1">Data fine:</strong>
+              {event.dateEnd}
             </p>
           )}
           {event?.price && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
-                Prezzo:{" "}
-              </strong>
-              {event?.price === "0" ? "Ingresso gratuito" : `${event.price}€`}
+              <strong className="text-xl font-titolo mb-4 text-rosso">Prezzo: </strong>
+              {event.price === "0" ? "Ingresso gratuito" : `${event.price}€`}
             </p>
           )}
           {event?.location && (
             <p>
-              <strong className="text-xl font-titolo mb-4 text-rosso">
-                Luogo:{" "}
-              </strong>
-              {event?.location}
+              <strong className="text-xl font-titolo mb-4 text-rosso">Luogo: </strong>
+              {event.location}
             </p>
           )}
         </div>
@@ -207,30 +167,37 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         {/* Descrizione dell'evento */}
         <p className="mt-6">{event?.description}</p>
 
-        {/* Articolo formattato */}
-        <div className="mt-6">
-          {titles.map((title, index) => (
-            <React.Fragment key={index}>
-              <h2 className="text-2xl font-bold">{title}</h2>
-              <p className="mt-4">{paragraphs[index]}</p>
-            </React.Fragment>
-          ))}
-        </div>
+        {event?.article && (
+          <>
+            <h2 className="text-xl font-bold mt-4">{titles[0]}</h2>
+            {event.arrayImageArticle && event.arrayImageArticle[2] && (
+              <img src={event.arrayImageArticle[2]} alt="" />
+            )}
+            <p className="mt-2">{paragraphs[0]}</p>
+
+            <h2 className="text-xl font-bold mt-4">{titles[1]}</h2>
+            {event.arrayImageArticle && event.arrayImageArticle[3] && (
+              <img src={event.arrayImageArticle[3]} alt="" />
+            )}
+            <p className="mt-2">{paragraphs[1]}</p>
+          </>
+        )}
+
 
         {/* Pulsante Torna indietro */}
         <button
           className="border-2 p-2 font-bold transition-colors duration-300 w-full md:w-auto mt-4"
           style={{
-            borderColor: event?.color || "black", // Colore dinamico del bordo
-            color: event?.color || "black", // Colore dinamico del testo
+            borderColor: event?.color || "black",
+            color: event?.color || "black",
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = event?.color || "black"; // Hover: cambia bg con event.color
-            e.currentTarget.style.color = "white"; // Hover: testo bianco
+            e.currentTarget.style.backgroundColor = event?.color || "black";
+            e.currentTarget.style.color = "white";
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = "white"; // Reset background a bianco
-            e.currentTarget.style.color = event?.color || "black"; // Reset testo al colore dinamico
+            e.currentTarget.style.backgroundColor = "white";
+            e.currentTarget.style.color = event?.color || "black";
           }}
           onClick={goBack}
         >
