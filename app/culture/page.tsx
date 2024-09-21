@@ -12,20 +12,24 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
+import Button from "@/src/components/Button";
 
 const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
-    const res = await fetch(`/api/events`, { cache: "no-cache" });
+    const res = await fetch(`/api/events`, {
+      cache: "no-cache",
+    });
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
-    return await res.json();
+    const data = await res.json();
+    return data;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error fetching data:", error.message);
-      throw Error(error.message);
+      throw new Error(error.message);
     } else {
-      throw Error("Unknown error occurred");
+      throw new Error("Unknown error occurred");
     }
   }
 };
@@ -33,6 +37,8 @@ const fetchData = async (): Promise<{ events: IEvent[] }> => {
 export default function CulturePage() {
   const [cultures, setCultures] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [visibleEvents, setVisibleEvents] = useState<IEvent[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
@@ -42,8 +48,11 @@ export default function CulturePage() {
   );
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
-  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
 
+  const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState<boolean>(false);
+
+  const ITEMS_PER_PAGE = 12; // Numero di eventi da visualizzare inizialmente
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string | null) => {
     try {
@@ -88,65 +97,28 @@ export default function CulturePage() {
     loadData();
   }, []);
 
-  useEffect(() => {
-    const applyFilters = () => {
-      let filtered = cultures;
-
-      if (searchQuery) {
-        filtered = filtered.filter(
-          (event) =>
-            event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            event.tag?.some((tag) =>
-              tag.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        );
-      }
-
-      if (isFree) {
-        filtered = filtered.filter((event) => event.price === "0");
-      }
-
-      if (today) {
-        filtered = filtered.filter((event) => {
-          const startEvent = event.dateStart
-            ? getDayOfYear(event.dateStart)
-            : -1;
-          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-          return today >= startEvent && today <= endEvent;
-        });
-      }
-
-      if (startNextWeek !== undefined && endNextWeek !== undefined) {
-        filtered = filtered.filter((event) => {
-          const startEvent = event.dateStart
-            ? getDayOfYear(event.dateStart)
-            : -1;
-          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-          return startEvent <= endNextWeek && endEvent >= startNextWeek;
-        });
-      }
-
-      setFilteredEvents(filtered);
-    };
-
-    applyFilters();
-  }, [cultures, searchQuery, isFree, today, startNextWeek, endNextWeek]);
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    applyFilters(query, isFree, today);
   };
 
+  // Filtra eventi di oggi
   const handleTodayClick = () => {
-    const dayOfYear = getDayOfYear(formattedDate());
+    const date = formattedDate();
+    const dayOfYear = getDayOfYear(date);
     setToday(dayOfYear);
+    applyFilters(searchQuery, isFree, dayOfYear);
   };
 
+  // Filtra eventi di domani
   const handleTomorrowClick = () => {
-    const dayOfYear = getDayOfYear(formattedDate(1));
+    const date = formattedDate(1);
+    const dayOfYear = getDayOfYear(date);
     setToday(dayOfYear);
+    applyFilters(searchQuery, isFree, dayOfYear);
   };
 
+  // Filtra eventi della prossima settimana
   const handleNextWeekClick = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -155,7 +127,68 @@ export default function CulturePage() {
     const nextSunday = nextMonday + 6;
     setStartNextWeek(nextMonday);
     setEndNextWeek(nextSunday);
+    applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
+  // Funzione per applicare i filtri agli eventi
+  const applyFilters = (
+    query: string,
+    isFree: boolean,
+    dayOfYear: number,
+    startNextWeek?: number,
+    endNextWeek?: number
+  ) => {
+    let filtered = cultures;
+
+    filtered = filtered.filter(
+      (event) =>
+        Boolean(event.reviewed) === true || event.reviewed === undefined
+    );
+    filtered = filtered.filter((event) => event.color === "#4E614E");
+
+    // Filtro per la query di ricerca
+    if (query !== "") {
+      filtered = filtered.filter(
+        (event) =>
+          event.title?.toLowerCase().includes(query.toLowerCase()) ||
+          event.location?.toLowerCase().includes(query.toLowerCase()) ||
+          event.tag?.some((tag) =>
+            tag.toLowerCase().includes(query.toLowerCase())
+          )
+      );
+    }
+
+    // Filtro per eventi gratuiti
+    if (isFree) {
+      filtered = filtered.filter((event) => event.price === "0");
+    } else {
+      filtered = filtered.filter((event) => event.price !== "0");
+    }
+
+    // Filtro per il giorno specifico
+    if (dayOfYear) {
+      filtered = filtered.filter((event) => {
+        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
+        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+        return dayOfYear >= startEvent && dayOfYear <= endEvent;
+      });
+    }
+
+    // Filtro per la prossima settimana
+    if (startNextWeek !== undefined && endNextWeek !== undefined) {
+      filtered = filtered.filter((event) => {
+        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
+        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+        return startEvent <= endNextWeek && endEvent >= startNextWeek;
+      });
+    }
+
+    setFilteredEvents(filtered);
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
+  };
+  // Applica i filtri quando gli stati cambiano
+  useEffect(() => {
+    applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
+  }, [cultures, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -163,7 +196,13 @@ export default function CulturePage() {
     setToday(0);
     setStartNextWeek(undefined);
     setEndNextWeek(undefined);
-    setFilteredEvents(cultures);
+    const filtered = cultures.filter((event) => event.color === "#4E614E");
+    setFilteredEvents(filtered);
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Reset eventi
+  };
+  const handleShowMore = () => {
+    setShowAll(true);
+    setVisibleEvents(filteredEvents); // Mostra tutti gli eventi
   };
 
   return (
@@ -186,7 +225,7 @@ export default function CulturePage() {
         {loading ? (
           <Loading />
         ) : filteredEvents.length > 0 ? (
-          filteredEvents.map((culture, index) => (
+          visibleEvents.map((culture, index) => (
             <div
               key={culture._id || index}
               className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow"
@@ -222,6 +261,13 @@ export default function CulturePage() {
           </div>
         )}
       </div>
+      {!showAll && filteredEvents.length > ITEMS_PER_PAGE && (
+        <Button
+          label={"Vedi altro"}
+          onClick={handleShowMore}
+          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold mb-20"
+        ></Button>
+      )}
       <ScrollToTopButton />
     </div>
   );

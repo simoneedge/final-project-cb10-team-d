@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
@@ -23,9 +23,9 @@ const getData = async (id: string) => {
     });
 
     if (!res.ok) {
-      throw new Error(
-        `Errore nella richiesta: ${res.status} ${res.statusText}`
-      );
+      throw new Error(`
+        Errore nella richiesta: ${res.status} ${res.statusText}
+      `);
     }
 
     const data = await res.json();
@@ -47,6 +47,10 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState<boolean>(true); // Stato di caricamento
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const goBack = () => {
+    window.history.back();
+  };
+
   useEffect(() => {
     const fetchEvent = async () => {
       setLoading(true); // Inizia il caricamento
@@ -67,7 +71,6 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
     fetchEvent();
   }, [id]);
 
-  /* add comment for deploy */
   if (loading) {
     return <Loading />; // Mostra l'animazione di caricamento durante il fetching
   }
@@ -87,9 +90,12 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         />
       )}
 
-      {/* Rettangolo rosso con titolo */}
+      {/* Rettangolo colorato con titolo */}
       {event ? (
-        <div className="w-full py-4 mb-4" style={{ backgroundColor: event.color }}>
+        <div
+          className="w-full py-4 mb-4"
+          style={{ backgroundColor: event.color }}
+        >
           <div className="max-w-5xl mx-auto px-5">
             <h1 className="text-white text-4xl font-titolo font-bold text-left">
               {event.title}
@@ -98,7 +104,6 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         </div>
       ) : (
         <div className="w-full py-4 mb-4">
-          {/* Puoi mostrare un messaggio o un caricamento qui */}
           <p>Evento non trovato.</p>
         </div>
       )}
@@ -136,7 +141,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
               <strong className="text-xl font-titolo mb-4 text-rosso">
                 Prezzo:{" "}
               </strong>
-              {event?.price === "0" ? "Ingresso gratuito" : ` ${event.price}€`}
+              {event?.price === "0" ? "Ingresso gratuito" : `${event.price}€`}
             </p>
           )}
           {event?.location && (
@@ -151,6 +156,27 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
         {/* Descrizione dell'evento */}
         <p className="mt-6">{event?.description}</p>
+
+        {/* Pulsante Torna indietro */}
+
+        <button
+          className="border-2 p-2 font-bold transition-colors duration-300 w-full md:w-auto mt-4"
+          style={{
+            borderColor: event?.color || "black", // Colore dinamico del bordo
+            color: event?.color || "black", // Colore dinamico del testo
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = event?.color || "black"; // Hover: cambia bg con event.color
+            e.currentTarget.style.color = "white"; // Hover: testo bianco
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "white"; // Reset background a bianco
+            e.currentTarget.style.color = event?.color || "black"; // Reset testo al colore dinamico
+          }}
+          onClick={goBack}
+        >
+          Torna indietro
+        </button>
       </div>
     </div>
   );

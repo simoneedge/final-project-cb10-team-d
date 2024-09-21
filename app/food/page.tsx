@@ -12,6 +12,7 @@ import Loading from "@/src/components/Loading";
 import CategoryBanner from "@/src/components/CategoryBanner";
 import { getAuth } from "firebase/auth";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
+import Button from "@/src/components/Button";
 
 const fetchData = async (): Promise<{ events: IEvent[] }> => {
   try {
@@ -36,7 +37,9 @@ const fetchData = async (): Promise<{ events: IEvent[] }> => {
 export default function FoodPage() {
   const [foods, setFoods] = useState<IEvent[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [filteredEvents, setFilteredEvents] = useState<IEvent[]>([]);
+  const [visibleEvents, setVisibleEvents] = useState<IEvent[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isFree, setIsFree] = useState<boolean>(false);
   const [today, setToday] = useState<number>(0);
@@ -46,6 +49,9 @@ export default function FoodPage() {
   const [endNextWeek, setEndNextWeek] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
+  const [showAll, setShowAll] = useState<boolean>(false);
+
+  const ITEMS_PER_PAGE = 12; // Numero di eventi da visualizzare inizialmente
 
   // Funzione per recuperare i preferiti dell'utente
   const fetchFavorites = async (email: string | null) => {
@@ -136,7 +142,6 @@ export default function FoodPage() {
     endNextWeek?: number
   ) => {
     let filtered = foods;
-
     filtered = filtered.filter(
       (event) =>
         Boolean(event.reviewed) === true || event.reviewed === undefined
@@ -181,6 +186,7 @@ export default function FoodPage() {
     }
 
     setFilteredEvents(filtered);
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
   };
 
   // Applica i filtri quando gli stati cambiano
@@ -194,7 +200,13 @@ export default function FoodPage() {
     setToday(0);
     setStartNextWeek(undefined);
     setEndNextWeek(undefined);
-    setFilteredEvents(foods); // Reset events
+    const filtered = foods.filter((event) => event.color === "#822225");
+    setFilteredEvents(filtered); // Reset events
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Reset eventi
+  };
+  const handleShowMore = () => {
+    setShowAll(true);
+    setVisibleEvents(filteredEvents); // Mostra tutti gli eventi
   };
 
   return (
@@ -217,7 +229,7 @@ export default function FoodPage() {
         {loading ? (
           <Loading />
         ) : filteredEvents.length > 0 ? (
-          filteredEvents.map((food, index) => (
+          visibleEvents.map((food, index) => (
             <div
               key={food._id || index}
               className="col-span-1 w-full md:w-auto  justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow"
@@ -251,6 +263,13 @@ export default function FoodPage() {
           </div>
         )}
       </div>
+      {!showAll && filteredEvents.length > ITEMS_PER_PAGE && (
+        <Button
+          label={"Vedi altro"}
+          onClick={handleShowMore}
+          className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold mb-20"
+        ></Button>
+      )}
       <ScrollToTopButton />
     </div>
   );
