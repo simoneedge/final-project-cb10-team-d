@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
     { src: string; title: string }[]
   >([]);
   const [favoriteEventTitle, setFavoriteEventTitle] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState<boolean>(false);
+
   const ITEMS_PER_PAGE = 12;
 
   const fetchFavorites = async (email: string | null) => {
@@ -177,8 +177,6 @@ const HomePage: React.FC = () => {
 
     if (isFree) {
       filtered = filtered.filter((event) => event.price === "0");
-    } else if (!isFree) {
-      filtered = filtered.filter((event) => event.price !== "0");
     }
 
     if (dayOfYear) {
@@ -199,7 +197,7 @@ const HomePage: React.FC = () => {
     }
 
     setFilteredEvents(filtered);
-    setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
+    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
   };
 
   useEffect(() => {
@@ -212,13 +210,18 @@ const HomePage: React.FC = () => {
     setToday(0);
     setStartNextWeek(undefined);
     setEndNextWeek(undefined);
-    setFilteredEvents(events);
-    setVisibleEvents(events.slice(0, ITEMS_PER_PAGE)); // Reset eventi
+    setFilteredEvents(filteredEvents);
+    setVisibleEvents(filteredEvents.slice(0, ITEMS_PER_PAGE)); // Reset eventi
   };
 
   const handleShowMore = () => {
-    setShowAll(true);
-    setVisibleEvents(events); // Mostra tutti gli eventi
+    setVisibleEvents((prevVisibleEvents) => [
+      ...prevVisibleEvents,
+      ...filteredEvents.slice(
+        prevVisibleEvents.length,
+        prevVisibleEvents.length + ITEMS_PER_PAGE
+      ),
+    ]);
   };
 
   return (
@@ -289,7 +292,7 @@ const HomePage: React.FC = () => {
           </div>
         )}
       </main>
-      {!showAll && visibleEvents.length < filteredEvents.length && (
+      {visibleEvents.length < filteredEvents.length && (
         <Button
           label={"Vedi altro"}
           onClick={handleShowMore}
