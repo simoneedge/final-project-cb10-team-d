@@ -145,9 +145,14 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       setActiveItem(links[0]?.name); // Reset the active item to "Home" after logging out
       router.push('/'); // Redirect to Home after logout
       toast.success('Logout effettuato con successo!');
-      window.location.reload();
+      
+      // Imposta un timeout di 2 secondi (2000 millisecondi) prima del ricaricamento
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // 2000 millisecondi = 2 secondi
     });
   };
+  
 
   return (
     <header className="relative bg-bianco p-4 ">
