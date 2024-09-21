@@ -100,6 +100,7 @@ export default function ProposePage() {
       image: imageUrl || formData.image,
       color,
       reviewed: false,
+      article,
     };
 
     setIsSubmitting(true);

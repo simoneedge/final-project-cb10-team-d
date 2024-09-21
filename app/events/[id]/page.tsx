@@ -14,6 +14,7 @@ interface Event {
   price?: string;
   location?: string;
   color: string;
+  article: string;
 }
 
 const getData = async (id: string) => {
@@ -41,11 +42,50 @@ const getData = async (id: string) => {
   }
 };
 
+interface IFormattedArticleProps {
+  article: string;
+  setTitles: (titles: string[]) => void;
+  setParagraphs: (paragraphs: string[]) => void;
+}
+
+function formatArticle(props: IFormattedArticleProps) {
+  const { article, setTitles, setParagraphs } = props;
+
+  if (article) {
+    const lines = article.split("\n");
+
+    const titles: string[] = [];
+    const paragraphs: string[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      // Se la linea inizia con ##, è un titolo di sezione
+      if (line.startsWith("##")) {
+        const title = line.replace("##", "").trim();
+        titles.push(title);
+
+        // Altrimenti, se la linea non è vuota, è un paragrafo
+      } else if (line.length > 0) {
+        paragraphs.push(line);
+      }
+    }
+
+    // Aggiorna gli stati con i titoli e i paragrafi estratti
+    setTitles(titles);
+    setParagraphs(paragraphs);
+  }
+}
+
 const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Stato di caricamento
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Stati per titoli e paragrafi dell'articolo
+  const [titles, setTitles] = useState<string[]>([]);
+  const [paragraphs, setParagraphs] = useState<string[]>([]);
 
   const goBack = () => {
     window.history.back();
@@ -57,6 +97,16 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
+        console.log(fetchedEvent);
+
+        // Chiama formatArticle se l'articolo è presente
+        if (fetchedEvent.article) {
+          formatArticle({
+            article: fetchedEvent.article,
+            setTitles,
+            setParagraphs,
+          });
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage(error.message);
@@ -157,8 +207,17 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         {/* Descrizione dell'evento */}
         <p className="mt-6">{event?.description}</p>
 
-        {/* Pulsante Torna indietro */}
+        {/* Articolo formattato */}
+        <div className="mt-6">
+          {titles.map((title, index) => (
+            <React.Fragment key={index}>
+              <h2 className="text-2xl font-bold">{title}</h2>
+              <p className="mt-4">{paragraphs[index]}</p>
+            </React.Fragment>
+          ))}
+        </div>
 
+        {/* Pulsante Torna indietro */}
         <button
           className="border-2 p-2 font-bold transition-colors duration-300 w-full md:w-auto mt-4"
           style={{

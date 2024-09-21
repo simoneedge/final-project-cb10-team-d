@@ -18,19 +18,18 @@ export async function POST(req: Request) {
       );
     }
     const prompt = `
-Scrivi un articolo giornalistico dettagliato per un evento intitolato "${title}" che si terrà a "${location}" dal ${dateStart} al ${dateEnd}.
-L'articolo deve seguire questa struttura:
-1. Titolo dell'evento: Usa un titolo accattivante che descriva l'evento.
-2. Introduzione: Una breve introduzione che catturi l'attenzione del lettore e fornisca una panoramica dell'evento.
-3. Descrizione dettagliata: Descrivi l'evento, includendo il contesto, il pubblico a cui è rivolto e gli aspetti più interessanti. Aggiungi dettagli su ${category}.
-4. Tesi: Argomenta i motivi per cui questo evento è importante o interessante per il pubblico.
-5. Antitesi: Descrivi eventuali sfide o potenziali svantaggi dell'evento, offrendo una visione equilibrata.
-6. Dettagli pratici: Fornisci informazioni utili come prezzo, luogo, orari, e qualsiasi altro dettaglio pratico (ad esempio, trasporti, accessibilità).
+Scrivi due articoli giornalistico dettagliato per un evento intitolato "${title}" che si terrà a "${location}" dal ${dateStart} al ${dateEnd}.
+Il primo articolo deve riguardare '${location}' e deve essere incentrato sul territorio (aspetti naturalistici, punti di interesse..)
+Il secondo articolo deve riguardare '${title}' analizza quali sono le caratteristiche dell'evento e realizza un articolo che ne approfondisca gli aspetti principali descritti
+qui: ${description}
+Gli'articoli devono seguire questa struttura:
+1. Titolo dell'articolo: Usa un titolo accattivante che descriva l'articolo.
+2. Introduzione: Una breve introduzione che catturi l'attenzione del lettore e fornisca una panoramica dell'argomento.
+3. Descrizione dettagliata: Descrivi l'argomento, includendo il contesto, e gli aspetti più interessanti.
+4. Tesi: Argomenta i motivi per cui questo articolo è importante o interessante per il pubblico.
 7. Riferimenti: Aggiungi citazioni o fonti, se rilevante.
 8. Conclusione: Offri una chiusura coinvolgente, con una chiamata all'azione per partecipare all'evento.
 9. Il testo e i paragrafi non devono superare i 400 caratteri.
-
-Dettagli aggiuntivi da includere nell'articolo: ${description}.
 `;
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_KEY;
