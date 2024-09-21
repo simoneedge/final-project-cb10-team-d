@@ -77,7 +77,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
 
   useEffect(() => {
     // Se sei su /profile, non selezionare nessun elemento
-    if (pathname === "/profile") {
+    if (pathname === "/profile" || pathname === "/signup") {
       setActiveItem(null);
     } else {
       // Controlla se l'item corrente è già attivo prima di aggiornarlo
