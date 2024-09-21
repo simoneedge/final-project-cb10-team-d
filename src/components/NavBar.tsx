@@ -145,6 +145,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       setActiveItem(links[0]?.name); // Reset the active item to "Home" after logging out
       router.push('/'); // Redirect to Home after logout
       toast.success('Logout effettuato con successo!');
+      window.location.reload();
     });
   };
 
