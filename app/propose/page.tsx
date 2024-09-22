@@ -211,7 +211,7 @@ export default function ProposePage() {
           <Button
             label="Genera Articolo"
             onClick={handleGenerateArticle}
-            className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
+            className="hidden border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
             disabled={isGeneratingArticle || !formData.title}
             loading={loading}
           />
@@ -243,7 +243,7 @@ export default function ProposePage() {
             </div>
           ) : null}
         </div>
-        <ToastContainer containerId="toastPropose"/>
+        <ToastContainer containerId="toastPropose" />
       </div>
     </div>
   );
