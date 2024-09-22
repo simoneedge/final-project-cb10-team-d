@@ -18,16 +18,25 @@ interface Event {
   arrayImageArticle?: string[];
 }
 
-function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void) {
+function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void, setTitleTypes: (types: string[]) => void // Nuovo stato per il tipo di titolo
+) {
   if (article) {
     const lines = article.split("\n");
     const titles: string[] = [];
     const paragraphs: string[] = [];
+    const titleTypes: string[] = []; // Per memorizzare se il titolo è h2 o h3
+
 
     for (const line of lines) {
       const trimmedLine = line.trim();
       if (trimmedLine.startsWith("##")) {
-        titles.push(trimmedLine.replace("##", "").trim());
+        titles.push(trimmedLine.replace(/^##+/, "").trim());
+        // Determina se il titolo è h2 o h3
+        if (trimmedLine.startsWith("###")) {
+          titleTypes.push("h3"); // Se inizia con ###, è un h3
+        } else {
+          titleTypes.push("h2"); // Se inizia con ##, è un h2
+        }
       } else if (trimmedLine.length > 0) {
         paragraphs.push(trimmedLine);
       }
@@ -35,6 +44,8 @@ function formatArticle(article: string, setTitles: (titles: string[]) => void, s
 
     setTitles(titles);
     setParagraphs(paragraphs);
+    setTitleTypes(titleTypes); // Imposta i tipi di titolo
+
   }
 }
 
@@ -66,6 +77,8 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [titles, setTitles] = useState<string[]>([]); // Stato per i titoli
   const [paragraphs, setParagraphs] = useState<string[]>([]); // Stato per i paragrafi
+  const [titleTypes, setTitleTypes] = useState<string[]>([]); // Stato per il tipo di titolo
+
 
   const goBack = () => {
     window.history.back();
@@ -78,7 +91,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
         if (fetchedEvent?.article) {
-          formatArticle(fetchedEvent.article, setTitles, setParagraphs); // Chiamata a formatArticle
+          formatArticle(fetchedEvent.article, setTitles, setParagraphs, setTitleTypes); // Chiamata a formatArticle
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -169,17 +182,21 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
         {event?.article && (
           <>
-            <h2 className="text-xl font-bold mt-4">{titles[0]}</h2>
-            {event.arrayImageArticle && event.arrayImageArticle[2] && (
-              <img src={event.arrayImageArticle[2]} alt="" />
-            )}
-            <p className="mt-2">{paragraphs[0]}</p>
+            {titles.map((title, index) => {
+              const TitleTag = titleTypes[index] === "h3" ? "h3" : "h2"; // Determina il tag da usare
 
-            <h2 className="text-xl font-bold mt-4">{titles[1]}</h2>
-            {event.arrayImageArticle && event.arrayImageArticle[3] && (
-              <img src={event.arrayImageArticle[3]} alt="" />
-            )}
-            <p className="mt-2">{paragraphs[1]}</p>
+              return (
+                <div key={index} className="article-section">
+                  <TitleTag className="text-xl font-bold mt-4">{title}</TitleTag>
+                  {event.arrayImageArticle && event.arrayImageArticle[index] && (
+                    <img src={event.arrayImageArticle[index]} alt="" />
+                  )}
+                  {paragraphs[index] && (
+                    <p className="mt-2">{paragraphs[index]}</p>
+                  )}
+                </div>
+              );
+            })}
           </>
         )}
 

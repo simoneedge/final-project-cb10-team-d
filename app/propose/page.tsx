@@ -105,7 +105,7 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    const keywords = [formData.location, formData.title];
+    const keywords = [formData.description, formData.title, formData.location];
     const imageUrl = await fetchUnsplashImages(keywords);
 
     console.log('io sono article', article)
