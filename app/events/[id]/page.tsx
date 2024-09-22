@@ -97,7 +97,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           style={{ backgroundColor: event.color }}
         >
           <div className="max-w-5xl mx-auto px-5">
-            <h1 className="text-white text-4xl font-titolo font-bold text-left">
+            <h1 className="text-white text-4xl font-titolo text-left">
               {event.title}
             </h1>
           </div>

@@ -10,15 +10,15 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 transform transition-all duration-300 scale-100">
-        <h2 className="text-2xl font-bold text-center text-verde">Grazie!</h2>
-        <p className="mt-4 text-center text-gray-700">
+      <div className="bg-white shadow-lg max-w-md w-full p-6 transform transition-all duration-300 scale-100">
+        <h2 className="font-titolo text-2xl text-rosso mb-4 text-center">Grazie!</h2>
+        <p className="mt-4 text-alight text-gray-700">
           Grazie per aver proposto il tuo evento. A seguito di un controllo, troverai il tuo evento insieme ai nostri.
         </p>
         <div className="mt-6 flex justify-center">
           <button
             onClick={onClose}
-            className="bg-rosso hover:bg-rosso-dark text-white px-4 py-2 rounded-lg"
+            className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
           >
             Chiudi
           </button>
