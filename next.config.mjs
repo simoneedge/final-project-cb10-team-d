@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    env: {
+      EMAIL: process.env.EMAIL,
+      PASSWORD: process.env.PASSWORD,
+    },
+  };
+  
+  export default nextConfig;
+  

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
+import ModalTicket from '@/src/components/ModalTicket'; 
 
 interface Event {
   _id: string;
@@ -46,6 +47,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Stato di caricamento
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const goBack = () => {
     window.history.back();
@@ -71,6 +73,28 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
     fetchEvent();
   }, [id]);
 
+  // Funzione per gestire l'invio della modale
+  const handleModalSubmit = async (formData) => {
+    try {
+      const response = await fetch('/api/send-email', { // Chiama il tuo endpoint API
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+
+      });
+
+      if (!response.ok) {
+        throw new Error('Errore durante l\'invio dell\'email');
+      }
+  
+      console.log('Email inviata con successo');
+    } catch (error) {
+      console.error('Errore:', error.message);
+    }
+  };
+  
   if (loading) {
     return <Loading />; // Mostra l'animazione di caricamento durante il fetching
   }
@@ -178,8 +202,22 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           Torna indietro
         </button>
       </div>
+    
+      {/* Bottone per la modale */}
+      <button 
+        onClick={() => setModalOpen(true)} 
+        className="btn-ticket mt-4 bg-rosso text-white px-4 py-2 rounded-lg"
+      >
+        <span role="img" aria-label="ticket">🎟</span> Prenota il ticket
+      </button>
+
+      {/* Modale per l'acquisto del ticket */}
+      <ModalTicket 
+        isOpen={isModalOpen} 
+        onClose={() => setModalOpen(false)} 
+        onSubmit={handleModalSubmit} 
+      />
     </div>
   );
 };
-
 export default EventDetailPage;
