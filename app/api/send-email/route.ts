@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     year: 'numeric',
   });
 
-  let transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL, // Usa il tuo indirizzo Gmail
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     },
   });
 
-  let mailOptions = {
+  const mailOptions = {
     from: process.env.EMAIL,
     to: email,
     subject: 'Conferma Prenotazione',
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       <div style="font-family: Arial, sans-serif; color: #333;">
         <h2 style="color: #4CAF50;">Conferma Prenotazione</h2>
         <p>La tua prenotazione è stata registrata con successo.</p>
-        <p><strong>Data:</strong> ${formattedDate}</p> <!-- Usare la data formattata -->
+        <p><strong>Data:</strong> ${formattedDate}</p>
         <p><strong>Età:</strong> ${eta}</p>
         <p><strong>Orario:</strong> ${orario}</p>
         <p><strong>Numero di Biglietti:</strong> ${numeroBiglietti}</p>
@@ -50,7 +50,14 @@ export async function POST(request: Request) {
     await transporter.sendMail(mailOptions);
     return NextResponse.json({ message: 'Email inviata con successo' });
   } catch (error) {
-    console.error('Errore durante l\'invio dell\'email:', error);
-    return NextResponse.json({ error: `Errore durante l'invio dell'email: ${error.message}` }, { status: 500 });
+    // Verifica se l'errore è un'istanza di Error prima di accedere a 'message'
+    if (error instanceof Error) {
+      console.error('Errore durante l\'invio dell\'email:', error);
+      return NextResponse.json({ error: `Errore durante l'invio dell'email: ${error.message}` }, { status: 500 });
+    } else {
+      // Gestione dell'errore generico
+      console.error('Errore sconosciuto durante l\'invio dell\'email:', error);
+      return NextResponse.json({ error: `Errore sconosciuto durante l'invio dell'email` }, { status: 500 });
+    }
   }
 }

@@ -7,14 +7,29 @@ import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Importa il CSS della libreria
 
-const parseDate = (dateString) => {
+// Definisce il tipo per il parametro dateString
+const parseDate = (dateString: string): Date => {
   const parts = dateString.split("-"); // Dividi la stringa in parti [16, 09, 2024]
   return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // Converte in formato Date (YYYY-MM-DD)
 };
 
-const ModalTicket = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
+interface ModalTicketProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (formData: {
+    data: Date | null; // Usa Date | null per la proprietà data
+    eta: string;
+    orario: string;
+    email: string;
+    numeroBiglietti: number;
+  }) => Promise<void>;
+  dateStart: string;
+  dateEnd: string;
+}
+
+const ModalTicket: React.FC<ModalTicketProps> = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
   const initialFormState = {
-    data: null, // Cambia a null per supportare DatePicker
+    data: null as Date | null, // Cambia a Date | null per supportare DatePicker e l'assegnazione di Date
     eta: 'adulti',
     orario: '',
     email: '',
@@ -35,7 +50,8 @@ const ModalTicket = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
     }
   }, [minDate, maxDate]);
 
-  const handleChange = (name, value) => {
+  // Modifica handleChange per gestire Date | null
+  const handleChange = (name: string, value: string | number | Date | null) => {
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -58,9 +74,9 @@ const ModalTicket = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
   };
 
   // Funzione per disabilitare la chiusura cliccando all'esterno durante il caricamento
-  const handleOutsideClick = (e) => {
+  const handleOutsideClick = (e: React.MouseEvent) => {
     if (isLoading) return; // Ignora il clic se c'è il caricamento in corso
-    if (e.target.className.includes('modal')) {
+    if ((e.target as HTMLElement).className.includes('modal')) {
       onClose();
     }
   };
@@ -91,7 +107,7 @@ const ModalTicket = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
                 <label className="flex-1">Data:</label>
                 <DatePicker
                   selected={formData.data}
-                  onChange={(date) => handleChange('data', date)}
+                  onChange={(date: Date | null) => handleChange('data', date)} // Modifica per accettare Date | null
                   minDate={minDate}
                   maxDate={maxDate}
                   dateFormat="yyyy-MM-dd"
