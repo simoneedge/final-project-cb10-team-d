@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { db } from '@/firebaseconfig'; // Importa db per Firestore
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore'; // Importa getDoc da Firestore
-import LoginButton from './Login';
-import { toast } from 'react-toastify';
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+import { db } from "@/firebaseconfig"; // Importa db per Firestore
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore"; // Importa getDoc da Firestore
+import LoginButton from "./Login";
+import { toast } from "react-toastify";
 
 interface NavLink {
   name: string;
@@ -45,15 +45,14 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-
   const idAdminRole = async () => {
     if (user) {
       const role = await fetchUserRole(user.email);
-      if (role === 'admin') {
+      if (role === "admin") {
         setIsAdmin(true); // Se il ruolo è admin, imposta lo stato isAdmin a true
       }
     }
-  }
+  };
 
   useEffect(() => {
     idAdminRole();
@@ -63,15 +62,15 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   // Funzione per recuperare i dati dell'utente da Firestore
   const fetchUserData = async (uid: string) => {
     try {
-      const userDoc = await getDoc(doc(db, 'users', uid));
+      const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setUserName(userData.firstName); // Imposta il nome
       } else {
-        toast.error('Impossibile recuperare i dati utente');
+        toast.error("Impossibile recuperare i dati utente");
       }
     } catch (error) {
-      console.error('Errore nel recupero dei dati utente:', error);
+      console.error("Errore nel recupero dei dati utente:", error);
     }
   };
 
@@ -115,12 +114,13 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       setUserName(customEvent.detail.newName);
     };
 
-
-    window.addEventListener('userNameUpdated', updateUserName as EventListener);
-
+    window.addEventListener("userNameUpdated", updateUserName as EventListener);
 
     return () => {
-      window.removeEventListener('userNameUpdated', updateUserName as EventListener);
+      window.removeEventListener(
+        "userNameUpdated",
+        updateUserName as EventListener
+      );
     };
   }, []);
 
@@ -143,26 +143,52 @@ const NavBar = ({ links = [] }: NavBarProps) => {
       setUserEmail(null);
       setUserName(null);
       setActiveItem(links[0]?.name); // Reset the active item to "Home" after logging out
-      router.push('/'); // Redirect to Home after logout
-      toast.success('Logout effettuato con successo!');
-      
+      router.push("/"); // Redirect to Home after logout
+      toast.success("Logout effettuato con successo!");
+
       // Imposta un timeout di 2 secondi (2000 millisecondi) prima del ricaricamento
       setTimeout(() => {
         window.location.reload();
       }, 1000); // 2000 millisecondi = 2 secondi
     });
   };
-  
+  const menuRef = useRef<HTMLDivElement | null>(null); // Specifica che sarà un elemento HTMLDivElement o null
+  const buttonRef = useRef<HTMLButtonElement | null>(null); //  Riferimento all'icona dell'hamburger
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        buttonRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false); // Chiudi il menu
+      }
+    };
+
+    const handleScroll = () => {
+      setIsOpen(false); // Chiudi il menu quando l'utente scorre
+    };
+
+    // Aggiungi listener per il click esterno e lo scroll
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+
+    // Pulizia dei listener quando il componente viene smontato
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [menuRef, buttonRef]);
 
   return (
     <header className="relative bg-bianco p-4 ">
-      <div className="hidden md:flex gap-5 items-center">
-
+      <div className=" hidden md:flex gap-5 items-center">
         {links.map((link) => {
-          if (link.name === 'Pannello di controllo' && !isAdmin) {
+          if (link.name === "Pannello di controllo" && !isAdmin) {
             return null; // Non mostrare il link se non è un admin
           }
-          if (link.name === 'Proponi Evento') {
+          if (link.name === "Proponi Evento") {
             // Se l'utente è autenticato, mostra il link normalmente
             if (userEmail) {
               return (
@@ -170,8 +196,9 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                   key={link.name}
                   href={link.href}
                   onClick={() => handleClick(link.name)}
-                  className={`text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : ''
-                    }`}
+                  className={`text-verde hover:text-verde hover:font-bold ${
+                    activeItem === link.name ? "font-bold" : ""
+                  }`}
                 >
                   {link.name}
                 </Link>
@@ -196,8 +223,9 @@ const NavBar = ({ links = [] }: NavBarProps) => {
               key={link.name}
               href={link.href}
               onClick={() => handleClick(link.name)}
-              className={`text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : ''
-                }`}
+              className={`text-verde hover:text-verde hover:font-bold ${
+                activeItem === link.name ? "font-bold" : ""
+              }`}
             >
               {link.name}
             </Link>
@@ -247,31 +275,33 @@ const NavBar = ({ links = [] }: NavBarProps) => {
           </svg>
         </button>
       </div>
-      {/* Mobile Menu */}
+
       <div
-        className={`fixed top-28 right-0 w-full h-90 bg-bianco z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+        ref={menuRef}
+        className={`fixed top-28  right-0 w-full h-90 bg-bianco z-50 transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <button
-          onClick={toggleMenu}
+          ref={buttonRef}
           className="p-4 text-verde focus:outline-none absolute top-4 right-4"
-        >
-        </button>
-        <div className="flex flex-col items-center space-y-4 p-6 text-center h-auto">
+        ></button>
+        <div className="  flex flex-col items-center space-y-4 p-6 text-center h-auto">
           {/* Cambia h-full a h-auto */}
           {links.map((link) => {
-            if (link.name === 'Pannello di controllo' && !isAdmin) {
+            if (link.name === "Pannello di controllo" && !isAdmin) {
               return null; // Non mostrare il link se non è un admin
             }
-            if (link.name === 'Proponi Evento') {
+            if (link.name === "Proponi Evento") {
               if (userEmail) {
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
                     onClick={() => handleClick(link.name)}
-                    className={`block text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : 'font-normal'
-                      } py-2`}
+                    className={`block text-verde hover:text-verde hover:font-bold ${
+                      activeItem === link.name ? "font-bold" : "font-normal"
+                    } py-2`}
                   >
                     {link.name}
                   </Link>
@@ -294,8 +324,9 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                 key={link.name}
                 href={link.href}
                 onClick={() => handleClick(link.name)}
-                className={`text-verde hover:text-verde hover:font-bold ${activeItem === link.name ? 'font-bold' : ''
-                  }`}
+                className={`text-verde hover:text-verde hover:font-bold ${
+                  activeItem === link.name ? "font-bold" : ""
+                }`}
               >
                 {link.name}
               </Link>
@@ -304,21 +335,19 @@ const NavBar = ({ links = [] }: NavBarProps) => {
           {userName ? (
             <>
               <Link href="/profile">
-                <div className="flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full cursor-pointer">
+                <div className="flex items-center justify-center w-8 h-8 bg-verde text-white rounded-full cursor-pointer">
                   {userName.charAt(0).toUpperCase()}
                 </div>
               </Link>
-              <button onClick={handleLogout} className="text-verde ml-2">
-                LOGOUT
+              <button onClick={handleLogout} className="text-rosso ml-2">
+                ESCI
               </button>
             </>
           ) : (
             <LoginButton />
           )}
-
         </div>
       </div>
-
     </header>
   );
 };
