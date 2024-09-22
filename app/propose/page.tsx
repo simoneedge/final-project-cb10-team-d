@@ -93,7 +93,14 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    const keywords = [formData.title, formData.description, formData.location];
+    
+    const keywords = [
+      formData.title,
+      formData.description,
+      formData.location,
+      ...formData.tag, 
+    ];
+    
     const imageUrl = await fetchPexelsImage(keywords);
 
     const finalFormData = {
