@@ -37,8 +37,7 @@ Struttura dell'articolo (minimo 700 parole):
       - Pubblico di riferimento e target
       - Location dell'evento e altre informazioni logistiche
 4. Tesi (circa 100-150 parole): Argomenta il perché l’argomento trattato sia interessante o importante per il pubblico.
-5. Fonti e riferimenti: Se disponibili, includi citazioni, dati o riferimenti utili per approfondire l'argomento.
-6. Conclusione (circa 50-100 parole): Chiudi l’articolo con una riflessione o una chiamata all’azione, invitando il lettore a visitare il luogo o partecipare all’evento.
+5. Conclusione (circa 50-100 parole): Chiudi l’articolo con una riflessione o una chiamata all’azione, invitando il lettore a visitare il luogo o partecipare all’evento.
 Il testo e i paragrafi devono essere di almeno 500-700 parole.
 `;
 

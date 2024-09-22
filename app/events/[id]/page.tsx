@@ -18,37 +18,57 @@ interface Event {
   arrayImageArticle?: string[];
 }
 
-function parseTextToObject(text: string, setArticle: Dispatch<SetStateAction<{ title: string; content: string }[]>>): void {
+function parseTextToObject(text: string, setArticle: Dispatch<SetStateAction<{ title: string; subtitles: { subtitle: string; content: string }[]; content: string }[]>>): void {
   const lines = text.split('\n').map(line => line.trim());
-  const result: { title: string; content: string }[] = [];
+  console.log(lines);
+  const result: { title: string; subtitles: { subtitle: string; content: string }[]; content: string }[] = [];
   let currentTitle = '';
+  let currentSubtitles: { subtitle: string; content: string }[] = [];
+  let currentContent = '';
 
   lines.forEach(line => {
     if (line.startsWith('### ')) {
-      currentTitle = line.replace('### ', '').replace(/\*\*/g, '').trim();
-      result.push({ title: currentTitle, content: '' });
+      // Aggiungi l'oggetto corrente se esiste
+      if (currentTitle) {
+        result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
+      }
+      currentTitle = line.replace('### ', '').trim();
+      currentSubtitles = []; // Resetta gli sottotitoli
+      currentContent = ''; // Resetta il contenuto
     } else if (line.startsWith('## ')) {
-      currentTitle = line.replace('## ', '').replace(/\*\*/g, '').trim();
-      result.push({ title: currentTitle, content: '' });
+      // Aggiungi l'oggetto corrente se esiste
+      if (currentTitle) {
+        result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
+      }
+      currentTitle = line.replace('## ', '').trim();
+      currentSubtitles = []; // Resetta gli sottotitoli
+      currentContent = ''; // Resetta il contenuto
+    } else if (line.startsWith('**')) {
+      // Aggiungi il sottotitolo e il contenuto relativo all'array
+      const subtitle = line.replace(/\*\*/g, '').trim();
+      currentSubtitles.push({ subtitle, content: '' }); // Inizializza il contenuto per il sottotitolo
     } else if (line.startsWith('* ')) {
       // Skip standalone '*' lines
       return;
     } else if (line) {
-      const lastIndex = result.length - 1;
+      // Aggiungi il contenuto al sottotitolo più recente
+      const lastIndex = currentSubtitles.length - 1;
       if (lastIndex >= 0) {
-        result[lastIndex].content += line.replace(/\*\*/g, '').trim() + ' ';
+        currentSubtitles[lastIndex].content += line + ' '; // Aggiungi il contenuto
+      } else {
+        currentContent += line + ' '; // Aggiungi al contenuto principale se non ci sono sottotitoli
       }
     }
   });
 
-  // Trim whitespace from content
-  for (const item of result) {
-    item.content = item.content.trim();
+  // Aggiungi l'ultimo oggetto se esiste
+  if (currentTitle) {
+    result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
   }
 
+  console.log(result);
   setArticle(result);
 }
-
 const getData = async (id: string) => {
   try {
     const res = await fetch(`/api/events/${id}`, {
@@ -75,7 +95,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [article, setArticle] = useState<{ title: string; content: string }[]>([]); // Stato per gli articoli
+  const [article, setArticle] = useState<{ title: string; subtitles: { subtitle: string; content: string }[]; content: string }[]>([]);
 
 
 
@@ -181,8 +201,15 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
         {article.map((item, index) => (
           <div key={index}>
-            <h2 className="text-2xl font-bold">{item.title}</h2>
-            <p>{item.content}</p>
+            <h2 className="text-2xl font-bold mt-4">{item.title}</h2>
+            {item.subtitles.map((sub, subIndex) => (
+              <div key={subIndex}>
+                <br />
+                <h3 className="text-xl font-bold">{sub.subtitle}</h3>
+                <h4>{sub.content}</h4> {/* Mostra il contenuto associato al sottotitolo */}
+              </div>
+            ))}
+            <div>{item.content}</div>
           </div>
         ))}
 
