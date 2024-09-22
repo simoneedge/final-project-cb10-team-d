@@ -81,7 +81,7 @@ function Dashboard() {
 
     return (
         <div className="relative overflow-x-auto shadow-md">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+            <table className="hidden sm:table w-full text-sm text-left rtl:text-right text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" className="pl-2 py-2 text-left">Immagine</th>
@@ -101,16 +101,18 @@ function Dashboard() {
                                 <td className="p-2 text-left">
                                     <img src={product.image} className="w-16 md:w-32 max-w-full max-h-full" alt={product.title} />
                                 </td>
-                                <td className="py-2 font-semibold text-gray-900 text-left">{product.title}</td>
-                                <td className="py-2 text-left">
-                                    <span className="font-semibold text-gray-900">{product.dateStart}</span>
+                                {/* Limita la larghezza e forza il wrapping per il titolo evento */}
+                                <td className="py-2 font-semibold text-gray-900 text-left break-words max-w-xs">
+                                    {product.title}
                                 </td>
+                                <td className="py-2 text-left">{product.dateStart}</td>
                                 <td className="py-2 font-semibold text-gray-900 text-left">{product.dateEnd}</td>
-                                <td className="px-2 py-2 text-left">{product.location}</td>
-                                <td className="px-2 py-2 text-left">
+                                {/* Limita la larghezza e forza il wrapping per la location */}
+                                <td className="px-2 py-2 text-left break-words max-w-xs">{product.location}</td>
+                                <td className="px-2 py-2 text-left break-words max-w-xs">
                                     {Array.isArray(product.tag) ? (
                                         product.tag.map((tag, index) => (
-                                            <span key={index} className="inline-block bg-gray-200 text-gray-800 px-1 py-1 rounded-full mr-1">
+                                            <span key={index} className="inline-block bg-gray-200 text-gray-800 px-1 py-1 mr-1 break-words max-w-[5rem]">
                                                 {tag}
                                             </span>
                                         ))
@@ -121,14 +123,14 @@ function Dashboard() {
                                 <td className="px-2 py-2 text-left">{product.price}</td>
                                 <td className="px-2 py-2 text-left">
                                     <button
-                                        onClick={() => handlePublish(String(product._id))} // Assicurati di usare product._id
-                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded mr-2"
+                                        onClick={() => handlePublish(String(product._id))}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 mr-2"
                                     >
                                         Pubblica
                                     </button>
                                     <button
-                                        onClick={() => handleRemove(String(product._id))} // Aggiungi qui la logica per rimuovere l'evento
-                                        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded"
+                                        onClick={() => handleRemove(String(product._id))}
+                                        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3"
                                     >
                                         Rimuovi
                                     </button>
@@ -136,14 +138,54 @@ function Dashboard() {
                             </tr>
                             <tr className="bg-gray-100">
                                 <td colSpan={8} className="p-4">
-                                    <p className="text-gray-700">{product.description}</p>
+                                    <p className="text-gray-700 break-words whitespace-normal">{product.description}</p>
                                 </td>
                             </tr>
                         </React.Fragment>
                     ))}
                 </tbody>
             </table>
+
+            {/* Layout per dispositivi mobili */}
+            <div className="sm:hidden">
+                {cards.map((product: IEvent) => (
+                    <div key={product._id} className="flex flex-col bg-white border mb-4 shadow-md p-4">
+                        <img src={product.image} className="w-full h-auto mb-4" alt={product.title} />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 break-words whitespace-normal">{product.title}</h3>
+                        <p className="text-gray-700 mb-2 break-words">Inizio: {product.dateStart}</p>
+                        <p className="text-gray-700 mb-2 break-words">Fine: {product.dateEnd}</p>
+                        <p className="text-gray-700 mb-2 break-words">Location: {product.location}</p>
+                        <div className="mb-2">
+                            {Array.isArray(product.tag) ? (
+                                product.tag.map((tag, index) => (
+                                    <span key={index} className="inline-block bg-gray-200 text-gray-800 px-2 py-1 m-1 break-words max-w-xs">
+                                        {tag}
+                                    </span>
+                                ))
+                            ) : (
+                                <span>{product.tag}</span>
+                            )}
+                        </div>
+                        <p className="text-gray-700 mb-4 break-words whitespace-normal">Prezzo: {product.price}</p>
+                        <div className="flex justify-start">
+                            <button
+                                onClick={() => handlePublish(String(product._id))}
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 mr-2"
+                            >
+                                Pubblica
+                            </button>
+                            <button
+                                onClick={() => handleRemove(String(product._id))}
+                                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3"
+                            >
+                                Rimuovi
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
+
     );
 }
 
