@@ -6,20 +6,24 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
 
-// Funzione per ottenere immagini da Unsplash
-const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
-  const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_KEY;
+// Funzione per ottenere immagini da Pexels
+const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
+  const accessKey = "7k9uBHvIhAc6ihRwEjlOIDiIN5xfL0fXmcShfeLUmZYLUayTwCcioEcm"; // Chiave API Pexels
   const query = keywords.join("+");
-  const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=1&client_id=${accessKey}`;
+  const url = `https://api.pexels.com/v1/search?query=${query}&per_page=1`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        Authorization: accessKey,
+      },
+    });
     const data = await response.json();
-    return data.results && data.results.length > 0
-      ? data.results[0].urls.regular
+    return data.photos && data.photos.length > 0
+      ? data.photos[0].src.medium 
       : "";
   } catch (error) {
-    console.error("Errore nella fetch di Unsplash", error);
+    console.error("Errore nella fetch di Pexels", error);
     return "";
   }
 };
@@ -45,17 +49,14 @@ export default function ProposePage() {
 
   const [article, setArticle] = useState<string>(""); // Stato per l'articolo generato
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isGeneratingArticle, setIsGeneratingArticle] =
-    useState<boolean>(false);
+  const [isGeneratingArticle, setIsGeneratingArticle] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [color, setColor] = useState<string>("");
 
   // Gestione del cambio di valore nei campi del form
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     if (e.target.name === "category") {
       if (e.target.value === "foods") {
@@ -92,8 +93,15 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    const keywords = [formData.location, formData.title, formData.location];
-    const imageUrl = await fetchUnsplashImage(keywords);
+    
+    const keywords = [
+      formData.title,
+      formData.description,
+      formData.location,
+      ...formData.tag, 
+    ];
+    
+    const imageUrl = await fetchPexelsImage(keywords);
 
     const finalFormData = {
       ...formattedData,
@@ -174,7 +182,8 @@ export default function ProposePage() {
     setModalVisible(false);
     window.location.href = "/"; // Reindirizza alla homepage
   };
-  //io ho anche bisogno che al submit, o campi nel formo vengono resettati
+
+  // Funzione per resettare il form
   const resetForm = () => {
     setFormData({
       title: "",
