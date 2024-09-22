@@ -213,11 +213,11 @@ const handleSaveChanges = async () => {
 
       {showAccordion && (
         <div className="mt-4 border-2 border-rosso p-4 bg-gray-100 text-gray-900 relative shadow-md max-w-lg mx-auto">
-          <h3 className="text-2xl font-semibold text-rosso mb-4">
+          <h3 className="font-titolo text-2xl text-rosso mb-4">
             Preferenze account
           </h3>
           <div className="mb-4">
-            <h4 className="text-md font-semibold text-rosso">Dati Personali</h4>
+            <h4 className="text-md font-titolo text-rosso">Dati Personali</h4>
             {editMode ? (
               <>
                 <div className="mt-2">
@@ -263,7 +263,7 @@ const handleSaveChanges = async () => {
                   <strong>Email:</strong> {userEmail}
                 </p>
                 <button
-                  className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-blue-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+                  className="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white p-2 shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-blue-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
                   onClick={() => setEditMode(true)}
                 >
                   Modifica dati
@@ -272,7 +272,7 @@ const handleSaveChanges = async () => {
             )}
           </div>
           <button
-            className="mt-4 bg-gradient-to-r from-red-500 to-red-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+            className="bg-gradient-to-r from-red-500 to-red-700 text-white p-2 shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
             onClick={toggleDeleteModal}
           >
             Elimina account

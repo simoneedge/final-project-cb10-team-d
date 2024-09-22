@@ -54,7 +54,7 @@ function Filter({
           />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-4 w-full lg:w-auto justify-center md:w-96">
+        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto justify-center md:w-96 whitespace-nowrap">
           <Button
             label={"Oggi"}
             onClick={() => toggleButton("oggi", onTodayClick)}
@@ -62,7 +62,7 @@ function Filter({
               activeButton === "oggi"
                 ? "bg-rosso text-white"
                 : "border-rosso text-rosso bg-white hover:bg-rosso hover:text-white"
-            } font-bold transition-colors duration-300`}
+            } font-bold transition-colors duration-300 border-rosso`}
           />
           <Button
             label={"Domani"}
@@ -71,7 +71,7 @@ function Filter({
               activeButton === "domani"
                 ? "bg-rosso text-white"
                 : "border-rosso text-rosso bg-white hover:bg-rosso hover:text-white"
-            } font-bold transition-colors duration-300`}
+            } font-bold transition-colors duration-300 border-rosso`}
           />
           <Button
             label={"Prossima settimana"}
@@ -80,23 +80,21 @@ function Filter({
               activeButton === "prossima"
                 ? "bg-rosso text-white"
                 : "border-rosso text-rosso bg-white hover:bg-rosso hover:text-white"
-            } font-bold transition-colors duration-300`}
+            } font-bold transition-colors duration-300 border-rosso`}
           />
         </div>
 
         {/* SwitchBox e pulsante Reset Filtri */}
-        <div className="flex flex-col lg:flex-row items-center gap-4 w-full lg:w-auto justify-center">
-          <div className="flex items-center border-2 border-rosso text-rosso bg-white px-3 py-2">
-            <SwitchBox
-              label={"Gratis"}
-              value={isFree}
-              setValue={setIsFree}
-            />
-          </div>
+        <div className="flex lg:flex-row items-center gap-4 w-full lg:w-auto justify-center whitespace-nowrap">
+          <SwitchBox
+            label={"Gratis"}
+            value={isFree}
+            setValue={setIsFree}
+          />
           <Button
             label={"Reset Filtri"}
             onClick={handleReset}
-            className=" md:w-96 w-full lg:w-auto px-4 py-2 border-2 border-gray-500 text-gray-500 bg-white hover:bg-gray-500 hover:text-white font-bold transition-colors duration-300"
+            className="md:w-96 w-full lg:w-auto px-4 py-2 border-2 border-gray-500 text-gray-500 bg-white hover:bg-gray-500 hover:text-white font-bold transition-colors duration-300"
           />
         </div>
       </div>
