@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Loading from "../../../src/components/Loading"; // Importa il componente di loading
+import Loading from "../../../src/components/Loading";
+import ModalTicket from '@/src/components/ModalTicket'; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Event {
   _id: string;
@@ -23,18 +26,14 @@ const getData = async (id: string) => {
     });
 
     if (!res.ok) {
-      throw new Error(`
-        Errore nella richiesta: ${res.status} ${res.statusText}
-      `);
+      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
     }
 
     const data = await res.json();
-    return data.event; // Assicurati di accedere all'evento specifico
+    return data.event;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(
-        error.message || "Errore sconosciuto durante il fetch dei dati"
-      );
+      throw new Error(error.message || "Errore sconosciuto durante il fetch dei dati");
     } else {
       throw new Error("Errore sconosciuto durante il fetch dei dati");
     }
@@ -44,8 +43,9 @@ const getData = async (id: string) => {
 const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Stato di caricamento
+  const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const goBack = () => {
     window.history.back();
@@ -53,7 +53,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const fetchEvent = async () => {
-      setLoading(true); // Inizia il caricamento
+      setLoading(true);
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
@@ -64,24 +64,55 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           setErrorMessage("Errore sconosciuto");
         }
       } finally {
-        setLoading(false); // Termina il caricamento
+        setLoading(false);
       }
     };
 
     fetchEvent();
   }, [id]);
 
+  // Funzione per gestire l'invio della modale
+  const handleModalSubmit = async (formData: { data: Date | null; eta: string; orario: string; email: string; numeroBiglietti: number; }) => {
+    // Converti la data in formato stringa se non è nulla
+    const formattedData = {
+      ...formData,
+      data: formData.data ? formData.data.toISOString().split('T')[0] : '' // Converte la data in formato YYYY-MM-DD
+    };
+
+    try {
+      const response = await fetch('/api/send-email', { // Chiama il tuo endpoint API
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formattedData), // Usa il formData formattato
+      });
+
+      if (!response.ok) {
+        throw new Error('Errore durante l\'invio dell\'email');
+      }
+
+      toast.success('Email inviata con successo!');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(`Errore durante l'invio dell'email: ${error.message}`);
+      } else {
+        toast.error('Errore sconosciuto durante l\'invio dell\'email.');
+      }
+    }
+  };
+  
   if (loading) {
-    return <Loading />; // Mostra l'animazione di caricamento durante il fetching
+    return <Loading />;
   }
 
   if (errorMessage) {
-    return <p className="text-red-500">{errorMessage}</p>; // Mostra l'errore se presente
+    return <p className="text-red-500">{errorMessage}</p>;
   }
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Immagine dell'evento */}
+      <ToastContainer />
       {event?.image && (
         <img
           src={event.image}
@@ -90,7 +121,6 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         />
       )}
 
-      {/* Rettangolo colorato con titolo */}
       {event ? (
         <div
           className="w-full py-4 mb-4"
@@ -108,9 +138,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         </div>
       )}
 
-      {/* Dettagli dell'evento */}
       <div className="p-5 max-w-5xl mx-auto text-black">
-        {/* Altri dettagli */}
         <div className="mt-4">
           {event?.tag && (
             <p>
@@ -154,30 +182,44 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           )}
         </div>
 
-        {/* Descrizione dell'evento */}
         <p className="mt-6">{event?.description}</p>
-
-        {/* Pulsante Torna indietro */}
 
         <button
           className="border-2 p-2 font-bold transition-colors duration-300 w-full md:w-auto mt-4"
           style={{
-            borderColor: event?.color || "black", // Colore dinamico del bordo
-            color: event?.color || "black", // Colore dinamico del testo
+            borderColor: event?.color || "black",
+            color: event?.color || "black",
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = event?.color || "black"; // Hover: cambia bg con event.color
-            e.currentTarget.style.color = "white"; // Hover: testo bianco
+            e.currentTarget.style.backgroundColor = event?.color || "black";
+            e.currentTarget.style.color = "white";
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = "white"; // Reset background a bianco
-            e.currentTarget.style.color = event?.color || "black"; // Reset testo al colore dinamico
+            e.currentTarget.style.backgroundColor = "white";
+            e.currentTarget.style.color = event?.color || "black";
           }}
           onClick={goBack}
         >
           Torna indietro
         </button>
       </div>
+    
+      <button 
+        onClick={() => setModalOpen(true)} 
+        className="btn-ticket mt-4 bg-rosso text-white px-4 py-2 rounded-lg"
+      >
+        <span role="img" aria-label="ticket">🎟</span> Prenota il ticket
+      </button>
+
+      {/* Modale per l'acquisto del ticket */}
+      <ModalTicket 
+  isOpen={isModalOpen} 
+  onClose={() => setModalOpen(false)} 
+  onSubmit={handleModalSubmit} 
+  dateStart={event?.dateStart || ''} // Fallback a stringa vuota
+  dateEnd={event?.dateEnd || ''} // Fallback a stringa vuota
+/>
+      <ToastContainer containerId="toastEventDetail"/>
     </div>
   );
 };
