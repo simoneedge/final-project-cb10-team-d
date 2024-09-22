@@ -7,6 +7,13 @@ export async function POST(request: Request) {
   console.log('Email:', process.env.EMAIL); // Verifica se l'email è corretta
   console.log('Password:', process.env.PASSWORD); // Verifica se la password è corretta
 
+  // Converti la data in formato DD-MM-YYYY
+  const formattedDate = new Date(data).toLocaleDateString('it-IT', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -20,24 +27,24 @@ export async function POST(request: Request) {
   });
 
   let mailOptions = {
-  from: process.env.EMAIL,
-  to: email,
-  subject: 'Conferma Prenotazione',
-  html: `
-    <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2 style="color: #4CAF50;">Conferma Prenotazione</h2>
-      <p>La tua prenotazione è stata registrata con successo.</p>
-      <p><strong>Data:</strong> ${data}</p>
-      <p><strong>Età:</strong> ${eta}</p>
-      <p><strong>Orario:</strong> ${orario}</p>
-      <p><strong>Numero di Biglietti:</strong> ${numeroBiglietti}</p>
-      <p>Verrai contattato per completare il pagamento.</p>
-      <footer style="margin-top: 20px; color: #777;">
-        <p>Grazie per aver prenotato con noi!</p>
-      </footer>
-    </div>
-  `,
-};
+    from: process.env.EMAIL,
+    to: email,
+    subject: 'Conferma Prenotazione',
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2 style="color: #4CAF50;">Conferma Prenotazione</h2>
+        <p>La tua prenotazione è stata registrata con successo.</p>
+        <p><strong>Data:</strong> ${formattedDate}</p> <!-- Usare la data formattata -->
+        <p><strong>Età:</strong> ${eta}</p>
+        <p><strong>Orario:</strong> ${orario}</p>
+        <p><strong>Numero di Biglietti:</strong> ${numeroBiglietti}</p>
+        <p>Verrai contattato per completare il pagamento.</p>
+        <footer style="margin-top: 20px; color: #777;">
+          <p>Grazie per aver prenotato con noi!</p>
+        </footer>
+      </div>
+    `,
+  };
 
   try {
     await transporter.sendMail(mailOptions);

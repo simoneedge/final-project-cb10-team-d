@@ -1,24 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faClock, faEnvelope, faUser, faTicketAlt } from '@fortawesome/free-solid-svg-icons'; // Rimuovi faTimes se non usato
+import { faCalendarAlt, faClock, faEnvelope, faUser, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
 import Loading from '@/src/components/Loading';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // Importa il CSS della libreria
 
-const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
+const parseDate = (dateString) => {
+  const parts = dateString.split("-"); // Dividi la stringa in parti [16, 09, 2024]
+  return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`); // Converte in formato Date (YYYY-MM-DD)
+};
+
+const ModalTicket = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
   const initialFormState = {
-    data: '',
+    data: null, // Cambia a null per supportare DatePicker
     eta: 'adulti',
     orario: '',
     email: '',
     numeroBiglietti: 1,
   };
 
+  // Converti le date di inizio e fine in oggetti Date validi
+  const minDate = parseDate(dateStart);
+  const maxDate = parseDate(dateEnd);
+
   const [formData, setFormData] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Se minDate e maxDate sono uguali, imposta la data automaticamente
+  useEffect(() => {
+    if (minDate.getTime() === maxDate.getTime()) {
+      setFormData((prevState) => ({ ...prevState, data: minDate }));
+    }
+  }, [minDate, maxDate]);
+
+  const handleChange = (name, value) => {
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = async () => {
@@ -55,24 +73,34 @@ const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
       onClick={handleOutsideClick} // Gestione del clic esterno
     >
       <div className="modal-content relative p-6 rounded-lg shadow-lg bg-white w-full max-w-md mx-auto">
-        {/* Rimozione della crocetta di chiusura */}
         <h2 className="text-2xl font-bold mb-4">Prenota il ticket</h2>
         {isLoading ? (
           <Loading />
         ) : (
           <form className="flex flex-col space-y-4">
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-600" />
-              <label className="flex-1">Data:</label>
-              <input
-                type="date"
-                name="data"
-                value={formData.data}
-                onChange={handleChange}
-                required
-                className="flex-1 p-2 border rounded"
-              />
-            </div>
+            {/* Se minDate e maxDate sono uguali, mostra solo la data come testo */}
+            {minDate.getTime() === maxDate.getTime() ? (
+              <div className="flex items-center space-x-2">
+                <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-600" />
+                <label className="flex-1">Data:</label>
+                <span className="flex-1 p-2 border rounded">{dateStart}</span> {/* Mostra la data come testo */}
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-600" />
+                <label className="flex-1">Data:</label>
+                <DatePicker
+                  selected={formData.data}
+                  onChange={(date) => handleChange('data', date)}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  dateFormat="yyyy-MM-dd"
+                  className="flex-1 p-2 border rounded"
+                  placeholderText="Seleziona una data"
+                  required
+                />
+              </div>
+            )}
 
             <div className="flex items-center space-x-2">
               <FontAwesomeIcon icon={faUser} className="text-gray-600" />
@@ -80,7 +108,7 @@ const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
               <select
                 name="eta"
                 value={formData.eta}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
                 className="flex-1 p-2 border rounded"
               >
                 <option value="adulti">Adulti</option>
@@ -94,7 +122,7 @@ const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
               <select
                 name="orario"
                 value={formData.orario}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
                 className="flex-1 p-2 border rounded"
               >
                 <option value="16">16:00</option>
@@ -110,7 +138,7 @@ const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
                 required
                 className="flex-1 p-2 border rounded"
               />
@@ -123,7 +151,7 @@ const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
                 type="number"
                 name="numeroBiglietti"
                 value={formData.numeroBiglietti}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
                 min="1"
                 required
                 className="flex-1 p-2 border rounded"
@@ -134,7 +162,7 @@ const ModalTicket = ({ isOpen, onClose, onSubmit }) => {
               type="button"
               onClick={handleSubmit}
               className="btn-primary bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition-colors"
-              disabled={isLoading} // Disabilita il pulsante durante il caricamento
+              disabled={isLoading}
             >
               Conferma Prenotazione
             </button>

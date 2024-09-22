@@ -215,10 +215,12 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
       {/* Modale per l'acquisto del ticket */}
       <ModalTicket 
-        isOpen={isModalOpen} 
-        onClose={() => setModalOpen(false)} 
-        onSubmit={handleModalSubmit} 
-      />
+  isOpen={isModalOpen} 
+  onClose={() => setModalOpen(false)} 
+  onSubmit={handleModalSubmit} 
+  dateStart={event?.dateStart} // Passa la data di inizio
+  dateEnd={event?.dateEnd} // Passa la data di fine
+/>
        <ToastContainer containerId="toastEventDetail"/>
     </div>
   );
