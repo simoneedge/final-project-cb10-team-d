@@ -239,13 +239,13 @@ const handleSaveChanges = async () => {
                   />
                 </div>
                 <button
-                  className="mt-4 bg-gradient-to-r from-green-500 to-green-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-green-600 hover:to-green-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+                  className="mt-4 bg-gradient-to-r from-green-500 to-green-700 text-white p-2 shadow-lg hover:shadow-xl hover:from-green-600 hover:to-green-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
                   onClick={handleSaveChanges}
                 >
                   Salva modifiche
                 </button>
                 <button
-                  className="mt-4 bg-gradient-to-r from-gray-500 to-gray-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl hover:from-gray-600 hover:to-gray-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
+                  className="mt-4 bg-gradient-to-r from-gray-500 to-gray-700 text-white p-2 shadow-lg hover:shadow-xl hover:from-gray-600 hover:to-gray-800 font-bold transition-all duration-300 transform hover:-translate-y-1 w-full"
                   onClick={() => setEditMode(false)}
                 >
                   Annulla

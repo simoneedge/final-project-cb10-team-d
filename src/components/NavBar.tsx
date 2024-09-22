@@ -182,7 +182,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   }, [menuRef, buttonRef]);
 
   return (
-    <header className="relative bg-bianco p-4 ">
+    <header className="relative bg-bianco p-4 whitespace-nowrap mr-20">
       <div className=" hidden md:flex gap-5 items-center">
         {links.map((link) => {
           if (link.name === "Pannello di controllo" && !isAdmin) {
@@ -196,7 +196,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                   key={link.name}
                   href={link.href}
                   onClick={() => handleClick(link.name)}
-                  className={`text-verde hover:text-verde hover:font-bold ${
+                  className={`text-verde hover:text-verde hover:font-bold whitespace-nowrap ${
                     activeItem === link.name ? "font-bold" : ""
                   }`}
                 >
@@ -211,7 +211,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
                   buttonLabel="Proponi evento"
                   redirectTo="/propose"
                   onLoginSuccess={() => handleLoginSuccess(links[4]?.name)}
-                  buttonClassName="text-verde hover:text-verde hover:font-bold"
+                  buttonClassName="text-verde hover:text-verde hover:font-bold whitespace-nowrap"
                 />
               );
             }

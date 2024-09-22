@@ -220,7 +220,7 @@ export default function AttivitaPage() {
         onResetFilters={handleResetFilters}
       />
 
-      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
+      <div className="card-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 items-start mb-10">
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {loading ? (
           <Loading />
