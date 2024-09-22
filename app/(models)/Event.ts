@@ -13,7 +13,9 @@ export interface IEvent {
     price?: string;
     location?: string;
     reviewed?: boolean;
-}
+    article?: { type: string },
+/*     arrayImageArticle?: string[]
+ */}
 
 mongoose.connect(process.env.MONGODB_URI!);
 mongoose.Promise = global.Promise;
@@ -30,8 +32,10 @@ const eventSchema = new Schema({
     price: { type: String },
     location: { type: String },
     color: { type: String },
-    reviewed: { type: Boolean }
-});
+    reviewed: { type: Boolean },
+    article: { type: String },
+/*     arrayImageArticle: { type: [String] }
+ */});
 
 const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);
 

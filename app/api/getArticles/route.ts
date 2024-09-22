@@ -18,19 +18,27 @@ export async function POST(req: Request) {
       );
     }
     const prompt = `
-Scrivi un articolo giornalistico dettagliato per un evento intitolato "${title}" che si terrà a "${location}" dal ${dateStart} al ${dateEnd}.
-L'articolo deve seguire questa struttura:
-1. Titolo dell'evento: Usa un titolo accattivante che descriva l'evento.
-2. Introduzione: Una breve introduzione che catturi l'attenzione del lettore e fornisca una panoramica dell'evento.
-3. Descrizione dettagliata: Descrivi l'evento, includendo il contesto, il pubblico a cui è rivolto e gli aspetti più interessanti. Aggiungi dettagli su ${category}.
-4. Tesi: Argomenta i motivi per cui questo evento è importante o interessante per il pubblico.
-5. Antitesi: Descrivi eventuali sfide o potenziali svantaggi dell'evento, offrendo una visione equilibrata.
-6. Dettagli pratici: Fornisci informazioni utili come prezzo, luogo, orari, e qualsiasi altro dettaglio pratico (ad esempio, trasporti, accessibilità).
-7. Riferimenti: Aggiungi citazioni o fonti, se rilevante.
-8. Conclusione: Offri una chiusura coinvolgente, con una chiamata all'azione per partecipare all'evento.
-9. Il testo e i paragrafi non devono superare i 400 caratteri.
+Scrivi un articolo giornalistico dettagliati su "${location}".
+Il primo articolo riguarda '${location}' e deve essere incentrato sul territorio, includendo aspetti naturalistici, storici, punti di interesse culturale e paesaggistico, attività all’aperto, ecc.
+Il secondo articolo riguarda '${title}' e deve analizzare l’evento descrivendo le sue caratteristiche principali. Realizza un articolo che esplori a fondo i dettagli dell’evento e approfondisca tutti gli aspetti principali indicati qui: ${description}.
 
-Dettagli aggiuntivi da includere nell'articolo: ${description}.
+
+Struttura dell'articolo (minimo 700 parole):
+1. Titolo dell'articolo: Usa un titolo accattivante che descriva in modo chiaro l'articolo.
+2. Introduzione (circa 50-100 parole): Scrivi una breve introduzione che catturi l’attenzione del lettore, con una panoramica sull'argomento.
+3. Descrizione dettagliata (circa 300-400 parole): Suddividi questa sezione in sottoargomenti che descrivano i punti salienti.
+    - Per l'articolo sul territorio, includi sottosezioni come:
+      - Aspetti naturalistici (es. flora, fauna, clima)
+      - Punti di interesse culturale (es. musei, monumenti storici)
+      - Attività e opportunità per i visitatori (es. escursioni, sport)
+    - Per l’articolo sull’evento, includi sottosezioni come:
+      - Caratteristiche principali dell'evento
+      - Obiettivi e scopo
+      - Pubblico di riferimento e target
+      - Location dell'evento e altre informazioni logistiche
+4. Tesi (circa 100-150 parole): Argomenta il perché l’argomento trattato sia interessante o importante per il pubblico.
+5. Conclusione (circa 50-100 parole): Chiudi l’articolo con una riflessione o una chiamata all’azione, invitando il lettore a visitare il luogo o partecipare all’evento.
+Il testo e i paragrafi devono essere di almeno 500-700 parole.
 `;
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_KEY;

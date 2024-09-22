@@ -6,11 +6,32 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
 
+function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void) {
+  if (article) {
+    const lines = article.split("\n");
+    const titles: string[] = [];
+    const paragraphs: string[] = [];
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith("##")) {
+        titles.push(trimmedLine.replace("##", "").trim());
+      } else if (trimmedLine.length > 0) {
+        paragraphs.push(trimmedLine);
+      }
+    }
+
+    setTitles(titles);
+    setParagraphs(paragraphs);
+  }
+}
+
 // Funzione per ottenere immagini da Pexels
 const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
   const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
   const query = keywords.join("+");
   const url = `https://api.pexels.com/v1/search?query=${query}&per_page=1`;
+  const images: string[] = [];
 
   try {
     const response = await fetch(url, {
@@ -20,7 +41,7 @@ const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
     });
     const data = await response.json();
     return data.photos && data.photos.length > 0
-      ? data.photos[0].src.medium 
+      ? data.photos[0].src.medium
       : "";
   } catch (error) {
     console.error("Errore nella fetch di Pexels", error);
@@ -48,6 +69,8 @@ export default function ProposePage() {
   });
 
   const [article, setArticle] = useState<string>(""); // Stato per l'articolo generato
+  const [titles, setTitles] = useState<string[]>([]);
+  const [paragraphs, setParagraphs] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isGeneratingArticle, setIsGeneratingArticle] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,21 +116,24 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    
+
     const keywords = [
       formData.title,
       formData.description,
       formData.location,
-      ...formData.tag, 
+      ...formData.tag,
     ];
-    
+
     const imageUrl = await fetchPexelsImage(keywords);
+
+    const articleKeywords = [...titles, ...paragraphs].slice(0, 5);
 
     const finalFormData = {
       ...formattedData,
       image: imageUrl || formData.image,
       color,
       reviewed: false,
+      article
     };
 
     setIsSubmitting(true);
@@ -252,7 +278,7 @@ export default function ProposePage() {
             </div>
           ) : null}
         </div>
-        <ToastContainer containerId="toastPropose"/>
+        <ToastContainer containerId="toastPropose" />
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading";
-import ModalTicket from '@/src/components/ModalTicket'; 
+import ModalTicket from '@/src/components/ModalTicket';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,6 +17,60 @@ interface Event {
   price?: string;
   location?: string;
   color: string;
+  article?: string;
+  arrayImageArticle?: string[];
+}
+
+function parseTextToObject(text: string, setArticle: Dispatch<SetStateAction<{ title: string; subtitles: { subtitle: string; content: string }[]; content: string }[]>>): void {
+  const lines = text.split('\n').map(line => line.trim());
+  console.log(lines);
+  const result: { title: string; subtitles: { subtitle: string; content: string }[]; content: string }[] = [];
+  let currentTitle = '';
+  let currentSubtitles: { subtitle: string; content: string }[] = [];
+  let currentContent = '';
+
+  lines.forEach(line => {
+    if (line.startsWith('### ')) {
+      // Aggiungi l'oggetto corrente se esiste
+      if (currentTitle) {
+        result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
+      }
+      currentTitle = line.replace('### ', '').trim();
+      currentSubtitles = []; // Resetta gli sottotitoli
+      currentContent = ''; // Resetta il contenuto
+    } else if (line.startsWith('## ')) {
+      // Aggiungi l'oggetto corrente se esiste
+      if (currentTitle) {
+        result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
+      }
+      currentTitle = line.replace('## ', '').trim();
+      currentSubtitles = []; // Resetta gli sottotitoli
+      currentContent = ''; // Resetta il contenuto
+    } else if (line.startsWith('**')) {
+      // Aggiungi il sottotitolo e il contenuto relativo all'array
+      const subtitle = line.replace(/\*\*/g, '').trim();
+      currentSubtitles.push({ subtitle, content: '' }); // Inizializza il contenuto per il sottotitolo
+    } else if (line.startsWith('* ')) {
+      // Skip standalone '*' lines
+      return;
+    } else if (line) {
+      // Aggiungi il contenuto al sottotitolo più recente
+      const lastIndex = currentSubtitles.length - 1;
+      if (lastIndex >= 0) {
+        currentSubtitles[lastIndex].content += line + ' '; // Aggiungi il contenuto
+      } else {
+        currentContent += line + ' '; // Aggiungi al contenuto principale se non ci sono sottotitoli
+      }
+    }
+  });
+
+  // Aggiungi l'ultimo oggetto se esiste
+  if (currentTitle) {
+    result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
+  }
+
+  console.log(result);
+  setArticle(result);
 }
 
 const getData = async (id: string) => {
@@ -46,6 +100,8 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [article, setArticle] = useState<{ title: string; subtitles: { subtitle: string; content: string }[]; content: string }[]>([]);
+
 
   const goBack = () => {
     window.history.back();
@@ -57,6 +113,9 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
+        if (fetchedEvent?.article) {
+          parseTextToObject(fetchedEvent.article, setArticle); // Chiamata a formatArticle
+        }
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage(error.message);
@@ -101,7 +160,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       }
     }
   };
-  
+
   if (loading) {
     return <Loading />;
   }
@@ -184,6 +243,20 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
         <p className="mt-6">{event?.description}</p>
 
+        {article.map((item, index) => (
+          <div key={index}>
+            <h2 className="text-2xl font-bold mt-4">{item.title}</h2>
+            {item.subtitles.map((sub, subIndex) => (
+              <div key={subIndex}>
+                <br />
+                <h3 className="text-xl font-bold">{sub.subtitle}</h3>
+                <h4>{sub.content}</h4> {/* Mostra il contenuto associato al sottotitolo */}
+              </div>
+            ))}
+            <div>{item.content}</div>
+          </div>
+        ))}
+
         <button
           className="border-2 p-2 font-bold transition-colors duration-300 w-full md:w-auto mt-4"
           style={{
@@ -203,23 +276,23 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           Torna indietro
         </button>
       </div>
-    
-      <button 
-        onClick={() => setModalOpen(true)} 
+
+      <button
+        onClick={() => setModalOpen(true)}
         className="btn-ticket mt-4 bg-rosso text-white px-4 py-2 rounded-lg"
       >
         <span role="img" aria-label="ticket">🎟</span> Prenota il ticket
       </button>
 
       {/* Modale per l'acquisto del ticket */}
-      <ModalTicket 
-  isOpen={isModalOpen} 
-  onClose={() => setModalOpen(false)} 
-  onSubmit={handleModalSubmit} 
-  dateStart={event?.dateStart || ''} // Fallback a stringa vuota
-  dateEnd={event?.dateEnd || ''} // Fallback a stringa vuota
-/>
-      <ToastContainer containerId="toastEventDetail"/>
+      <ModalTicket
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        dateStart={event?.dateStart || ''} // Fallback a stringa vuota
+        dateEnd={event?.dateEnd || ''} // Fallback a stringa vuota
+      />
+      <ToastContainer containerId="toastEventDetail" />
     </div>
   );
 };
