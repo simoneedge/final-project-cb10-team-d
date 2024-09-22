@@ -8,7 +8,7 @@ import Modal from "@/src/components/Modal";
 
 // Funzione per ottenere immagini da Pexels
 const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
-  const accessKey = "7k9uBHvIhAc6ihRwEjlOIDiIN5xfL0fXmcShfeLUmZYLUayTwCcioEcm"; // Chiave API Pexels
+  const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
   const query = keywords.join("+");
   const url = `https://api.pexels.com/v1/search?query=${query}&per_page=1`;
 
