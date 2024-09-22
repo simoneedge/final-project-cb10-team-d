@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
 import ModalTicket from '@/src/components/ModalTicket'; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Event {
   _id: string;
@@ -89,9 +91,9 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         throw new Error('Errore durante l\'invio dell\'email');
       }
   
-      console.log('Email inviata con successo');
+      toast.success('Email inviata con successo!');
     } catch (error) {
-      console.error('Errore:', error.message);
+      toast.error(`Errore durante l'invio dell'email: ${error.message}`);
     }
   };
   
@@ -105,7 +107,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Immagine dell'evento */}
+      <ToastContainer />
       {event?.image && (
         <img
           src={event.image}
@@ -217,6 +219,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         onClose={() => setModalOpen(false)} 
         onSubmit={handleModalSubmit} 
       />
+       <ToastContainer containerId="toastEventDetail"/>
     </div>
   );
 };
