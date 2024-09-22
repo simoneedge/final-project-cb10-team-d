@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
 
 interface Event {
@@ -18,35 +18,35 @@ interface Event {
   arrayImageArticle?: string[];
 }
 
-function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void, setTitleTypes: (types: string[]) => void // Nuovo stato per il tipo di titolo
-) {
-  if (article) {
-    const lines = article.split("\n");
-    const titles: string[] = [];
-    const paragraphs: string[] = [];
-    const titleTypes: string[] = []; // Per memorizzare se il titolo è h2 o h3
+function parseTextToObject(text: string, setArticle: Dispatch<SetStateAction<{ title: string; content: string }[]>>): void {
+  const lines = text.split('\n').map(line => line.trim());
+  const result: { title: string; content: string }[] = [];
+  let currentTitle = '';
 
-
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-      if (trimmedLine.startsWith("##")) {
-        titles.push(trimmedLine.replace(/^##+/, "").trim());
-        // Determina se il titolo è h2 o h3
-        if (trimmedLine.startsWith("###")) {
-          titleTypes.push("h3"); // Se inizia con ###, è un h3
-        } else {
-          titleTypes.push("h2"); // Se inizia con ##, è un h2
-        }
-      } else if (trimmedLine.length > 0) {
-        paragraphs.push(trimmedLine);
+  lines.forEach(line => {
+    if (line.startsWith('### ')) {
+      currentTitle = line.replace('### ', '').replace(/\*\*/g, '').trim();
+      result.push({ title: currentTitle, content: '' });
+    } else if (line.startsWith('## ')) {
+      currentTitle = line.replace('## ', '').replace(/\*\*/g, '').trim();
+      result.push({ title: currentTitle, content: '' });
+    } else if (line.startsWith('* ')) {
+      // Skip standalone '*' lines
+      return;
+    } else if (line) {
+      const lastIndex = result.length - 1;
+      if (lastIndex >= 0) {
+        result[lastIndex].content += line.replace(/\*\*/g, '').trim() + ' ';
       }
     }
+  });
 
-    setTitles(titles);
-    setParagraphs(paragraphs);
-    setTitleTypes(titleTypes); // Imposta i tipi di titolo
-
+  // Trim whitespace from content
+  for (const item of result) {
+    item.content = item.content.trim();
   }
+
+  setArticle(result);
 }
 
 const getData = async (id: string) => {
@@ -75,9 +75,8 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [titles, setTitles] = useState<string[]>([]); // Stato per i titoli
-  const [paragraphs, setParagraphs] = useState<string[]>([]); // Stato per i paragrafi
-  const [titleTypes, setTitleTypes] = useState<string[]>([]); // Stato per il tipo di titolo
+  const [article, setArticle] = useState<{ title: string; content: string }[]>([]); // Stato per gli articoli
+
 
 
   const goBack = () => {
@@ -91,7 +90,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
         if (fetchedEvent?.article) {
-          formatArticle(fetchedEvent.article, setTitles, setParagraphs, setTitleTypes); // Chiamata a formatArticle
+          parseTextToObject(fetchedEvent.article, setArticle); // Chiamata a formatArticle
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -180,25 +179,12 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         {/* Descrizione dell'evento */}
         <p className="mt-6">{event?.description}</p>
 
-        {event?.article && (
-          <>
-            {titles.map((title, index) => {
-              const TitleTag = titleTypes[index] === "h3" ? "h3" : "h2"; // Determina il tag da usare
-
-              return (
-                <div key={index} className="article-section">
-                  <TitleTag className="text-xl font-bold mt-4">{title}</TitleTag>
-                  {event.arrayImageArticle && event.arrayImageArticle[index] && (
-                    <img src={event.arrayImageArticle[index]} alt="" />
-                  )}
-                  {paragraphs[index] && (
-                    <p className="mt-2">{paragraphs[index]}</p>
-                  )}
-                </div>
-              );
-            })}
-          </>
-        )}
+        {article.map((item, index) => (
+          <div key={index}>
+            <h2 className="text-2xl font-bold">{item.title}</h2>
+            <p>{item.content}</p>
+          </div>
+        ))}
 
 
         {/* Pulsante Torna indietro */}

@@ -18,12 +18,12 @@ export async function POST(req: Request) {
       );
     }
     const prompt = `
-Scrivi due articoli giornalistici dettagliati su "${location}".
+Scrivi un articolo giornalistico dettagliati su "${location}".
 Il primo articolo riguarda '${location}' e deve essere incentrato sul territorio, includendo aspetti naturalistici, storici, punti di interesse culturale e paesaggistico, attività all’aperto, ecc.
 Il secondo articolo riguarda '${title}' e deve analizzare l’evento descrivendo le sue caratteristiche principali. Realizza un articolo che esplori a fondo i dettagli dell’evento e approfondisca tutti gli aspetti principali indicati qui: ${description}.
 
 
-Struttura dell'articolo (minimo 700 parole)::
+Struttura dell'articolo (minimo 700 parole):
 1. Titolo dell'articolo: Usa un titolo accattivante che descriva in modo chiaro l'articolo.
 2. Introduzione (circa 50-100 parole): Scrivi una breve introduzione che catturi l’attenzione del lettore, con una panoramica sull'argomento.
 3. Descrizione dettagliata (circa 300-400 parole): Suddividi questa sezione in sottoargomenti che descrivano i punti salienti.
