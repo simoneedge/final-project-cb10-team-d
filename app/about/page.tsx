@@ -6,9 +6,9 @@ export default function AboutPage() {
       <div className="p-8">
         <h1 className="text-4xl font-titolo mb-4 text-rosso text-left">Chi siamo</h1>
         <p className="mt-6 text-lg text-black max-w-2xl text-justify">
-          <strong>SiciliPulse</strong> è la piattaforma digitale che fa vivere il battito culturale della Sicilia, unendo tradizione e innovazione per far scoprire ogni angolo di questa terra unica. Con noi, esplorare eventi locali diventa semplice e intuitivo, permettendo agli utenti di scoprire ciò che accade intorno a loro in base ai propri interessi.<br/><br/>
-          <strong>SiciliPulse</strong> nasce con l’obiettivo di essere un punto di riferimento per chi desidera vivere appieno la ricchezza culturale siciliana. Offriamo un accesso dinamico e interattivo agli eventi locali, creando una connessione profonda tra il pubblico e la vibrante vita sociale dell’isola.<br/><br/>
-          Unisciti a <strong>SiciliPulse</strong> e lasciati guidare dal ritmo inarrestabile della cultura siciliana!
+          <strong>SicilyPulse</strong> è la piattaforma digitale che fa vivere il battito culturale della Sicilia, unendo tradizione e innovazione per far scoprire ogni angolo di questa terra unica. Con noi, esplorare eventi locali diventa semplice e intuitivo, permettendo agli utenti di scoprire ciò che accade intorno a loro in base ai propri interessi.<br/><br/>
+          <strong>SicilyPulse</strong> nasce con l’obiettivo di essere un punto di riferimento per chi desidera vivere appieno la ricchezza culturale siciliana. Offriamo un accesso dinamico e interattivo agli eventi locali, creando una connessione profonda tra il pubblico e la vibrante vita sociale dell’isola.<br/><br/>
+          Unisciti a <strong>SicilyPulse</strong> e lasciati guidare dal ritmo inarrestabile della cultura siciliana!
         </p>
 
         <h2 className="mt-10 text-2xl font-titolo mb-2 text-rosso text-left">Redazione</h2>

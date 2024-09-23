@@ -23,7 +23,7 @@ const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
     });
     const data = await response.json();
     return data.photos && data.photos.length > 0
-      ? data.photos[0].src.medium
+      ? data.photos[0].src.original
       : "";
   } catch (error) {
     console.error("Errore nella fetch di Pexels", error);
