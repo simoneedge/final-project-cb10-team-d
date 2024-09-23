@@ -74,6 +74,7 @@ const HomePage: React.FC = () => {
       console.error("Error fetching favorites:", error);
     }
   };
+  /* commento */
 
   useEffect(() => {
     const auth = getAuth();
@@ -259,9 +260,8 @@ const HomePage: React.FC = () => {
                 return (
                   <div
                     key={event._id || index}
-                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${
-                      isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
-                    }`}
+                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
+                      }`}
                   >
                     <Card
                       isLiked={favoriteEventTitle.includes(event.title ?? "")}
