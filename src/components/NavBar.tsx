@@ -181,9 +181,37 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     };
   }, [menuRef, buttonRef]);
 
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  const navbarRef = useRef<HTMLDivElement>(null);
+
+  // Funzione per ottenere l'altezza della navbar dinamicamente
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      if (navbarRef.current) {
+        setNavbarHeight(navbarRef.current.offsetHeight);
+        console.log("altezza", navbarRef.current.offsetHeight);
+      }
+    };
+
+    // Calcola l'altezza della navbar all'inizio
+    updateNavbarHeight();
+
+    // Aggiorna l'altezza della navbar se la finestra viene ridimensionata
+    window.addEventListener("resize", updateNavbarHeight);
+
+    // Cleanup per rimuovere l'event listener
+    return () => {
+      window.removeEventListener("resize", updateNavbarHeight);
+    };
+  }, []);
+
   return (
-    <header className="relative bg-bianco p-4 whitespace-nowrap mr-20">
-      <div className=" hidden md:flex gap-5 items-center">
+    <header
+      className="relative bg-bianco p-4 whitespace-nowrap mr-2"
+      ref={navbarRef}
+    >
+      <div className="hidden md:flex gap-5 items-center  ">
         {links.map((link) => {
           if (link.name === "Pannello di controllo" && !isAdmin) {
             return null; // Non mostrare il link se non è un admin
@@ -248,44 +276,47 @@ const NavBar = ({ links = [] }: NavBarProps) => {
         )}
       </div>
       {/* Mobile Menu Toggle */}
-      <div className="md:hidden flex items-center">
+      <div className="md:hidden flex items-center ">
         <button onClick={toggleMenu} className="text-verde focus:outline-none">
           <svg
-            className="w-10 h-10"
+            className={`position mr-0 mt-0 w-10 h-10 transition-opacity duration-300 ease-in-out ${
+              isOpen ? "opacity-0 invisible" : "opacity-100 visible"
+            }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {isOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            )}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
       </div>
 
       <div
         ref={menuRef}
-        className={`fixed top-28  right-0 w-full h-90 bg-bianco z-50 transform transition-transform duration-300 ${
+        className={`fixed right-0 w-full h-90 bg-bianco z-50 transform transition-transform duration-300  ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{ top: ` ${navbarHeight + 38}px ` }} // Imposta dinamicamente il top in base all'altezza della navbar
       >
         <button
           ref={buttonRef}
-          className="p-4 text-verde focus:outline-none absolute top-4 right-4"
-        ></button>
+          className={`p-4 text-verde focus:outline-none absolute top-4 right-4 ${
+            isOpen ? "hidden" : ""
+          }`}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </button>
         <div className="  flex flex-col items-center space-y-4 p-6 text-center h-auto">
           {/* Cambia h-full a h-auto */}
           {links.map((link) => {
