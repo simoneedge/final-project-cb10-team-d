@@ -7,19 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
 import Image from "next/image";
 
-
-const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
-  // Chiave API Pexels
-  const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
-  const query = keywords.join("+");
-  const url = ` https://api.pexels.com/v1/search?query=${query}&per_page=1`;
-
 // Funzione per ottenere immagini da Pexels
 const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
   const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
   const query = keywords.join("+");
   const url = `https://api.pexels.com/v1/search?query=${query}&per_page=1`;
-
 
   try {
     const response = await fetch(url, {
@@ -29,7 +21,7 @@ const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
     });
     const data = await response.json();
     return data.photos && data.photos.length > 0
-      ? data.photos[0].src.medium 
+      ? data.photos[0].src.medium
       : "";
   } catch (error) {
     console.error("Errore nella fetch di Pexels", error);
@@ -58,7 +50,8 @@ export default function ProposePage() {
   const [article, setArticle] = useState<string>(""); // Stato per l'articolo generato
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const [isGeneratingArticle, setIsGeneratingArticle] = useState<boolean>(false);
+  const [isGeneratingArticle, setIsGeneratingArticle] =
+    useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -66,7 +59,9 @@ export default function ProposePage() {
 
   // Gestione del cambio di valore nei campi del form
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     if (e.target.name === "category") {
       if (e.target.value === "foods") {
@@ -102,7 +97,6 @@ export default function ProposePage() {
       dateStart: formatDate(formData.dateStart),
       dateEnd: formatDate(formData.dateEnd),
     };
-
 
     const keywords = [
       formData.title,
