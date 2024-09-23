@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
+import Image from "next/image";
 
 function formatArticle(article: string, setTitles: (titles: string[]) => void, setParagraphs: (paragraphs: string[]) => void) {
   if (article) {
@@ -48,7 +49,6 @@ const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
     return "";
   }
 };
-
 // Funzione per formattare la data
 const formatDate = (date: string) => {
   const [year, month, day] = date.split("-");
@@ -72,14 +72,19 @@ export default function ProposePage() {
   const [titles, setTitles] = useState<string[]>([]);
   const [paragraphs, setParagraphs] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isGeneratingArticle, setIsGeneratingArticle] = useState<boolean>(false);
+
+  const [isGeneratingArticle, setIsGeneratingArticle] =
+    useState<boolean>(false);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [color, setColor] = useState<string>("");
 
   // Gestione del cambio di valore nei campi del form
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     if (e.target.name === "category") {
       if (e.target.value === "foods") {
@@ -115,7 +120,6 @@ export default function ProposePage() {
       dateStart: formatDate(formData.dateStart),
       dateEnd: formatDate(formData.dateEnd),
     };
-
 
     const keywords = [
       formData.title,
@@ -266,11 +270,15 @@ export default function ProposePage() {
                 {new Date().toLocaleDateString("it-IT")}
               </p>
               {formData.image && (
-                <img
-                  src={formData.image}
-                  alt="Articolo"
-                  className="w-full h-auto mb-4 rounded-lg shadow-lg"
-                />
+                <div className="relative w-full h-[60vh]">
+                  <Image
+                    src={formData.image || "/placeholder-image.png"}
+                    alt="Articolo"
+                    layout="fill"
+                    objectFit="cover"
+                    priority={true}
+                  />
+                </div>
               )}
               <div className="text-gray-700">
                 <p>{article}</p>

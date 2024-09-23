@@ -1,6 +1,6 @@
 "use client";
 import { getDayOfYear } from "@/data/getDayOfYear";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Card from "@/src/components/Card";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
 import { IEvent } from "./(models)/Event";
@@ -74,6 +74,27 @@ const HomePage: React.FC = () => {
       console.error("Error fetching favorites:", error);
     }
   };
+  /* commento */
+
+  useEffect(() => {
+    // Filtro gli eventi che sono stati "reviewed"
+    const reviewedEvents = events.filter(
+      (event) => event.reviewed === true /* || event.reviewed === undefined */
+    );
+
+    // Prendo eventi casuali tra quelli che sono stati filtrati
+    const randomSlides = getRandomSlides(reviewedEvents, 5);
+
+    // Estraggo le immagini e i titoli dagli eventi filtrati
+    const images = randomSlides.map((event) => ({
+      src:
+        event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
+      title: event.title || "Default Title",
+    }));
+
+    setSlideshowImages(images);
+  }, [events]);
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -83,7 +104,7 @@ const HomePage: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +113,7 @@ const HomePage: React.FC = () => {
         const data = await fetchEvents();
         setEvents(data.events);
         setFilteredEvents(data.events);
+        setLoading(false);
 
         const auth = getAuth();
         const user = auth.currentUser;
@@ -101,8 +123,6 @@ const HomePage: React.FC = () => {
         }
       } catch (error) {
         setErrorMessage("Failed to load data.");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -150,59 +170,66 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
 
-  const applyFilters = (
-    query: string,
-    isFree: boolean,
-    dayOfYear: number,
-    startNextWeek?: number,
-    endNextWeek?: number
-  ) => {
-    let filtered = events;
+  const applyFilters = useCallback(
+    (
+      query: string,
+      isFree: boolean,
+      dayOfYear: number,
+      startNextWeek?: number,
+      endNextWeek?: number
+    ) => {
+      let filtered = events;
 
-    filtered = filtered.filter(
-      (event) =>
-        Boolean(event.reviewed) === true || event.reviewed === undefined
-    );
-
-    if (query !== "") {
       filtered = filtered.filter(
         (event) =>
-          event.title?.toLowerCase().includes(query.toLowerCase()) ||
-          event.location?.toLowerCase().includes(query.toLowerCase()) ||
-          event.tag?.some((tag) =>
-            tag.toLowerCase().includes(query.toLowerCase())
-          )
+          Boolean(event.reviewed) === true || event.reviewed === undefined
       );
-    }
 
-    if (isFree) {
-      filtered = filtered.filter((event) => event.price === "0");
-    }
+      if (query !== "") {
+        filtered = filtered.filter(
+          (event) =>
+            event.title?.toLowerCase().includes(query.toLowerCase()) ||
+            event.location?.toLowerCase().includes(query.toLowerCase()) ||
+            event.tag?.some((tag) =>
+              tag.toLowerCase().includes(query.toLowerCase())
+            )
+        );
+      }
 
-    if (dayOfYear) {
-      filtered = filtered.filter((event) => {
-        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
-        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+      if (isFree) {
+        filtered = filtered.filter((event) => event.price === "0");
+      }
 
-        return dayOfYear >= startEvent && dayOfYear <= endEvent;
-      });
-    }
+      if (dayOfYear) {
+        filtered = filtered.filter((event) => {
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
+          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
 
-    if (startNextWeek !== undefined && endNextWeek !== undefined) {
-      filtered = filtered.filter((event) => {
-        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
-        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-        return startEvent <= endNextWeek && endEvent >= startNextWeek;
-      });
-    }
+          return dayOfYear >= startEvent && dayOfYear <= endEvent;
+        });
+      }
 
-    setFilteredEvents(filtered);
-    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
-  };
+      if (startNextWeek !== undefined && endNextWeek !== undefined) {
+        filtered = filtered.filter((event) => {
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
+          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+          return startEvent <= endNextWeek && endEvent >= startNextWeek;
+        });
+      }
+
+      setFilteredEvents(filtered);
+      setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
+    },
+    [events]
+  );
 
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
-  }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
+  }, [applyFilters, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -252,9 +279,8 @@ const HomePage: React.FC = () => {
                 return (
                   <div
                     key={event._id || index}
-                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${
-                      isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
-                    }`}
+                    className={`w-full md:w-auto justify-center transform hover:scale-105 transition-transform duration-300 custom-shadow ${isFourthCard ? "lg:col-span-3 lg:flex" : "col-span-1"
+                      }`}
                   >
                     <Card
                       isLiked={favoriteEventTitle.includes(event.title ?? "")}

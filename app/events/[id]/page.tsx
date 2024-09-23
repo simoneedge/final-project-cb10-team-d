@@ -1,10 +1,11 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading";
-import ModalTicket from '@/src/components/ModalTicket';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ModalTicket from "@/src/components/ModalTicket";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 interface Event {
   _id: string;
@@ -72,14 +73,18 @@ const getData = async (id: string) => {
     });
 
     if (!res.ok) {
-      throw new Error(`Errore nella richiesta: ${res.status} ${res.statusText}`);
+      throw new Error(
+        `Errore nella richiesta: ${res.status} ${res.statusText}`
+      );
     }
 
     const data = await res.json();
     return data.event;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(error.message || "Errore sconosciuto durante il fetch dei dati");
+      throw new Error(
+        error.message || "Errore sconosciuto durante il fetch dei dati"
+      );
     } else {
       throw new Error("Errore sconosciuto durante il fetch dei dati");
     }
@@ -128,32 +133,39 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   }, [id]);
 
   // Funzione per gestire l'invio della modale
-  const handleModalSubmit = async (formData: { data: Date | null; eta: string; orario: string; email: string; numeroBiglietti: number; }) => {
+  const handleModalSubmit = async (formData: {
+    data: Date | null;
+    eta: string;
+    orario: string;
+    email: string;
+    numeroBiglietti: number;
+  }) => {
     // Converti la data in formato stringa se non è nulla
     const formattedData = {
       ...formData,
-      data: formData.data ? formData.data.toISOString().split('T')[0] : '' // Converte la data in formato YYYY-MM-DD
+      data: formData.data ? formData.data.toISOString().split("T")[0] : "", // Converte la data in formato YYYY-MM-DD
     };
 
     try {
-      const response = await fetch('/api/send-email', { // Chiama il tuo endpoint API
-        method: 'POST',
+      const response = await fetch("/api/send-email", {
+        // Chiama il tuo endpoint API
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formattedData), // Usa il formData formattato
       });
 
       if (!response.ok) {
-        throw new Error('Errore durante l\'invio dell\'email');
+        throw new Error("Errore durante l'invio dell'email");
       }
 
-      toast.success('Email inviata con successo!');
+      toast.success("Email inviata con successo!");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(`Errore durante l'invio dell'email: ${error.message}`);
       } else {
-        toast.error('Errore sconosciuto durante l\'invio dell\'email.');
+        toast.error("Errore sconosciuto durante l'invio dell'email.");
       }
     }
   };
@@ -170,11 +182,17 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
     <div className="min-h-screen bg-gray-100">
       <ToastContainer />
       {event?.image && (
-        <img
-          src={event.image}
-          alt={event.title}
-          className="w-full h-[60vh] object-cover"
-        />
+        <div className="relative w-full h-[60vh]">
+          {" "}
+          {/* Aggiungi relative qui */}
+          <Image
+            src={event.image || "/placeholder-image.png"}
+            alt={event.title || "immagine senza titolo"} // Testo alternativo
+            layout="fill" // Riempi il contenitore
+            objectFit="cover" // Mantenere l'effetto cover
+            priority={true} // Aggiungi priority se è importante per il caricamento rapido
+          />
+        </div>
       )}
 
       {event ? (
@@ -285,21 +303,25 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           Torna indietro
         </button>
       </div>
+      <div className="max-w-5xl mx-auto px-5">
+        <button
+          onClick={() => setModalOpen(true)}
+          className="mb-10 bg-rosso text-white px-4 py-2 border-2 border-rosso font-bold transition-colors duration-300 w-full md:w-auto"
+        >
+          <span role="img" aria-label="ticket">
+            🎟
+          </span>{" "}
+          Prenota il ticket
+        </button>
+      </div>
 
-      <button
-        onClick={() => setModalOpen(true)}
-        className="btn-ticket mt-4 bg-rosso text-white px-4 py-2 rounded-lg"
-      >
-        <span role="img" aria-label="ticket">🎟</span> Prenota il ticket
-      </button>
-
-      {/* Modale per l'acquisto del ticket */}
+{/* Modale per l'acquisto del ticket */}
       <ModalTicket
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleModalSubmit}
-        dateStart={event?.dateStart || ''} // Fallback a stringa vuota
-        dateEnd={event?.dateEnd || ''} // Fallback a stringa vuota
+        dateStart={event?.dateStart || ""} // Fallback a stringa vuota
+        dateEnd={event?.dateEnd || ""} // Fallback a stringa vuota
       />
       <ToastContainer containerId="toastEventDetail" />
     </div>
