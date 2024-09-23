@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
 import Image from "next/image";
 
+
+
 // Funzione per ottenere immagini da Pexels
 const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
   const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
@@ -106,11 +108,14 @@ export default function ProposePage() {
     ];
     const imageUrl = await fetchPexelsImage(keywords);
 
+
+
     const finalFormData = {
       ...formattedData,
       image: imageUrl || formData.image,
       color,
       reviewed: false,
+      article
     };
 
     setIsSubmitting(true);

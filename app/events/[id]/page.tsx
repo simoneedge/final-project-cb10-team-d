@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading";
 import ModalTicket from "@/src/components/ModalTicket";
 import { ToastContainer, toast } from "react-toastify";
@@ -18,7 +18,52 @@ interface Event {
   price?: string;
   location?: string;
   color: string;
+  article?: string;
+  arrayImageArticle?: string[];
 }
+
+interface Section {
+  subtitle: string;
+  content: string;
+}
+
+interface Article {
+  title: string;
+  introduction: string;
+  sections: Section[];
+  thesis?: string;       // Se non sono sempre presenti, usali come optional
+  conclusion?: string;  // Se non sono sempre presenti, usali come optional
+}
+
+function parseArticles(input: string, setArticle: Dispatch<SetStateAction<Article[]>>): void {
+  const articles = input.split(/## Articolo \d+: /).filter(Boolean);
+
+  const parsedArticles = articles.map(article => {
+    const jsonMatch = article.match(/```json\s*([\s\S]*?)```/);
+    if (!jsonMatch) return null;
+
+    try {
+      const jsonContent = JSON.parse(jsonMatch[1].trim());
+
+      return {
+        title: jsonContent.title,
+        introduction: jsonContent.introduction,
+        sections: jsonContent.sections.map((section: { subtitle: string; content: string }) => ({
+          subtitle: section.subtitle,
+          content: section.content
+        })),
+        thesis: jsonContent.thesis || '', // Gestisci il campo thesis come optional
+        conclusion: jsonContent.conclusion || '' // Gestisci il campo conclusion come optional
+      };
+    } catch (error) {
+      console.error("Errore nel parsing del JSON:", error);
+      return null;
+    }
+  }).filter(Boolean) as Article[];
+
+  setArticle(parsedArticles); // Imposta direttamente lo stato
+}
+
 
 const getData = async (id: string) => {
   try {
@@ -51,6 +96,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [article, setArticle] = useState<Article[]>([]);
 
   const goBack = () => {
     window.history.back();
@@ -62,6 +108,10 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
       try {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
+        if (fetchedEvent?.article) {
+          parseArticles(fetchedEvent.article, setArticle); // Chiamata a formatArticle
+        }
+
       } catch (error: unknown) {
         if (error instanceof Error) {
           setErrorMessage(error.message);
@@ -201,6 +251,33 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         </div>
 
         <p className="mt-6">{event?.description}</p>
+
+        {article.map((item, index) => (
+          <div key={index}>
+            <h2 className="text-2xl font-bold mt-4">{item.title}</h2>
+            <p>{item.introduction}</p> {/* Mostra l'introduzione dell'articolo */}
+
+            {item.sections.map((sub, subIndex) => (
+              <div key={subIndex} className="mt-4">
+                <h3 className="text-xl font-bold">{sub.subtitle}</h3>
+                <p>{sub.content}</p> {/* Mostra il contenuto associato al sottotitolo */}
+              </div>
+            ))}
+            {item.thesis && (
+              <>
+                <h3 className="mt-4 font-bold">Tesi</h3>
+                <p>{item.thesis}</p>
+              </>
+            )}
+            {item.conclusion && (
+              <>
+                <h3 className="mt-4 font-bold">Conclusione</h3>
+                <p>{item.conclusion}</p>
+              </>
+            )}
+          </div>
+        ))}
+
 
         <button
           className="border-2 p-2 font-bold transition-colors duration-300 w-full md:w-auto mt-4"
