@@ -24,10 +24,10 @@ Una barra di ricerca permette agli utenti di trovare contenuti specifici all'int
 
 L'applicazione consente agli utenti di prenotare ticket per eventi e attività. Il sistema di prenotazione offre le seguenti funzionalità:
 
-### 1. Selezione della Data e Orario
+### 1. 🕒 Selezione della Data e Orario
 Gli utenti possono scegliere la data e l'orario preferito per partecipare all'evento direttamente dall'interfaccia dell'applicazione.
 
-### 2. Numero di Biglietti
+### 2. 🔢 Numero di Biglietti
 Possibilità di selezionare il numero di biglietti che si desidera acquistare.
 
 ### 3. 📧 Email di Conferma
