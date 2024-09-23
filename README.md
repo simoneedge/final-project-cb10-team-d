@@ -76,8 +76,8 @@ L'applicazione prevede due livelli di accesso:
 - **React**: Libreria JavaScript per la costruzione di interfacce utente dinamiche.
 - **Tailwind CSS**: Framework CSS per uno sviluppo rapido e modulare dello stile.
 - **Firebase**: Utilizzato per l'autenticazione e la gestione del database.
-- **OpenAI API**: Per la generazione automatica degli articoli proposti dagli utenti.
-- **Librerie e Framework Moderni:** Utilizzo di librerie JavaScript avanzate per ottimizzare performance, animazioni e UX.
+- **GeminiAI API**: Per la generazione automatica degli articoli proposti dagli utenti.
+- **Typescript:** Superinsieme di JavaScript che migliora la sicurezza e la manutenibilità del codice grazie alla tipizzazione statica.
 - **Vercel**: Piattaforma di hosting per applicazioni Next.js, utilizzata per il deploy dell'applicazione.
 
 ## 🗂️ Struttura del Progetto
