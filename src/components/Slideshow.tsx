@@ -13,15 +13,8 @@ interface SlideshowProps {
 const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Usa useCallback per memorizzare nextSlide e prevSlide
   const nextSlide = useCallback(() => {
     setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
-  }, [images.length]);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prevSlide) =>
-      prevSlide === 0 ? images.length - 1 : prevSlide - 1
-    );
   }, [images.length]);
 
   useEffect(() => {
@@ -35,7 +28,7 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
   }, [nextSlide]); // nextSlide ora è stabile e non cambia ad ogni render
 
   return (
-    <div className="relative w-full h-[553px] md:h-[500px] lg:h-[600px] mb-10 font-titolo">
+    <div className="relative w-full h-[553px] md:h-[500px] lg:h-[590px] mb-10 font-titolo">
       {/* Slideshow container */}
       {images.map((slide, index) => (
         <div
@@ -51,30 +44,16 @@ const Slideshow: React.FC<SlideshowProps> = ({ images }) => {
           <div className="w-full h-full object-cover">
             <Image
               src={slide.src || "/placeholder-image.png"}
-              alt={slide.title || "immagine senza titolo"} // Testo alternativo
+              alt={slide.title || "immagine senza titolo"}
               layout="fill"
-              objectFit="cover" // Simile a object-cover su <img />
+              objectFit="cover" 
             />
           </div>
-          <div className="absolute bottom-0 left-0 w-full text-center text-white text-xl p-4 bg-black bg-opacity-60">
-            {slide.title}
+          <div className="absolute bottom-0 left-0 w-full text-center text-white text-2xl p-4 bg-black bg-opacity-60">
+            Il battito culturale della Sicilia 
           </div>
         </div>
       ))}
-
-      {/* Next and previous buttons */}
-      <button
-        className="absolute top-1/2 left-0 transform -translate-y-1/2 p-4 text-white font-bold text-lg bg-black bg-opacity-50 hover:bg-opacity-75 cursor-pointer"
-        onClick={prevSlide}
-      >
-        &#10094;
-      </button>
-      <button
-        className="absolute top-1/2 right-0 transform -translate-y-1/2 p-4 text-white font-bold text-lg bg-black bg-opacity-50 hover:bg-opacity-75 cursor-pointer"
-        onClick={nextSlide}
-      >
-        &#10095;
-      </button>
     </div>
   );
 };
