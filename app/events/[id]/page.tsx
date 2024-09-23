@@ -195,7 +195,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           style={{ backgroundColor: event.color }}
         >
           <div className="max-w-5xl mx-auto px-5">
-            <h1 className="text-white text-4xl font-titolo text-left">
+            <h1 className="text-white text-4xl font-titolo text-left leading-[50px] ">
               {event.title}
             </h1>
           </div>
@@ -253,26 +253,24 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         <p className="mt-6">{event?.description}</p>
 
         {article.map((item, index) => (
-          <div key={index}>
-            <h2 className="text-2xl font-bold mt-4">{item.title}</h2>
+          <div className="mb-4" key={index}>
+            <h2 className="text-3xl font-titolo mt-8 mb-4  text-rosso">{item.title}</h2>
             <p>{item.introduction}</p> {/* Mostra l'introduzione dell'articolo */}
 
             {item.sections.map((sub, subIndex) => (
-              <div key={subIndex} className="mt-4">
-                <h3 className="text-xl font-bold">{sub.subtitle}</h3>
+              <div key={subIndex} className="">
+                <h3 className="mt-4 mb-2 text-xl font-medium font-text  text-black text-left">{sub.subtitle}</h3>
                 <p>{sub.content}</p> {/* Mostra il contenuto associato al sottotitolo */}
               </div>
             ))}
             {item.thesis && (
               <>
-                <h3 className="mt-4 font-bold">Tesi</h3>
-                <p>{item.thesis}</p>
+                <p className="my-4">{item.thesis}</p>
               </>
             )}
             {item.conclusion && (
               <>
-                <h3 className="mt-4 font-bold">Conclusione</h3>
-                <p>{item.conclusion}</p>
+                <p className="my-4">{item.conclusion}</p>
               </>
             )}
           </div>
