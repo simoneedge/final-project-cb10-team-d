@@ -1,10 +1,10 @@
-# 🌍 SiciliPulse
+# 🌍 SicilyPulse
 
 ## Panoramica del Progetto
 
-SiciliPulse è una piattaforma digitale innovativa che cattura il "battito" culturale della Sicilia, offrendo un'esperienza utente personalizzata e coinvolgente. Grazie all'integrazione di funzionalità avanzate e tecnologie moderne, SiciliPulse mira a diventare il punto di riferimento per contenuti interattivi, informazioni locali e coinvolgimento della community.
+SicilyPulse è una piattaforma digitale innovativa che cattura il "battito" culturale della Sicilia, offrendo un'esperienza utente personalizzata e coinvolgente. Grazie all'integrazione di funzionalità avanzate e tecnologie moderne, SicilyPulse mira a diventare il punto di riferimento per contenuti interattivi, informazioni locali e coinvolgimento della community.
 
-## Caratteristiche Principali di SiciliPulse
+## Caratteristiche Principali di SicilyPulse
 
 ### Iscrizione e Fidelizzazione Utente
 - Creazione di profili utente per accedere a funzionalità esclusive.
@@ -32,7 +32,7 @@ SiciliPulse è una piattaforma digitale innovativa che cattura il "battito" cult
 - **Librerie e Framework Moderni:** Utilizzo di librerie JavaScript avanzate per ottimizzare performance, animazioni e UX.
 
 ## Visione di SiciliPulse
-SiciliPulse è una piattaforma innovativa che mette l’utente al centro, offrendo un’esperienza su misura grazie all’uso dell’intelligenza artificiale. Il progetto punta a diventare un riferimento per l’informazione accessibile, divertente e coinvolgente, con un focus su una community attiva e inclusiva.
+SicilyPulse è una piattaforma innovativa che mette l’utente al centro, offrendo un’esperienza su misura grazie all’uso dell’intelligenza artificiale. Il progetto punta a diventare un riferimento per l’informazione accessibile, divertente e coinvolgente, con un focus su una community attiva e inclusiva.
 
 ## Struttura del Progetto
 ![Albero](albero.png)
