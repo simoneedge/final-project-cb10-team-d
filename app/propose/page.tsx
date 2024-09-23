@@ -5,12 +5,21 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
+import Image from "next/image";
+
+
+const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
+  // Chiave API Pexels
+  const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
+  const query = keywords.join("+");
+  const url = ` https://api.pexels.com/v1/search?query=${query}&per_page=1`;
 
 // Funzione per ottenere immagini da Pexels
 const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
   const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
   const query = keywords.join("+");
   const url = `https://api.pexels.com/v1/search?query=${query}&per_page=1`;
+
 
   try {
     const response = await fetch(url, {
@@ -27,7 +36,6 @@ const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
     return "";
   }
 };
-
 // Funzione per formattare la data
 const formatDate = (date: string) => {
   const [year, month, day] = date.split("-");
@@ -49,7 +57,9 @@ export default function ProposePage() {
 
   const [article, setArticle] = useState<string>(""); // Stato per l'articolo generato
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const [isGeneratingArticle, setIsGeneratingArticle] = useState<boolean>(false);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [color, setColor] = useState<string>("");
@@ -93,14 +103,13 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    
+
     const keywords = [
       formData.title,
       formData.description,
       formData.location,
-      ...formData.tag, 
+      ...formData.tag,
     ];
-    
     const imageUrl = await fetchPexelsImage(keywords);
 
     const finalFormData = {
@@ -240,11 +249,15 @@ export default function ProposePage() {
                 {new Date().toLocaleDateString("it-IT")}
               </p>
               {formData.image && (
-                <img
-                  src={formData.image}
-                  alt="Articolo"
-                  className="w-full h-auto mb-4 rounded-lg shadow-lg"
-                />
+                <div className="relative w-full h-[60vh]">
+                  <Image
+                    src={formData.image || "/placeholder-image.png"}
+                    alt="Articolo"
+                    layout="fill"
+                    objectFit="cover"
+                    priority={true}
+                  />
+                </div>
               )}
               <div className="text-gray-700">
                 <p>{article}</p>
@@ -252,7 +265,7 @@ export default function ProposePage() {
             </div>
           ) : null}
         </div>
-        <ToastContainer containerId="toastPropose"/>
+        <ToastContainer containerId="toastPropose" />
       </div>
     </div>
   );

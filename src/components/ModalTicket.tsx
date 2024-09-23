@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faClock, faEnvelope, faUser, faTicketAlt } from '@fortawesome/free-solid-svg-icons';
-import Loading from '@/src/components/Loading';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // Importa il CSS della libreria
+import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarAlt,
+  faClock,
+  faEnvelope,
+  faUser,
+  faTicketAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import Loading from "@/src/components/Loading";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; // Importa il CSS della libreria
 
 // Definisce il tipo per il parametro dateString
 const parseDate = (dateString: string): Date => {
@@ -27,12 +33,18 @@ interface ModalTicketProps {
   dateEnd: string;
 }
 
-const ModalTicket: React.FC<ModalTicketProps> = ({ isOpen, onClose, onSubmit, dateStart, dateEnd }) => {
+const ModalTicket: React.FC<ModalTicketProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  dateStart,
+  dateEnd,
+}) => {
   const initialFormState = {
     data: null as Date | null, // Cambia a Date | null per supportare DatePicker e l'assegnazione di Date
-    eta: 'adulti',
-    orario: '',
-    email: '',
+    eta: "adulti",
+    orario: "",
+    email: "",
     numeroBiglietti: 1,
   };
 
@@ -59,9 +71,9 @@ const ModalTicket: React.FC<ModalTicketProps> = ({ isOpen, onClose, onSubmit, da
     setIsLoading(true);
     try {
       await onSubmit(formData);
-      toast.success('Prenotazione effettuata con successo!');
+      toast.success("Prenotazione effettuata con successo!");
     } catch (error) {
-      toast.error('Errore durante l\'invio della prenotazione.');
+      toast.error("Errore durante l'invio della prenotazione.");
     } finally {
       setIsLoading(false);
       resetForm();
@@ -76,7 +88,7 @@ const ModalTicket: React.FC<ModalTicketProps> = ({ isOpen, onClose, onSubmit, da
   // Funzione per disabilitare la chiusura cliccando all'esterno durante il caricamento
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (isLoading) return; // Ignora il clic se c'è il caricamento in corso
-    if ((e.target as HTMLElement).className.includes('modal')) {
+    if ((e.target as HTMLElement).className.includes("modal")) {
       onClose();
     }
   };
@@ -90,6 +102,7 @@ const ModalTicket: React.FC<ModalTicketProps> = ({ isOpen, onClose, onSubmit, da
     >
       <div className="modal-content relative p-6 shadow-lg bg-white w-full max-w-md mx-auto" style={{ borderRadius: '0' }}>
         <h2 className="font-titolo text-2xl text-rosso mb-4">Prenota il ticket</h2>
+
         {isLoading ? (
           <Loading />
         ) : (
@@ -100,14 +113,18 @@ const ModalTicket: React.FC<ModalTicketProps> = ({ isOpen, onClose, onSubmit, da
                 <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-600" />
                 <label className="flex-">Data:</label>
                 <span className="flex-1 p-2 border">{dateStart}</span> {/* Mostra la data come testo */}
+
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-600" />
+                <FontAwesomeIcon
+                  icon={faCalendarAlt}
+                  className="text-gray-600"
+                />
                 <label className="flex-1">Data:</label>
                 <DatePicker
                   selected={formData.data}
-                  onChange={(date: Date | null) => handleChange('data', date)} // Modifica per accettare Date | null
+                  onChange={(date: Date | null) => handleChange("data", date)} // Modifica per accettare Date | null
                   minDate={minDate}
                   maxDate={maxDate}
                   dateFormat="yyyy-MM-dd"

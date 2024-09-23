@@ -1,6 +1,6 @@
 "use client";
 import { getDayOfYear } from "@/data/getDayOfYear";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Card from "@/src/components/Card";
 import ScrollToTopButton from "@/src/components/ScrollToTopButton";
 import { IEvent } from "./(models)/Event";
@@ -83,7 +83,7 @@ const HomePage: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,59 +150,66 @@ const HomePage: React.FC = () => {
     applyFilters(searchQuery, isFree, 0, nextMonday, nextSunday);
   };
 
-  const applyFilters = (
-    query: string,
-    isFree: boolean,
-    dayOfYear: number,
-    startNextWeek?: number,
-    endNextWeek?: number
-  ) => {
-    let filtered = events;
+  const applyFilters = useCallback(
+    (
+      query: string,
+      isFree: boolean,
+      dayOfYear: number,
+      startNextWeek?: number,
+      endNextWeek?: number
+    ) => {
+      let filtered = events;
 
-    filtered = filtered.filter(
-      (event) =>
-        Boolean(event.reviewed) === true || event.reviewed === undefined
-    );
-
-    if (query !== "") {
       filtered = filtered.filter(
         (event) =>
-          event.title?.toLowerCase().includes(query.toLowerCase()) ||
-          event.location?.toLowerCase().includes(query.toLowerCase()) ||
-          event.tag?.some((tag) =>
-            tag.toLowerCase().includes(query.toLowerCase())
-          )
+          Boolean(event.reviewed) === true || event.reviewed === undefined
       );
-    }
 
-    if (isFree) {
-      filtered = filtered.filter((event) => event.price === "0");
-    }
+      if (query !== "") {
+        filtered = filtered.filter(
+          (event) =>
+            event.title?.toLowerCase().includes(query.toLowerCase()) ||
+            event.location?.toLowerCase().includes(query.toLowerCase()) ||
+            event.tag?.some((tag) =>
+              tag.toLowerCase().includes(query.toLowerCase())
+            )
+        );
+      }
 
-    if (dayOfYear) {
-      filtered = filtered.filter((event) => {
-        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
-        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+      if (isFree) {
+        filtered = filtered.filter((event) => event.price === "0");
+      }
 
-        return dayOfYear >= startEvent && dayOfYear <= endEvent;
-      });
-    }
+      if (dayOfYear) {
+        filtered = filtered.filter((event) => {
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
+          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
 
-    if (startNextWeek !== undefined && endNextWeek !== undefined) {
-      filtered = filtered.filter((event) => {
-        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
-        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-        return startEvent <= endNextWeek && endEvent >= startNextWeek;
-      });
-    }
+          return dayOfYear >= startEvent && dayOfYear <= endEvent;
+        });
+      }
 
-    setFilteredEvents(filtered);
-    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
-  };
+      if (startNextWeek !== undefined && endNextWeek !== undefined) {
+        filtered = filtered.filter((event) => {
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
+          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+          return startEvent <= endNextWeek && endEvent >= startNextWeek;
+        });
+      }
+
+      setFilteredEvents(filtered);
+      setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
+    },
+    [events]
+  );
 
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
-  }, [events, searchQuery, isFree, today, startNextWeek, endNextWeek]);
+  }, [applyFilters, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
   const handleResetFilters = () => {
     setSearchQuery("");

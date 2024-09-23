@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { db } from "@/firebaseconfig"; // Importa db per Firestore
@@ -45,18 +45,18 @@ const NavBar = ({ links = [] }: NavBarProps) => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const idAdminRole = async () => {
+  const idAdminRole = useCallback(async () => {
     if (user) {
       const role = await fetchUserRole(user.email);
       if (role === "admin") {
         setIsAdmin(true); // Se il ruolo è admin, imposta lo stato isAdmin a true
       }
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     idAdminRole();
-  }, [user]);
+  }, [user, idAdminRole]);
 
   const pathname = usePathname();
   // Funzione per recuperare i dati dell'utente da Firestore
@@ -103,7 +103,7 @@ const NavBar = ({ links = [] }: NavBarProps) => {
     });
 
     return () => unsubscribe();
-  }, [router, links]);
+  }, [router, links, auth]);
 
   // Funzione che ascolta l'evento e aggiorna lo stato
   useEffect(() => {

@@ -77,8 +77,8 @@ const ProfilePage = () => {
         const userData = userDoc.data();
         setUserName(userData.firstName);
         setUserLastName(userData.lastName);
-        setNewFirstName(userData.firstName); 
-        setNewLastName(userData.lastName); 
+        setNewFirstName(userData.firstName);
+        setNewLastName(userData.lastName);
       } else {
         toast.error("No user data found!");
       }
@@ -94,7 +94,7 @@ const ProfilePage = () => {
         setUserEmail(user.email);
         fetchUserData(user.uid);
         fetchCards(user.email);
-        fetchFavorites(user.email);  // Aggiungi qui la fetch dei preferiti
+        fetchFavorites(user.email); // Aggiungi qui la fetch dei preferiti
       } else {
         router.push("/");
       }
@@ -124,7 +124,9 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.error("Errore durante la disattivazione dell'account:", error);
-      toast.error("Si è verificato un errore durante la disattivazione dell'account.");
+      toast.error(
+        "Si è verificato un errore durante la disattivazione dell'account."
+      );
     }
   };
 
@@ -135,33 +137,42 @@ const ProfilePage = () => {
     }
   }, [userEmail, fetchCards]);
 
-   // Funzione per aggiornare i dati utente
-const handleSaveChanges = async () => {
-  try {
-    const user = auth.currentUser;
+  // Funzione per aggiornare i dati utente
+  const handleSaveChanges = async () => {
+    try {
+      const user = auth.currentUser;
 
-    if (user && newFirstName && newLastName) {
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, { firstName: newFirstName, lastName: newLastName });
+      if (user && newFirstName && newLastName) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          firstName: newFirstName,
+          lastName: newLastName,
+        });
 
-      // Aggiorna lo stato con i nuovi dati
-      setUserName(newFirstName);
-      setUserLastName(newLastName);
+        // Aggiorna lo stato con i nuovi dati
+        setUserName(newFirstName);
+        setUserLastName(newLastName);
 
-      // Triggera l'evento per aggiornare la navbar
-      window.dispatchEvent(new CustomEvent('userNameUpdated', { detail: { newName: newFirstName } }));
+        // Triggera l'evento per aggiornare la navbar
+        window.dispatchEvent(
+          new CustomEvent("userNameUpdated", {
+            detail: { newName: newFirstName },
+          })
+        );
 
-      // Mostra un toast di successo
-      toast.success("Dati aggiornati con successo!");
+        // Mostra un toast di successo
+        toast.success("Dati aggiornati con successo!");
 
-      // Esce dalla modalità di modifica
-      setEditMode(false);
+        // Esce dalla modalità di modifica
+        setEditMode(false);
+      }
+    } catch (error) {
+      console.error("Errore durante l'aggiornamento dei dati:", error);
+      toast.error(
+        "Si è verificato un errore durante l'aggiornamento dei dati."
+      );
     }
-  } catch (error) {
-    console.error("Errore durante l'aggiornamento dei dati:", error);
-    toast.error("Si è verificato un errore durante l'aggiornamento dei dati.");
-  }
-};
+  };
 
   // Funzione per mostrare o nascondere l'accordion
   const toggleAccordion = () => {
@@ -230,7 +241,9 @@ const handleSaveChanges = async () => {
                   />
                 </div>
                 <div className="mt-2">
-                  <label className="font-semibold text-gray-700">Cognome:</label>
+                  <label className="font-semibold text-gray-700">
+                    Cognome:
+                  </label>
                   <input
                     type="text"
                     value={newLastName || ""}
@@ -287,9 +300,10 @@ const handleSaveChanges = async () => {
             Proponi evento
           </button>
         </Link>
-
       </div>
-      <h3 className="mt-8 mb-8 text-3xl font-titolo text-rosso">Eventi Preferiti</h3>
+      <h3 className="mt-8 mb-8 text-3xl font-titolo text-rosso">
+        Eventi Preferiti
+      </h3>
       {/* Cards */}
       <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
         {cards.map((card, index) => (
@@ -299,7 +313,7 @@ const handleSaveChanges = async () => {
           >
             <Card
               eventId={card.id}
-              key={card.title}  // Usa il titolo come chiave univoca
+              key={card.title} // Usa il titolo come chiave univoca
               backgroundColor={card.color}
               title={card.title || "No title available"}
               imageSrc={card.image || "default-image-url"}
@@ -308,26 +322,27 @@ const handleSaveChanges = async () => {
                   <ArrowButton />
                 </Link>
               }
-              dateStart = {card.dateStart}
-              dateEnd = {card.dateEnd}
-              isLiked={favoriteEventTitle.includes(card.title)}  // Usa il titolo per controllare se è piaciuto
+              dateStart={card.dateStart}
+              dateEnd={card.dateEnd}
+              isLiked={favoriteEventTitle.includes(card.title)} // Usa il titolo per controllare se è piaciuto
               onHeartClick={async () => {
                 await fetchFavorites(getAuth().currentUser?.email || ""); // Ricarica i preferiti dopo il click
-                handleUpdate();  // Aggiorna anche le card
+                handleUpdate(); // Aggiorna anche le card
               }}
             />
           </div>
         ))}
-
-
       </div>
       {/* Modale di conferma eliminazione account */}
       {showDeleteModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
-            <h3 className="text-xl font-bold text-red-600 mb-4">Conferma eliminazione</h3>
+            <h3 className="text-xl font-bold text-red-600 mb-4">
+              Conferma eliminazione
+            </h3>
             <p className="text-gray-700 mb-6">
-              Sei sicuro di voler eliminare il tuo account? Questa operazione è irreversibile.
+              Sei sicuro di voler eliminare il tuo account? Questa operazione è
+              irreversibile.
             </p>
             <div className="flex justify-end space-x-4">
               <button
