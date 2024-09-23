@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Loading from "../../../src/components/Loading"; // Importa il componente di loading
+import Image from "next/image";
 
 interface Event {
   _id: string;
@@ -78,11 +79,17 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
     <div className="min-h-screen bg-gray-100">
       {/* Immagine dell'evento */}
       {event?.image && (
-        <img
-          src={event.image}
-          alt={event.title}
-          className="w-full h-[60vh] object-cover"
-        />
+        <div className="relative w-full h-[60vh]">
+          {" "}
+          {/* Aggiungi relative qui */}
+          <Image
+            src={event.image || "/placeholder-image.png"}
+            alt={event.title || "immagine senza titolo"} // Testo alternativo
+            layout="fill" // Riempi il contenitore
+            objectFit="cover" // Mantenere l'effetto cover
+            priority={true} // Aggiungi priority se è importante per il caricamento rapido
+          />
+        </div>
       )}
 
       {/* Rettangolo rosso con titolo */}

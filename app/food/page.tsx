@@ -1,7 +1,7 @@
 "use client";
 
 import Card from "@/src/components/Card";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IEvent } from "../(models)/Event";
 import Link from "next/link";
 import ArrowButton from "@/src/components/ArrowButton";
@@ -134,65 +134,72 @@ export default function FoodPage() {
   };
 
   // Funzione per applicare i filtri agli eventi
-  const applyFilters = (
-    query: string,
-    isFree: boolean,
-    dayOfYear: number,
-    startNextWeek?: number,
-    endNextWeek?: number
-  ) => {
-    let filtered = foods;
-    filtered = filtered.filter(
-      (event) =>
-        Boolean(event.reviewed) === true || event.reviewed === undefined
-    );
-    filtered = filtered.filter((event) => event.color === "#822225");
-
-    // Filtro per la query di ricerca
-    if (query !== "") {
+  const applyFilters = useCallback(
+    (
+      query: string,
+      isFree: boolean,
+      dayOfYear: number,
+      startNextWeek?: number,
+      endNextWeek?: number
+    ) => {
+      let filtered = foods;
       filtered = filtered.filter(
         (event) =>
-          event.title?.toLowerCase().includes(query.toLowerCase()) ||
-          event.location?.toLowerCase().includes(query.toLowerCase()) ||
-          event.tag?.some((tag) =>
-            tag.toLowerCase().includes(query.toLowerCase())
-          )
+          Boolean(event.reviewed) === true || event.reviewed === undefined
       );
-    }
+      filtered = filtered.filter((event) => event.color === "#822225");
 
-    // Filtro per eventi gratuiti
-    if (isFree) {
-      filtered = filtered.filter((event) => event.price === "0");
-    } else {
-      filtered = filtered.filter((event) => event.price !== "0");
-    }
+      // Filtro per la query di ricerca
+      if (query !== "") {
+        filtered = filtered.filter(
+          (event) =>
+            event.title?.toLowerCase().includes(query.toLowerCase()) ||
+            event.location?.toLowerCase().includes(query.toLowerCase()) ||
+            event.tag?.some((tag) =>
+              tag.toLowerCase().includes(query.toLowerCase())
+            )
+        );
+      }
 
-    // Filtro per il giorno specifico
-    if (dayOfYear) {
-      filtered = filtered.filter((event) => {
-        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
-        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-        return dayOfYear >= startEvent && dayOfYear <= endEvent;
-      });
-    }
+      // Filtro per eventi gratuiti
+      if (isFree) {
+        filtered = filtered.filter((event) => event.price === "0");
+      } else {
+        filtered = filtered.filter((event) => event.price !== "0");
+      }
 
-    // Filtro per la prossima settimana
-    if (startNextWeek !== undefined && endNextWeek !== undefined) {
-      filtered = filtered.filter((event) => {
-        const startEvent = event.dateStart ? getDayOfYear(event.dateStart) : -1;
-        const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
-        return startEvent <= endNextWeek && endEvent >= startNextWeek;
-      });
-    }
+      // Filtro per il giorno specifico
+      if (dayOfYear) {
+        filtered = filtered.filter((event) => {
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
+          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+          return dayOfYear >= startEvent && dayOfYear <= endEvent;
+        });
+      }
 
-    setFilteredEvents(filtered);
-    setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
-  };
+      // Filtro per la prossima settimana
+      if (startNextWeek !== undefined && endNextWeek !== undefined) {
+        filtered = filtered.filter((event) => {
+          const startEvent = event.dateStart
+            ? getDayOfYear(event.dateStart)
+            : -1;
+          const endEvent = event.dateEnd ? getDayOfYear(event.dateEnd) : -1;
+          return startEvent <= endNextWeek && endEvent >= startNextWeek;
+        });
+      }
+
+      setFilteredEvents(filtered);
+      setVisibleEvents(filtered.slice(0, ITEMS_PER_PAGE)); // Mostra solo i primi 12 eventi
+    },
+    [foods]
+  );
 
   // Applica i filtri quando gli stati cambiano
   useEffect(() => {
     applyFilters(searchQuery, isFree, today, startNextWeek, endNextWeek);
-  }, [foods, searchQuery, isFree, today, startNextWeek, endNextWeek]);
+  }, [applyFilters, searchQuery, isFree, today, startNextWeek, endNextWeek]);
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -224,7 +231,7 @@ export default function FoodPage() {
         onResetFilters={handleResetFilters}
       />
 
-      <div className="card-container grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 items-start  mb-10">
+      <div className="card-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 items-start mb-10">
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {loading ? (
           <Loading />

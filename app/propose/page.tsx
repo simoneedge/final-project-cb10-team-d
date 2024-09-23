@@ -5,25 +5,28 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/src/components/Modal";
+import Image from "next/image";
 
-// Funzione per ottenere immagini da Unsplash
-const fetchUnsplashImage = async (keywords: string[]): Promise<string> => {
-  const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_KEY;
+const fetchPexelsImage = async (keywords: string[]): Promise<string> => {
+  // Chiave API Pexels
+  const accessKey = process.env.NEXT_PUBLIC_PEXELS_KEY || ""; // Chiave API Pexels
   const query = keywords.join("+");
-  const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=1&client_id=${accessKey}`;
-
+  const url = ` https://api.pexels.com/v1/search?query=${query}&per_page=1`;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        Authorization: accessKey,
+      },
+    });
     const data = await response.json();
-    return data.results && data.results.length > 0
-      ? data.results[0].urls.regular
+    return data.photos && data.photos.length > 0
+      ? data.photos[0].src.medium
       : "";
   } catch (error) {
-    console.error("Errore nella fetch di Unsplash", error);
+    console.error("Errore nella fetch di Pexels", error);
     return "";
   }
 };
-
 // Funzione per formattare la data
 const formatDate = (date: string) => {
   const [year, month, day] = date.split("-");
@@ -45,6 +48,7 @@ export default function ProposePage() {
 
   const [article, setArticle] = useState<string>(""); // Stato per l'articolo generato
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const [isGeneratingArticle, setIsGeneratingArticle] =
     useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -92,8 +96,13 @@ export default function ProposePage() {
       dateEnd: formatDate(formData.dateEnd),
     };
 
-    const keywords = [formData.location, formData.title, formData.location];
-    const imageUrl = await fetchUnsplashImage(keywords);
+    const keywords = [
+      formData.title,
+      formData.description,
+      formData.location,
+      ...formData.tag,
+    ];
+    const imageUrl = await fetchPexelsImage(keywords);
 
     const finalFormData = {
       ...formattedData,
@@ -231,11 +240,15 @@ export default function ProposePage() {
                 {new Date().toLocaleDateString("it-IT")}
               </p>
               {formData.image && (
-                <img
-                  src={formData.image}
-                  alt="Articolo"
-                  className="w-full h-auto mb-4 rounded-lg shadow-lg"
-                />
+                <div className="relative w-full h-[60vh]">
+                  <Image
+                    src={formData.image || "/placeholder-image.png"}
+                    alt="Articolo"
+                    layout="fill"
+                    objectFit="cover"
+                    priority={true}
+                  />
+                </div>
               )}
               <div className="text-gray-700">
                 <p>{article}</p>
@@ -243,7 +256,7 @@ export default function ProposePage() {
             </div>
           ) : null}
         </div>
-        <ToastContainer containerId="toastPropose"/>
+        <ToastContainer containerId="toastPropose" />
       </div>
     </div>
   );
