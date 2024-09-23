@@ -78,6 +78,7 @@ export default function FoodPage() {
         const data = await fetchData();
         setFoods(data.events);
         setFilteredEvents(data.events);
+        setLoading(false);
         // Recupera i preferiti se l'utente è autenticato
 
         const auth = getAuth();
@@ -91,8 +92,6 @@ export default function FoodPage() {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
         }
-      } finally {
-        setLoading(false);
       }
     };
 

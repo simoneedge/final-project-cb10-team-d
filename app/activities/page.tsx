@@ -75,6 +75,7 @@ export default function AttivitaPage() {
         const data = await fetchData();
         setActivities(data.events);
         setFilteredEvents(data.events);
+        setLoading(false);
         // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
         const user = auth.currentUser;
@@ -87,8 +88,6 @@ export default function AttivitaPage() {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
         }
-      } finally {
-        setLoading(false);
       }
     };
     loadData();

@@ -77,6 +77,26 @@ const HomePage: React.FC = () => {
   /* commento */
 
   useEffect(() => {
+    // Filtro gli eventi che sono stati "reviewed"
+    const reviewedEvents = events.filter(
+      (event) => event.reviewed === true /* || event.reviewed === undefined */
+    );
+
+    // Prendo eventi casuali tra quelli che sono stati filtrati
+    const randomSlides = getRandomSlides(reviewedEvents, 5);
+
+    // Estraggo le immagini e i titoli dagli eventi filtrati
+    const images = randomSlides.map((event) => ({
+      src:
+        event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
+      title: event.title || "Default Title",
+    }));
+
+    setSlideshowImages(images);
+  }, [events]);
+
+
+  useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser: User | null) => {
       setUser(currentUser);
@@ -93,6 +113,7 @@ const HomePage: React.FC = () => {
         const data = await fetchEvents();
         setEvents(data.events);
         setFilteredEvents(data.events);
+        setLoading(false);
 
         const auth = getAuth();
         const user = auth.currentUser;
@@ -102,8 +123,6 @@ const HomePage: React.FC = () => {
         }
       } catch (error) {
         setErrorMessage("Failed to load data.");
-      } finally {
-        setLoading(false);
       }
     };
 

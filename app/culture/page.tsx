@@ -78,6 +78,7 @@ export default function CulturePage() {
         const data = await fetchData();
         setCultures(data.events);
         setFilteredEvents(data.events);
+        setLoading(false);
         // Recupera i preferiti se l'utente è autenticato
         const auth = getAuth();
         const user = auth.currentUser;
@@ -90,8 +91,6 @@ export default function CulturePage() {
         if (error instanceof Error) {
           setErrorMessage("Failed to load data.");
         }
-      } finally {
-        setLoading(false);
       }
     };
     loadData();
