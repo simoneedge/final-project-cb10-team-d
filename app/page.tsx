@@ -74,7 +74,6 @@ const HomePage: React.FC = () => {
       console.error("Error fetching favorites:", error);
     }
   };
-  /* commento */
 
   useEffect(() => {
     // Filtro gli eventi che sono stati "reviewed"

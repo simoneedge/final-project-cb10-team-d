@@ -185,6 +185,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
             layout="fill" // Riempi il contenitore
             objectFit="cover" // Mantenere l'effetto cover
             priority={true} // Aggiungi priority se è importante per il caricamento rapido
+
           />
         </div>
       )}
