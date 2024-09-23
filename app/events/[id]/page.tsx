@@ -21,57 +21,49 @@ interface Event {
   arrayImageArticle?: string[];
 }
 
-function parseTextToObject(text: string, setArticle: Dispatch<SetStateAction<{ title: string; subtitles: { subtitle: string; content: string }[]; content: string }[]>>): void {
-  const lines = text.split('\n').map(line => line.trim());
-  console.log(lines);
-  const result: { title: string; subtitles: { subtitle: string; content: string }[]; content: string }[] = [];
-  let currentTitle = '';
-  let currentSubtitles: { subtitle: string; content: string }[] = [];
-  let currentContent = '';
-
-  lines.forEach(line => {
-    if (line.startsWith('### ')) {
-      // Aggiungi l'oggetto corrente se esiste
-      if (currentTitle) {
-        result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
-      }
-      currentTitle = line.replace('### ', '').trim();
-      currentSubtitles = []; // Resetta gli sottotitoli
-      currentContent = ''; // Resetta il contenuto
-    } else if (line.startsWith('## ')) {
-      // Aggiungi l'oggetto corrente se esiste
-      if (currentTitle) {
-        result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
-      }
-      currentTitle = line.replace('## ', '').trim();
-      currentSubtitles = []; // Resetta gli sottotitoli
-      currentContent = ''; // Resetta il contenuto
-    } else if (line.startsWith('**')) {
-      // Aggiungi il sottotitolo e il contenuto relativo all'array
-      const subtitle = line.replace(/\*\*/g, '').trim();
-      currentSubtitles.push({ subtitle, content: '' }); // Inizializza il contenuto per il sottotitolo
-    } else if (line.startsWith('* ')) {
-      // Skip standalone '*' lines
-      return;
-    } else if (line) {
-      // Aggiungi il contenuto al sottotitolo più recente
-      const lastIndex = currentSubtitles.length - 1;
-      if (lastIndex >= 0) {
-        currentSubtitles[lastIndex].content += line + ' '; // Aggiungi il contenuto
-      } else {
-        currentContent += line + ' '; // Aggiungi al contenuto principale se non ci sono sottotitoli
-      }
-    }
-  });
-
-  // Aggiungi l'ultimo oggetto se esiste
-  if (currentTitle) {
-    result.push({ title: currentTitle, subtitles: currentSubtitles, content: currentContent.trim() });
-  }
-
-  console.log(result);
-  setArticle(result);
+interface Section {
+  subtitle: string;
+  content: string;
 }
+
+interface Article {
+  title: string;
+  introduction: string;
+  sections: Section[];
+  thesis?: string;       // Se non sono sempre presenti, usali come optional
+  conclusion?: string;  // Se non sono sempre presenti, usali come optional
+}
+function parseArticles(input: string, setArticle: Dispatch<SetStateAction<Article[]>>): void {
+  const articles = input.split(/## Articolo \d+: /).filter(Boolean);
+
+  const parsedArticles = articles.map(article => {
+    const jsonMatch = article.match(/```json\s*([\s\S]*?)```/);
+    if (!jsonMatch) return null;
+
+    try {
+      const jsonContent = JSON.parse(jsonMatch[1].trim());
+
+      return {
+        title: jsonContent.title,
+        introduction: jsonContent.introduction,
+        sections: jsonContent.sections.map((section: { subtitle: string; content: string }) => ({
+          subtitle: section.subtitle,
+          content: section.content
+        })),
+        thesis: jsonContent.thesis || '', // Gestisci il campo thesis come optional
+        conclusion: jsonContent.conclusion || '' // Gestisci il campo conclusion come optional
+      };
+    } catch (error) {
+      console.error("Errore nel parsing del JSON:", error);
+      return null;
+    }
+  }).filter(Boolean) as Article[];
+
+  setArticle(parsedArticles); // Imposta direttamente lo stato
+}
+
+
+
 
 const getData = async (id: string) => {
   try {
@@ -100,8 +92,13 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [article, setArticle] = useState<{ title: string; subtitles: { subtitle: string; content: string }[]; content: string }[]>([]);
-
+  const [article, setArticle] = useState<{
+    title: string;
+    introduction: string;
+    sections: { subtitle: string; content: string }[];
+    thesis: string;
+    conclusion: string;
+  }[]>([]);
 
   const goBack = () => {
     window.history.back();
@@ -114,7 +111,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         const fetchedEvent = await getData(id);
         setEvent(fetchedEvent);
         if (fetchedEvent?.article) {
-          parseTextToObject(fetchedEvent.article, setArticle); // Chiamata a formatArticle
+          parseArticles(fetchedEvent.article, setArticle); // Chiamata a formatArticle
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -246,14 +243,26 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
         {article.map((item, index) => (
           <div key={index}>
             <h2 className="text-2xl font-bold mt-4">{item.title}</h2>
-            {item.subtitles.map((sub, subIndex) => (
-              <div key={subIndex}>
-                <br />
+            <p>{item.introduction}</p> {/* Mostra l'introduzione dell'articolo */}
+
+            {item.sections.map((sub, subIndex) => (
+              <div key={subIndex} className="mt-4">
                 <h3 className="text-xl font-bold">{sub.subtitle}</h3>
-                <h4>{sub.content}</h4> {/* Mostra il contenuto associato al sottotitolo */}
+                <p>{sub.content}</p> {/* Mostra il contenuto associato al sottotitolo */}
               </div>
             ))}
-            <div>{item.content}</div>
+            {item.thesis && (
+              <>
+                <h3 className="mt-4 font-bold">Tesi</h3>
+                <p>{item.thesis}</p>
+              </>
+            )}
+            {item.conclusion && (
+              <>
+                <h3 className="mt-4 font-bold">Conclusione</h3>
+                <p>{item.conclusion}</p>
+              </>
+            )}
           </div>
         ))}
 

@@ -18,28 +18,16 @@ export async function POST(req: Request) {
       );
     }
     const prompt = `
-Scrivi un articolo giornalistico dettagliati su "${location}".
-Il primo articolo riguarda '${location}' e deve essere incentrato sul territorio, includendo aspetti naturalistici, storici, punti di interesse culturale e paesaggistico, attività all’aperto, ecc.
-Il secondo articolo riguarda '${title}' e deve analizzare l’evento descrivendo le sue caratteristiche principali. Realizza un articolo che esplori a fondo i dettagli dell’evento e approfondisca tutti gli aspetti principali indicati qui: ${description}.
+    Scrivi due articoli giornalistici dettagliati con la seguente struttura in formato JSON:
 
+    Articolo 1:
+    { "title": "Esplorazione di ${location}", "introduction": "Introduzione alla località.", "sections": [ { "subtitle": "Aspetti naturalistici", "content": "Descrivi gli aspetti naturalistici della località." }, { "subtitle": "Storia", "content": "Descrivi la storia della località." }, { "subtitle": "Punti di interesse", "content": "Descrivi i punti di interesse culturale e paesaggistico." }, { "subtitle": "Attività all'aperto", "content": "Descrivi le attività all'aperto." } ], "thesis": "Riflessione sul valore del territorio.", "conclusion": "Conclusione sull'importanza di preservare il patrimonio naturale e culturale." }
 
-Struttura dell'articolo (minimo 700 parole):
-1. Titolo dell'articolo: Usa un titolo accattivante che descriva in modo chiaro l'articolo.
-2. Introduzione (circa 50-100 parole): Scrivi una breve introduzione che catturi l’attenzione del lettore, con una panoramica sull'argomento.
-3. Descrizione dettagliata (circa 300-400 parole): Suddividi questa sezione in sottoargomenti che descrivano i punti salienti.
-    - Per l'articolo sul territorio, includi sottosezioni come:
-      - Aspetti naturalistici (es. flora, fauna, clima)
-      - Punti di interesse culturale (es. musei, monumenti storici)
-      - Attività e opportunità per i visitatori (es. escursioni, sport)
-    - Per l’articolo sull’evento, includi sottosezioni come:
-      - Caratteristiche principali dell'evento
-      - Obiettivi e scopo
-      - Pubblico di riferimento e target
-      - Location dell'evento e altre informazioni logistiche
-4. Tesi (circa 100-150 parole): Argomenta il perché l’argomento trattato sia interessante o importante per il pubblico.
-5. Conclusione (circa 50-100 parole): Chiudi l’articolo con una riflessione o una chiamata all’azione, invitando il lettore a visitare il luogo o partecipare all’evento.
-Il testo e i paragrafi devono essere di almeno 500-700 parole.
-`;
+    Articolo 2:
+    { "title": "${title}", "introduction": "Introduzione all'evento {title}.", "sections": [ { "subtitle": "Descrizione dell'evento", "content": "{description}" }, { "subtitle": "Dettagli principali", "content": "Data inizio: {dateStart}, Data fine: {dateEnd}, Categoria: {category}." } ], "thesis": "Impatto dell'evento sulla comunità.", "conclusion": "Conclusione sull'importanza dell'evento." }
+
+    Genera questi due articoli nel formato indicato.
+    `;
 
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_KEY;
     if (!apiKey) {
