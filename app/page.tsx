@@ -129,15 +129,15 @@ const HomePage: React.FC = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const randomSlides = getRandomSlides(events, 5);
-  //   const images = randomSlides.map((event) => ({
-  //     src:
-  //       event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
-  //     title: event.title || "Default Title",
-  //   }));
-  //   setSlideshowImages(images);
-  // }, [events]);
+  useEffect(() => {
+    const randomSlides = getRandomSlides(events, 5);
+    const images = randomSlides.map((event) => ({
+      src:
+        event.image || "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg",
+      title: event.title || "Default Title",
+    }));
+    setSlideshowImages(images);
+  }, [events]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
