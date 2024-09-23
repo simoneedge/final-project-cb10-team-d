@@ -226,7 +226,7 @@ export default function ProposePage() {
             disabled={isSubmitting}
           />
           <Button
-            label="Genera Articolo"
+            label="AI Genera Articolo"
             onClick={handleGenerateArticle}
             className="border-2 border-rosso bg-white text-rosso p-2 hover:bg-rosso hover:text-white font-bold"
             disabled={isGeneratingArticle || !formData.title}

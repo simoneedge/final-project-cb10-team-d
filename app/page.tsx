@@ -271,7 +271,7 @@ const HomePage: React.FC = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="card-container grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
+          <div className="card-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 items-start w-full mb-20 mt-10">
             {visibleEvents.length > 0 ? (
               visibleEvents.map((event, index) => {
                 const isFourthCard = (index + 1) % 4 === 0;
@@ -295,7 +295,7 @@ const HomePage: React.FC = () => {
                         "https://i.ytimg.com/vi/ZjfHFftdug0/maxresdefault.jpg"
                       }
                       size={
-                        isFourthCard && window.innerWidth >= 1024
+                        isFourthCard && window.innerWidth >= 1025
                           ? "large"
                           : "small"
                       }
