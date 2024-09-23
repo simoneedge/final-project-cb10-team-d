@@ -73,7 +73,6 @@ L'applicazione prevede due livelli di accesso:
 ## 🛠️ Tecnologie Utilizzate
 
 - **Next.js 13**: Framework React per applicazioni server-side rendering e static site generation.
-- **React**: Libreria JavaScript per la costruzione di interfacce utente dinamiche.
 - **Tailwind CSS**: Framework CSS per uno sviluppo rapido e modulare dello stile.
 - **Firebase**: Utilizzato per l'autenticazione e la gestione del database.
 - **GeminiAI API**: Per la generazione automatica degli articoli proposti dagli utenti.
@@ -96,6 +95,10 @@ L'applicazione prevede due livelli di accesso:
 
 4. **Avvia l'applicazione:**:
    npm run dev
+
+## 🌐 Demo Online
+
+Visita la demo del progetto: [SicilyPulse](https://sicilipulse.vercel.app/)
 
   ## 👥 Il nostro TEAM
 
