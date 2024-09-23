@@ -221,6 +221,7 @@ const EventDetailPage = ({ params }: { params: { id: string } }) => {
           Torna indietro
         </button>
       </div>
+
       <div className="max-w-5xl mx-auto px-5">
         <button
           onClick={() => setModalOpen(true)}
