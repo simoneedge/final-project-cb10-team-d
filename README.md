@@ -21,7 +21,7 @@ SiciliPulse è una piattaforma digitale innovativa che cattura il "battito" cult
 - Suggerimenti di contenuti personalizzati e miglioramento dell'accessibilità con opzioni come lettura vocale e modalità di alta visibilità.
 
 ### Contenuti Interattivi e Community Coinvolgente
-- Spazi di discussione, sondaggi e interazioni in tempo reale per creare una community attiva e fedele.
+- Interazioni tra admin ed utente in tempo reale per creare una community attiva e fedele.
 
 ## 🛠️ Tecnologie Utilizzate
 - **Next.js:** Sviluppo di un’applicazione web veloce e SEO-friendly con server-side rendering e static site generation.
@@ -50,3 +50,22 @@ SiciliPulse è una piattaforma innovativa che mette l’utente al centro, offren
 
 4. **Avvia l'applicazione:**:
    npm run dev
+
+   ## Collaboratori
+
+### Redazione
+
+**Adriana Piccione**  
+[LinkedIn](https://www.linkedin.com/in/adriana-piccione-86288b114/) | [GitHub](https://github.com/Adriana1206)
+
+**Luca Ferraresso**  
+[LinkedIn](https://www.linkedin.com/in/luca-ferraresso/) | [GitHub](https://github.com/LucaFerraresso)
+
+**Mariadomenica Scibilia**  
+[LinkedIn](https://www.linkedin.com/in/mariadomenica-scibilia-a1361b2b3/) | [GitHub](https://github.com/Maryscib1997) | [Behance](https://www.behance.net/maryscibilia)
+
+**Nunzio Basciano**  
+[LinkedIn](https://www.linkedin.com/in/nunzio-basciano/) | [GitHub](https://github.com/NunzioBasciano)
+
+**Stefania Beninati**  
+[LinkedIn](https://www.linkedin.com/in/stefania-beninati-208577202/) | [GitHub](https://github.com/aniaBeninati)
