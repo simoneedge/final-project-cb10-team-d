@@ -217,7 +217,7 @@ export default function FoodPage() {
 
   return (
     <div className="flex flex-col  items-center min-h-screen bg-gray-100 relative">
-      <CategoryBanner label="Food" backgroundColor={"bg-rosso"} />
+      <CategoryBanner label="Sapori" backgroundColor={"bg-rosso"} />
 
       <Filter
         query={searchQuery}

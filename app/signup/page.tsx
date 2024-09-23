@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { auth, db } from '@/firebaseconfig'; 
-import { doc, setDoc } from 'firebase/firestore'; 
+import { auth, db } from '@/firebaseconfig';
+import { doc, setDoc } from 'firebase/firestore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -58,10 +58,10 @@ export default function SignUp() {
   const passwordsMatch = password === confirmPass;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    e.stopPropagation(); 
+    e.preventDefault();
+    e.stopPropagation();
 
-    setError(null); 
+    setError(null);
 
     if (formValidation || !passwordsMatch) {
       setError('Le password non corrispondono o alcuni campi non sono validi.');
@@ -90,27 +90,27 @@ export default function SignUp() {
         if (error.message.includes('auth/email-already-in-use')) {
           setError('Email non utilizzabile. Prova a effettuare il login.');
           toast.error('Email non utilizzabile. Prova a effettuare il login.');
-          return; 
+          return;
 
         } else {
           setError(error.message);
           toast.error(error.message);
-          return; 
+          return;
         }
       } else {
         setError('Si &egrave; verificato un errore sconosciuto.');
         toast.error('Si &egrave; verificato un errore sconosciuto.');
-        return; 
+        return;
       }
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+      <div className="w-full max-w-md bg-white shadow-lg  p-6">
         <h1 className="text-4xl font-titolo text-rosso mb-6">Registrati</h1>
         {error && (
-          <div className="mb-4 p-4 border-l-4 border-red-500 bg-red-50 text-red-700 rounded">
+          <div className="mb-4 p-4 border-l-4 border-red-500 bg-red-50 text-red-700 ">
             <strong className="font-semibold">Error:</strong>
             <p>{error}</p>
           </div>
@@ -130,7 +130,7 @@ export default function SignUp() {
                       name="first-name"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                      className="block w-full  border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                       placeholder="Nome"
                     />
                   </div>
@@ -147,7 +147,7 @@ export default function SignUp() {
                       name="last-name"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                      className="block w-full border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                       placeholder="Cognome"
                     />
                   </div>
@@ -163,7 +163,7 @@ export default function SignUp() {
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ${!isEmailValid(email) && email.trim() ? 'ring-red-500' : 'ring-gray-300'} placeholder:text-gray-400 focus:ring-2 ${!isEmailValid(email) && email.trim() ? 'focus:ring-red-500' : 'focus:ring-indigo-600'} sm:text-sm`}
+                      className={`block w-full  border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ${!isEmailValid(email) && email.trim() ? 'ring-red-500' : 'ring-gray-300'} placeholder:text-gray-400 focus:ring-2 ${!isEmailValid(email) && email.trim() ? 'focus:ring-red-500' : 'focus:ring-indigo-600'} sm:text-sm`}
                       placeholder="Email"
                     />
                     {!isEmailValid(email) && email.trim() && (
@@ -187,12 +187,12 @@ export default function SignUp() {
                       }}
                       onFocus={() => setPasswordFocused(true)}
                       onBlur={() => setPasswordFocused(false)}
-                      className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                      className="block w-full  border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                       placeholder="Password"
                     />
                     {/* Messaggio di validazione password, visibile solo quando non tutti i criteri sono soddisfatti */}
                     {passwordFocused && !isPasswordValid && (
-                      <div className="absolute top-full mt-1 w-full bg-white border rounded-md shadow-md p-4">
+                      <div className="absolute top-full mt-1 w-full bg-white border  shadow-md p-4">
                         <p className={`text-sm ${passwordValid.length ? 'text-green-600' : 'text-red-600'}`}>Da 8 a 20 caratteri</p>
                         <p className={`text-sm ${passwordValid.upperCase ? 'text-green-600' : 'text-red-600'}`}>Una lettera maiuscola</p>
                         <p className={`text-sm ${passwordValid.number ? 'text-green-600' : 'text-red-600'}`}>Un numero</p>
@@ -212,7 +212,7 @@ export default function SignUp() {
                       id="confirm-password"
                       value={confirmPass}
                       onChange={(e) => setConfirmPass(e.target.value)}
-                      className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
+                      className="block w-full  border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm"
                       placeholder="Conferma Password"
                     />
                   </div>
@@ -234,7 +234,7 @@ export default function SignUp() {
             </div>
           </div>
         </form>
-        <ToastContainer containerId="toastSignUp"/>
+        <ToastContainer containerId="toastSignUp" />
       </div>
     </div>
   );
