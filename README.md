@@ -98,7 +98,7 @@ L'applicazione prevede due livelli di accesso:
 
 ## 🌐 Demo Online
 
-Visita la demo del progetto: [SicilyPulse](https://sicilipulse.vercel.app/)
+Visita la demo del progetto: [SicilyPulse](https://sicilypulse.vercel.app/)
 
   ## 👥 Il nostro TEAM
 
