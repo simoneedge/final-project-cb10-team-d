@@ -87,7 +87,7 @@ const EventForm = ({
             Seleziona Categoria
           </option>
           <option value="cultures">Cultura</option>
-          <option value="foods">Foods</option>
+          <option value="foods">Sapori</option>
           <option value="activities">Attività</option>
         </select>
       </div>
