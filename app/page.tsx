@@ -76,7 +76,6 @@ const HomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    // Filtro gli eventi che sono stati "reviewed"
     const reviewedEvents = events.filter(
       (event) => event.reviewed === true /* || event.reviewed === undefined */
     );
