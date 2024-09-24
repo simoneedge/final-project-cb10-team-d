@@ -1,6 +1,6 @@
 # 🌍 SicilyPulse
 
-![GIF1](Macbook.gif) ![GIF2](iPhone.gif)
+![GIF1](Macbook.gif) 
 
 ## Panoramica del Progetto
 
