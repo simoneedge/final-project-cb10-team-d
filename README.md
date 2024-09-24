@@ -1,5 +1,7 @@
 # 🌍 SicilyPulse
 
+![GIF1](Macbook.gif) ![GIF2](iPhone.gif)
+
 ## Panoramica del Progetto
 
 SicilyPulse è una piattaforma digitale innovativa che cattura il "battito" culturale della Sicilia, offrendo un'esperienza utente personalizzata e coinvolgente. Grazie all'integrazione di funzionalità avanzate e tecnologie moderne, SicilyPulse mira a diventare il punto di riferimento per contenuti interattivi, informazioni locali e coinvolgimento della community. Un'applicazione web sviluppata con **Next.js** che offre una panoramica completa degli eventi, delle attività, delle attrazioni culturali e delle esperienze gastronomiche presenti in Sicilia. L'applicazione integra anche un sistema di gestione utenti e un pannello di controllo per gli amministratori, che permette di monitorare e approvare contenuti generati dagli utenti tramite intelligenza artificiale.
